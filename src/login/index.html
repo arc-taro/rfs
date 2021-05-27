@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <meta charset="utf-8" />
+    <title>ログイン</title>
+    <link
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
+      crossorigin="anonymous"
+    />
+  </head>
+
+  <body>
+    <div class="container">
+      <h1 class="text-center">ログイン</h1>
+      <form action="login.php" method="post">
+        <div class="row m-2">
+          <div class="col-2 offset-3">
+            user
+          </div>
+          <div class="col-4">
+            <input
+              type="text"
+              name="account"
+              class="form-control"
+              id="user_id"
+            />
+          </div>
+        </div>
+        <div class="row m-2">
+          <div class="col-2 offset-3">
+            pass
+          </div>
+          <div class="col-4">
+            <input
+              type="text"
+              name="pass"
+              class="form-control"
+              id="password_area"
+            />
+          </div>
+        </div>
+        <div class="row m-2">
+          <div class="col-6 offset-3">
+            <input
+              type="submit"
+              value="login"
+              class="btn btn-primary btn-block"
+              id="btn_login"
+            />
+          </div>
+        </div>
+      </form>
+    </div>
+  </body>
+</html>
