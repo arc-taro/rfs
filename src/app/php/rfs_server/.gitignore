@@ -3,6 +3,7 @@
 # Example .gitignore files: https://github.com/github/gitignore
 /bower_components/
 /node_modules/
-/application/config/development/config.php
-/application/config/development/database.php
 /tmpCheckDiff.eqFTPtmp
+/application/logs/*
+!/application/logs/index.html
+!/application/logs/.htaccess
