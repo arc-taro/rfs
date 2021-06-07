@@ -1,0 +1,8 @@
+/node_modules
+/www
+/.tmp
+/.sass-cache
+/bower_components
+/Gruntfile.js
+/test
+/tool
