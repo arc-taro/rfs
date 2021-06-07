@@ -1,0 +1,36 @@
+<uib-tabset active="active">
+  <uib-tab index="0">
+    <uib-tab-heading>
+      <span style="font-size:16px;">施設情報</span>
+    </uib-tab-heading>
+    <div class="container">
+      <div class=" col-sm-12 form-inline " style="float:left;">
+        <div class="form-group input-append text-left" style="margin:0 20px 0 15px;">
+          <label class="form-control-label text-center margin">
+            <p class="label">交差路線名</p>
+          </label>
+          <div class="form-inline">
+            <input type="text" class="form-control input-sm" ng-model="famedit.daichou.kousa_rosen_nm" style="width:20em; text-align: left" ng-disabled="!famedit.editable">
+          </div>
+        </div>
+        <div class="form-group input-append text-left" style="margin-right:20px;">
+          <label class="form-control-label text-center margin">
+            <p class="label">管轄警察署</p>
+          </label>
+          <div class="form-inline">
+            <input type="text" class="form-control input-sm" ng-model="famedit.daichou.kankatsu_keisatsusyo" style="width:20em; text-align: left" ng-disabled="!famedit.editable">
+          </div>
+        </div>
+        <div class="form-group input-append text-left" style="margin-right:20px;">
+          <label class="form-control-label text-center margin">
+            <p class="label">設置本数</p>
+          </label>
+          <div class="form-inline">
+            <input type="number" class="form-control input-sm" ng-model="famedit.daichou.secchi_honsuu" style="width:10em; text-align: left" min="0" max="1000" ng-disabled="!famedit.editable">
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </uib-tab>
+</uib-tabset>

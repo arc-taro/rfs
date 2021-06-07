@@ -1,0 +1,50 @@
+<div class="modal-header">
+    <div class="modal-title">過去の点検結果 <a ng-click="tenken_rireki.close()" style="float:right; cursor:pointer;"><i class="fa fa-times"></i></a></div>
+</div>
+<div class="modal-body">
+<!--    <h4 id="y1" ng-click="isInputCollapsed = !isInputCollapsed"> 過去の点検結果 </h4>-->
+
+<!--    <div ng-repeat="past_data in tenken_rireki.past_data">
+        {{past_data.rireki_num}}
+        <div ng-repeat="rireki_data in past_data.rireki_data">
+            {{rireki_data.shisetsu_judge_nm}}
+            {{rireki_data.phase_str}}
+            {{rireki_data.phase}}
+        </div>
+    </div>-->
+
+    <table class="table table-bordered type04" style="font-size:12px;vertical-align:middle;">
+        <thead>
+            <tr style="border-bottom: 3px solid #4682b4;vertical-align: middle;">
+                <th>年度</th>
+                <th>月日</th>
+                <th>状況</th>
+                <th>施設の健全性診断<br>（判定区分）</th>
+                <th colspan="2">点検調査票</th>
+            </tr>
+        </thead>
+        <tbody ng-repeat="past_data in tenken_rireki.past_data" style="vertical-align: middle;">
+            <tr ng-repeat="rireki_data in past_data.rireki_data">
+                <td rowspan="{{past_data.rireki_num}}" ng-if="$first">{{tenken_rireki.convertADtoYear(rireki_data.update_dt)}}</td>
+                <td>{{(rireki_data.update_dt | date: "M月d日")}}</td>
+                <td>{{rireki_data.phase_str}}</td>
+                <td ng-class="{'bg-danger-c':rireki_data.measures_shisetsu_judge == 4,'bg-warning-c':rireki_data.measures_shisetsu_judge == 3,'bg-green-c':rireki_data.measures_shisetsu_judge == 2,'bg-blue-c':rireki_data.measures_shisetsu_judge == 1,'bg-mijisshi-c':rireki_data.measures_shisetsu_judge == 0}">{{rireki_data.shisetsu_judge_nm}}</td>
+                <td rowspan="{{past_data.rireki_num}}" ng-if="$first"><a style="cursor:pointer;" ng-click="tenken_rireki.location('/tenken/{{tenken_rireki.sno}}/{{tenken_rireki.struct_idx}}/{{past_data.chk_mng_no}}')" class="btn btn-xs btn-primary btn-info">
+                    <span class="glyphicon glyphicon-list-alt"></span>　開く</a></td>
+                <td rowspan="{{past_data.rireki_num}}" ng-if="$first">
+                  <form name="excel_form" method="POST" action="api/index.php/OutputExcel/out_chkData">
+                    <input type="hidden" name="sno" ng-value="tenken_rireki.sno">
+                    <input type="hidden" name="chk_mng_no" ng-value="past_data.chk_mng_no">
+                    <input type="hidden" name="struct_idx" ng-value="tenken_rireki.struct_idx">
+                    <button type="subumit" class="btn btn-xs btn-info btn-sm">
+                      <span class="glyphicon glyphicon-print"></span>&nbsp;エクセル出力</button>
+                  </form>
+                </td>
+            </tr>
+<!--            </div>-->
+        </tbody>
+    </table>
+</div>
+<div class="modal-footer">
+    <button class="btn btn-primary" type="button" ng-click="tenken_rireki.close()">閉じる</button>
+</div>

@@ -1,0 +1,212 @@
+<uib-tabset active="active">
+  <uib-tab index="0">
+    <uib-tab-heading>
+      <span style="font-size:16px;">施設情報</span>
+    </uib-tab-heading>
+    <div class="container">
+      <div class=" col-sm-12 form-inline " style="float:left;">
+        <div class="form-group input-append text-left" style="margin:0 10px 0 15px;">
+          <label class="form-control-label text-center margin">
+            <p class="label">台帳番号</p>
+          </label>
+          <div class="form-inline">
+            <input type="text" class="form-control input-sm" ng-model="famedit.daichou.daityou_no" style="width:12em; text-align: left" ng-disabled="!famedit.editable">
+          </div>
+        </div>
+        <div class="form-group input-append text-left" style="margin:0 10px 0 5px;">
+          <label class="form-control-label text-center margin">
+            <p class="label">図番号</p>
+          </label>
+          <div class="form-inline">
+            <input type="text" class="form-control input-sm" ng-model="famedit.daichou.zu_no" style="width:12em; text-align: left" ng-disabled="!famedit.editable">
+          </div>
+        </div>
+        <div class="form-group input-append text-left" style="margin:0 10px 0 5px;">
+          <label class="form-control-label text-center margin">
+            <p class="label">設計速度</p>
+          </label>
+          <div class="form-inline">
+            <input type="text" class="form-control input-sm" ng-model="famedit.daichou.sekkei_sokudo" style="width:12em; text-align: left" ng-disabled="!famedit.editable">
+          </div>
+        </div>
+      </div>
+      <div class=" col-sm-12 form-inline " style="float:left;">
+        <div class="form-group input-append text-left" style="margin:0 10px 0 15px;">
+          <label class="form-control-label text-center margin">
+            <p class="label">柵種</p>
+          </label>
+          <div class="form-inline">
+            <select class="form-control input-sm btn-group-justified" ng-model="famedit.daichou.sakusyu_cd" ng-options="sakusyu.sakusyu_cd as sakusyu.sakusyu for sakusyu in famedit.sakusyu_arr" style="width:12em; text-align: left" ng-disabled="!famedit.editable">
+              <option value="">---</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-group input-append text-left" style="margin:0 10px 0 5px;">
+          <label class="form-control-label text-center margin">
+            <p class="label">柵区分</p>
+          </label>
+          <div class="form-inline">
+            <select class="form-control input-sm btn-group-justified" ng-model="famedit.daichou.saku_kbn_cd" ng-options="saku_kbn.saku_kbn_cd as saku_kbn.saku_kbn for saku_kbn in famedit.saku_kbn_arr" style="width:12em; text-align: left" ng-disabled="!famedit.editable">
+              <option value="">---</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-group input-append text-left" style="margin:0 10px 0 5px;">
+          <label class="form-control-label text-center margin">
+            <p class="label">柵形式</p>
+          </label>
+          <div class="form-inline">
+            <select class="form-control input-sm" ng-model="famedit.daichou.saku_keishiki_cd" ng-options="saku_keishiki.saku_keishiki_cd as saku_keishiki.saku_keishiki for saku_keishiki in famedit.saku_keishiki_arr" style="width:12em; text-align: left" ng-disabled="!famedit.editable">
+              <option value="">---</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-group input-append text-left" style="margin:0 10px 0 5px;">
+          <label class="form-control-label text-center margin">
+            <p class="label">備考（規格など）</p>
+          </label>
+          <div class="form-inline">
+            <input type="text" class="form-control input-sm" ng-model="famedit.daichou.bikou_kikaku" style="width:20em; text-align: left" ng-disabled="!famedit.editable">
+          </div>
+        </div>
+      </div>
+
+      <div class=" col-sm-12">
+        <hr class="style4">
+      </div>
+      <div class=" col-sm-12 form-inline " style="float:left;">
+        <div class="form-group input-append text-left" style="margin:0 10px 0 15px;">
+          <label class="form-control-label text-center margin">
+            <p class="label">基礎形式</p>
+          </label>
+          <div class="form-inline">
+            <select class="form-control input-sm" ng-model="famedit.daichou.kiso_keishiki_cd" ng-options="kiso_keishiki.kiso_keishiki_cd as kiso_keishiki.kiso_keishiki for kiso_keishiki in famedit.kiso_keishiki_arr" style="width:12em; text-align: left" ng-disabled="!famedit.editable">
+              <option value="">---</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-group input-append text-left" style="margin:0 10px 0 5px;">
+          <label class="form-control-label text-center margin">
+            <p class="label">基礎形状</p>
+          </label>
+          <div class="form-inline">
+            <input type="text" class="form-control input-sm" ng-model="famedit.daichou.kiso_keijou" style="width:16em; text-align: left" ng-disabled="!famedit.editable">
+          </div>
+        </div>
+        <div class="form-group input-append text-left" style="margin:0 10px 0 5px;">
+          <label class="form-control-label text-center margin">
+            <p class="label">施工会社</p>
+          </label>
+          <div class="form-inline">
+            <input type="text" class="form-control input-sm" ng-model="famedit.daichou.sekou_company" style="width:16em; text-align: left" ng-disabled="!famedit.editable">
+          </div>
+        </div>
+      </div>
+      <div class=" col-sm-12">
+        <hr class="style4">
+      </div>
+      <div class=" col-sm-12 form-inline " style="float:left;">
+        <h6 style="margin:10px 10px 0 15px;">&nbsp;一般道路部分</h6>
+        <div class="form-group input-append text-left" style="margin:0 10px 0 15px;">
+          <label class="form-control-label text-center margin">
+            <p class="label">メーカー名</p>
+          </label>
+          <div class="form-inline">
+            <input type="text" class="form-control input-sm" ng-model="famedit.daichou.i_maker_nm" style="width:12em; text-align: left" ng-disabled="!famedit.editable">
+          </div>
+        </div>
+        <div class="form-group input-append text-left" style="margin:0 10px 0 5px;">
+          <label class="form-control-label text-center margin">
+            <p class="label">型式</p>
+          </label>
+          <div class="form-inline">
+            <input type="text" class="form-control input-sm" ng-model="famedit.daichou.i_katashiki" style="width:12em; text-align: left" ng-disabled="!famedit.editable">
+          </div>
+        </div>
+        <div class="form-group input-append text-left" style="margin:0 10px 0 5px;">
+          <label class="form-control-label text-center margin">
+            <p class="label">スパン長</p>
+          </label>
+          <div class="form-inline">
+            <input type="text" class="form-control input-sm" ng-model="famedit.daichou.i_span_len" style="width:12em; text-align: left" ng-disabled="!famedit.editable">
+          </div>
+        </div>
+        <div class="form-group input-append text-left" style="margin:0 10px 0 5px;">
+          <label class="form-control-label text-center margin">
+            <p class="label">スパン数</p>
+          </label>
+          <div class="form-inline">
+            <input type="text" class="form-control input-sm" ng-model="famedit.daichou.i_span_num" style="width:12em; text-align: left" ng-disabled="!famedit.editable">
+          </div>
+        </div>
+        <div class="form-group input-append text-left" style="margin:0 10px 0 5px;">
+          <label class="form-control-label text-center margin">
+            <p class="label">柵高</p>
+          </label>
+          <div class="form-inline">
+            <input type="text" class="form-control input-sm" ng-model="famedit.daichou.i_sakukou" style="width:12em; text-align: left" min="0" max="100" ng-disabled="!famedit.editable">
+          </div>
+        </div>
+      </div>
+      <div class=" col-sm-12">
+        <hr class="style4">
+      </div>
+      <div class=" col-sm-12 form-inline " style="float:left;">
+        <h6 style="margin:10px 10px 0 15px;">&nbsp;取付道路部分</h6>
+        <div class="form-group input-append text-left" style="margin:0 10px 0 15px;">
+          <label class="form-control-label text-center margin">
+            <p class="label">メーカー名</p>
+          </label>
+          <div class="form-inline">
+            <input type="text" class="form-control input-sm" ng-model="famedit.daichou.t_maker_nm" style="width:12em; text-align: left" ng-disabled="!famedit.editable">
+          </div>
+        </div>
+        <div class="form-group input-append text-left" style="margin:0 10px 0 5px;">
+          <label class="form-control-label text-center margin">
+            <p class="label">型式</p>
+          </label>
+          <div class="form-inline">
+            <input type="text" class="form-control input-sm" ng-model="famedit.daichou.t_katashiki" style="width:12em; text-align: left" ng-disabled="!famedit.editable">
+          </div>
+        </div>
+        <div class="form-group input-append text-left" style="margin:0 10px 0 5px;">
+          <label class="form-control-label text-center margin">
+            <p class="label">スパン長</p>
+          </label>
+          <div class="form-inline">
+            <input type="text" class="form-control input-sm" ng-model="famedit.daichou.t_span_len" style="width:12em; text-align: left" ng-disabled="!famedit.editable">
+          </div>
+        </div>
+        <div class="form-group input-append text-left" style="margin:0 10px 0 5px;">
+          <label class="form-control-label text-center margin">
+            <p class="label">スパン数</p>
+          </label>
+          <div class="form-inline">
+            <input type="text" class="form-control input-sm" ng-model="famedit.daichou.t_span_num" style="width:12em; text-align: left" ng-disabled="!famedit.editable">
+          </div>
+        </div>
+        <div class="form-group input-append text-left" style="margin:0 10px 0 5px;">
+          <label class="form-control-label text-center margin">
+            <p class="label">柵高</p>
+          </label>
+          <div class="form-inline">
+            <input type="text" class="form-control input-sm" ng-model="famedit.daichou.t_sakukou" style="width:12em; text-align: left" min="0" max="100" ng-disabled="!famedit.editable">
+          </div>
+        </div>
+      </div>
+      <div class=" col-sm-12">
+        <hr class="style4">
+      </div>
+      <div class=" col-sm-12 form-inline " style="float:left;">
+        <div class="form-group input-append text-left" style="margin:0 10px 0 15px;">
+          <label class="form-control-label text-center margin">
+            <p class="label">廃止の年月と理由</p>
+          </label>
+          <div class="form-inline">
+            <input type="text" class="form-control input-sm" ng-model="famedit.daichou.haishi_dt_ryuu" style="width:40em; text-align: left" ng-disabled="!famedit.editable">
+          </div>
+        </div>
+      </div>
+    </div>
+  </uib-tab>
+</uib-tabset>

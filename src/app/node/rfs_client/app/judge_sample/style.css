@@ -1,0 +1,65 @@
+body {
+	background: url(images/bg.gif) #000;
+	color: #fff;
+}
+p {
+	margin: 0px;
+}
+.pageTitle {
+	padding-bottom: 6px;
+	font-size: 15px;
+	font-weight: bold;
+}
+.sampleArea table {
+	/*width: 100%;*/
+	border-top: 1px solid #ccc;
+	border-left: 1px solid #ccc;
+	background: #4d4d4d;
+}
+.sampleArea table td {
+	border-right: 1px solid #ccc;
+	border-bottom: 1px solid #ccc;
+	padding: 5px;
+	font-size: 15px;
+}
+.sampleArea table td p {
+	width: 165px;
+	padding-bottom: 8px;
+	background: url(images/bg2.gif) no-repeat;
+	font-size: 12px;
+	line-height: 135%;
+}
+.sampleArea table td p img {
+	margin-bottom: 3px;
+	border: 1px solid #000;
+}
+.TAC {
+	text-align: center;
+}
+.TAR {
+	text-align: right;
+}
+.TVR {
+	width: 1em;
+}
+.wPhoto {
+	width: 165px;
+}
+.bg4 {
+	background: #e20000;
+}
+.bg3 {
+	background: #f57f00;
+}
+.bg2 {
+	background: #ffcc00;
+}
+.bg1 {
+	background: #00b3f5;
+}
+.bg0 {
+	background: #9a9a9a;
+}
+.bg0b {
+	background: #777676;
+}

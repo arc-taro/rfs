@@ -1,0 +1,502 @@
+<div>
+  <!-- Navbar Start-->
+  <div class="navbar navbar-default navbar-fixed-top" style="border-bottom: 0px;">
+    <div class="container">
+      <a style="color:white;cursor:pointer;" class="navbar-brand" ng-click="famedit.location('#')">
+        <img src="images/logo.png" class="img-rounded">道路施設管理システム</a>
+    </div>
+
+
+    <div class="row" style="padding-top: 0px;">
+      <div class="col-sm-12" style="position: relative;">
+        <div class="h_main" style="position: absolute;"
+          ng-class="{'h_main-info' : !famedit.editable, 'h_main-danger' : famedit.editable}">【現在】：
+          <span ng-show="famedit.editable">編集可</span>
+          <span ng-hide="famedit.editable" style="color : red;">編集不可</span>
+        </div>
+        <div class="h_main" style="margin-left:-15px;"
+          ng-class="{'h_main-info' : !famedit.editable, 'h_main-danger' : famedit.editable}">
+          施設台帳
+        </div>
+        <div
+          ng-hide="((famedit.ath_syozoku_cd == 3 || famedit.ath_syozoku_cd == 4) && (famedit.ath_syucchoujo_cd!=famedit.mng_syucchoujo_cd))">
+          <span ng-if="!famedit.editable">
+            <button type="button" class="btn btn-xs btn-primary btn-danger"
+              style="position: absolute; top: 5px; right: 30px;" ng-click="famedit.chgMode()">
+              <span class="glyphicon glyphicon-pencil"></span>&nbsp;編集モードへ</button>
+          </span>
+          <span ng-if="famedit.editable">
+            <button type="button" class="btn btn-xs btn-primary btn-info"
+              style="position: absolute; top: 5px; right: 30px;" ng-click="famedit.chgMode()">
+              <span class="glyphicon glyphicon-file"></span>&nbsp;閲覧モードへ</button>
+          </span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!--
+  <div class="h_main" style="margin-top:40px; margin-left:-15px;">
+    施設台帳
+  </div>
+-->
+
+
+  <div class="row" style="margin-top:88px">
+    <div class="col-sm-9">
+      <h2> 基本情報 </h2>
+    </div>
+    <div class="col-sm-3">
+    </div>
+  </div>
+
+  <form name="famForm" novalidate>
+
+    <div class="container">
+      <!--最終更新者追加START-->
+      <!--<div class="row" style="margin-bottom: 10px;">-->
+      <div class="row" style="margin-bottom: 25px;">
+        <!--最終更新者追加END-->
+        <div class="col-sm-6">
+          <div>
+            <!--最終更新者追加START-->
+            <div class="form-inline">
+              <!--最終更新者追加END-->
+              <div class="form-group">
+                <label class="form-control-label text-center margin">
+                  <p class="label">台帳作成日</p>
+                </label>
+                <div class="form-inline">
+                  <div class="input-group">
+                    <input name="input" ng-model="famedit.daichou.create_dt" uib-datepicker-popup="yyyy-MM-dd"
+                      is-open="status_dt.opened" class="form-control input-sm disabled-color" placeholder="" required
+                      current-text="今日" clear-text="クリア" close-text="閉じる" datepicker-options="{showWeeks:false}"
+                      style="width:10em; text-align: left; " disabled ng-class="{'editable':famedit.editable}">
+                    <span class="input-group-btn">
+                      <button type="button" class="btn btn-sm btn-default"
+                        ng-click="status_dt.opened = !status_dt.opened" style="height:35px"
+                        ng-disabled="famedit.desabled_create_dt || !famedit.editable">
+                        <i class="glyphicon glyphicon-calendar"></i>
+                      </button>
+                    </span>
+                  </div>
+                </div>
+              </div>
+              <!--最終更新者追加START-->
+              <div class="form-group">
+                <label class="form-control-label text-center margin">
+                  <p class="label">更新者</p>
+                </label>
+                <div class="form-inline">
+                  <div class="input-group">
+                    <input type="text" class="form-control input-sm disabled-color" required
+                      ng-model="famedit.daichou.update_account_nm" ng-disabled="!famedit.editable" style="width:300px">
+                    <div ng-show="famedit.editable" style="font-size:12px;margin-top: 18px">
+                      &nbsp;&nbsp;※更新者は、名称のみ入力してください。</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <!--最終更新者追加END-->
+          </div>
+        </div>
+        <div class="col-sm-6" style="text-align:right;margin-top:25px;">
+          <a class="btn btn-sm btn-info text-center" ng-click="famedit.editBaseInfo()" style="width:11em;"
+            ng-show="famedit.ath_syozoku_cd <= 2 || famedit.ath_syozoku_cd == 10001 || (famedit.ath_syozoku_cd == 3 && (famedit.ath_syucchoujo_cd==famedit.mng_syucchoujo_cd))">
+            <span class="glyphicon glyphicon-file"></span>　基本情報編集</a>
+        </div>
+      </div>
+    </div>
+    <div class="container">
+      <div class="row">
+        <div class="col-sm-12">
+          <table class="type01 table-bordered" style="font-size:12px; margin-top:-10px;">
+            <tbody>
+              <tr class="active">
+                <th>整理番号</th>
+                <th>施設名</th>
+                <th colspan="2">施設ID</th>
+                <th colspan="3">管理者</th>
+                <th>供用区分</th>
+                <th>設置年度</th>
+                <th>廃止年度</th>
+              </tr>
+              <tr>
+                <td>{{famedit.shisetsu.seiri_no}}</td>
+                <td>{{famedit.shisetsu.shisetsu_kbn_nm}}</td>
+                <td colspan="2">{{famedit.shisetsu.shisetsu_cd}}</td>
+                <td colspan="3">{{famedit.shisetsu.dogen_mei}}建設管理部 {{famedit.shisetsu.syucchoujo_mei}}</td>
+                <td>{{famedit.shisetsu.kyouyou_kbn_str}}</td>
+                <td>{{famedit.shisetsu.secchi}}</td>
+                <td>{{famedit.shisetsu.haishi}}</td>
+              </tr>
+              <tr>
+                <th>路線番号</th>
+                <th>路線名</th>
+                <th colspan="4">現況SP（ｍ）</th>
+                <th>一般交通量
+                  <br>(台／24h)</th>
+                <th>一般交通量
+                  <br>(台／12h)</th>
+                <th>普通車交通量
+                  <br>(台／12h)</th>
+                <th>大型車交通量
+                  <br>(台／12h)</th>
+              </tr>
+              <tr>
+                <td>{{famedit.shisetsu.rosen_cd}}</td>
+                <td>{{famedit.shisetsu.rosen_nm}}</td>
+                <td>自</td>
+                <td>{{famedit.shisetsu.sp}}</td>
+                <td>至</td>
+                <td>{{famedit.shisetsu.sp_to}}</td>
+                <td>{{famedit.shisetsu.koutsuuryou_day}}</td>
+                <td>{{famedit.shisetsu.koutsuuryou_12}}</td>
+                <td>{{famedit.shisetsu.koutsuuryou_hutuu}}</td>
+                <td>{{famedit.shisetsu.koutsuuryou_oogata}}</td>
+              </tr>
+              <tr>
+                <th colspan="2">名称</th>
+                <th colspan="2">所在地</th>
+                <th rowspan="2" colspan="2">形式／区分等</th>
+                <th colspan="2">
+                  <span ng-if="1 <= famedit.shisetsu.shisetsu_kbn && famedit.shisetsu.shisetsu_kbn <= 5">形式</span>
+                  <span ng-if="5 < famedit.shisetsu.shisetsu_kbn">{{famedit.keishiki_kubun_arr1.syubetsu_title}}</span>
+                </th>
+                <th colspan="2">
+                  <span ng-if="1 <= famedit.shisetsu.shisetsu_kbn && famedit.shisetsu.shisetsu_kbn <= 5">-</span>
+                  <span ng-if="5 < famedit.shisetsu.shisetsu_kbn">{{famedit.keishiki_kubun_arr2.syubetsu_title}}</span>
+                </th>
+              </tr>
+              <tr>
+                <td colspan="2">{{famedit.shisetsu.name}}</td>
+                <td colspan="2">{{famedit.shisetsu.shityouson}}{{famedit.shisetsu.azaban}}</td>
+                <td colspan="2">
+                  <span
+                    ng-if="1 <= famedit.shisetsu.shisetsu_kbn && famedit.shisetsu.shisetsu_kbn <= 5">{{famedit.shisetsu.shisetsu_keishiki_nm}}</span>
+                  <span ng-if="5 < famedit.shisetsu.shisetsu_kbn">{{famedit.keishiki_kubun_arr1.keishiki_kubun}}</span>
+                </td>
+                <td colspan="2">
+                  <span ng-if="1 <= famedit.shisetsu.shisetsu_kbn && famedit.shisetsu.shisetsu_kbn <= 5">-</span>
+                  <span ng-if="5 < famedit.shisetsu.shisetsu_kbn">{{famedit.keishiki_kubun_arr2.keishiki_kubun}}</span>
+                </td>
+              </tr>
+              <tr>
+                <th colspan="2">延長</th>
+                <th colspan="2">幅員（ｍ）</th>
+                <th>横断位置</th>
+                <th>上下区分</th>
+                <th>代替路の有無</th>
+                <th>緊急輸送道路</th>
+                <th>自専／一般</th>
+                <th>占用物件</th>
+              </tr>
+              <tr>
+                <td colspan="2">{{famedit.shisetsu.encho}}</td>
+                <td colspan="2">{{famedit.shisetsu.fukuin}}</td>
+                <td>{{famedit.shisetsu.lr_str}}</td>
+                <td>{{famedit.shisetsu.ud_str}}</td>
+                <td>{{famedit.shisetsu.substitute_road_str}}</td>
+                <td>{{famedit.shisetsu.emergency_road_str}}</td>
+                <td>{{famedit.shisetsu.motorway_str}}</td>
+                <td>{{famedit.shisetsu.senyou}}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <div class="container">
+      <div class="row">
+        <div class="col-sm-6" style="margin-top:20px">
+          <h6>&nbsp;設置場所</h6>
+          <div>
+            <div id="map" style="width:100%;height:310px;"> </div>
+          </div>
+        </div>
+        <div class="col-sm-6" style="margin-top:20px">
+          <div class="col-sm-12" style="margin-bottom:20px">
+            <h6>&nbsp;施設写真</h6>
+          </div>
+          <div class="row">
+            <div class="col-sm-6" ng-repeat="index in [1,2]">
+              <div ng-show="famedit.zenkei_picture[index] && famedit.zenkei_picture[index].path">
+                <img ng-src="{{famedit.zenkei_picture[index].path}}" style="max-width:100%" ng-cloak>
+
+                <div class="form-group">
+                  <label class="form-control-label text-center margin">
+                    <p class="label">撮影日</p>
+                  </label>
+                  <div class="form-inline">
+                    <div class="input-group">
+                      <input type="text" class="form-control input-sm disabled-color"
+                        ng-model="famedit.zenkei_picture[index].exif_dt" disabled>
+                    </div>
+                  </div>
+                </div>
+                <div class="form-group input-append text-left" style="margin-top:-15px;">
+                  <label class="form-control-label text-center margin">
+                    <p class="label">コメント</p>
+                  </label>
+                  <input type="text" class="form-control input-sm disabled-color"
+                    ng-model="famedit.zenkei_picture[index].description" disabled>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <div id="shisetsuinfo" class="link-margin"></div>
+    <div class="s_main_all" ng-click="famedit.shisetsuinfo = !famedit.shisetsuinfo"
+      ng-hide=" famedit.shisetsu.shisetsu_kbn==11">
+      <a style="color:white;">
+        <i class="fa" ng-class="{'fa-plus' : famedit.shisetsuinfo , 'fa-minus' : !famedit.shisetsuinfo}"></i> 施設管理情報
+      </a>
+    </div>
+
+    <div uib-collapse="famedit.shisetsuinfo" style="margin:10px 0 20px 30px;">
+      <!--      <div ng-include="famedit.daichou_tplnm"></div>-->
+      <div ng-include="famedit.master.shisetsu[famedit.shisetsu.shisetsu_kbn].include_tpl.daichou_tplnm"></div>
+    </div>
+
+    <div id="tenkenrireki" class="link-margin"></div>
+    <div class="s_main_all" ng-click="famedit.tenkenrireki = !famedit.tenkenrireki">
+      <a style="color:white;">
+        <i class="fa" ng-class="{'fa-plus' : famedit.tenkenrireki , 'fa-minus' : !famedit.tenkenrireki}"></i> 点検補修履歴</a>
+    </div>
+
+    <div uib-collapse="famedit.tenkenrireki" style="margin:10px 0 20px 30px;">
+      <!--      <div ng-include="famedit.daichou_rireki"></div>-->
+      <div ng-include="tpl"
+        ng-repeat="tpl in famedit.master.shisetsu[famedit.shisetsu.shisetsu_kbn].include_tpl.daichou_rireki"
+        style="padding-left:15px;padding-right:15px"></div>
+    </div>
+    <div ng-show="famedit.shisetsu.shisetsu_kbn==1 && famedit.daichou.hyoushiki_syu_cd==1">
+      <div id="gdh_db" class="link-margin"></div>
+      <div class="s_main_all" ng-click="famedit.gdh_db = !famedit.gdh_db">
+        <a style="color:white;">
+          <i class="fa" ng-class="{'fa-plus' : famedit.gdh_db , 'fa-minus' : !famedit.gdh_db}"></i> 案内標識データベース</a>
+      </div>
+      <div uib-collapse="famedit.gdh_db" style="margin:5px 0 10px 15px;">
+        <div ng-include="famedit.master.shisetsu[famedit.shisetsu.shisetsu_kbn].include_tpl.gdh_tplnm"></div>
+
+        <div style="margin:10px 0 20px 30px;"
+          ng-show="((famedit.ath_syozoku_cd == 3 && famedit.ath_syucchoujo_cd==famedit.mng_syucchoujo_cd) || famedit.ath_syozoku_cd == 1)">
+          <button type="button" class="btn btn-sm btn-info" style="display: inline;"
+            ng-click="famedit.locationGdhMain(-1)">　+案内標識を追加</button>
+        </div>
+      </div>
+    </div>
+    <div id="other" class="link-margin"></div>
+    <div class="s_main_all" ng-click="famedit.other = !famedit.other">
+      <a style="color:white;">
+        <i class="fa" ng-class="{'fa-plus' : famedit.other , 'fa-minus' : !famedit.other}"></i> その他 </a>
+    </div>
+
+    <div uib-collapse="famedit.other" style="margin:10px 0 20px 10px;">
+      <div class="container">
+        <div class="row">
+          <div class=" col-sm-9">
+            <div style="margin-right:10px;">
+              <label class="form-control-label text-center margin">
+                <p class="label">備考</p>
+              </label>
+              <div>
+                <input type="text" class="form-control input-sm disabled-color" ng-model="famedit.daichou.bikou"
+                  style="text-align: left" ng-disabled="!famedit.editable">
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-sm-3">
+            <div style="margin-right:10px;">
+              <label class="form-control-label text-center margin">
+                <p class="label">共通1</p>
+              </label>
+              <div>
+                <input type="text" class="form-control input-sm disabled-color" ng-model="famedit.daichou.kyoutsuu1"
+                  style="text-align: left" ng-disabled="!famedit.editable">
+              </div>
+            </div>
+          </div>
+          <div class="col-sm-3">
+            <div style="margin-right:10px;">
+              <label class="form-control-label text-center margin">
+                <p class="label">共通2</p>
+              </label>
+              <div>
+                <input type="text" class="form-control input-sm disabled-color" ng-model="famedit.daichou.kyoutsuu2"
+                  style="text-align: left" ng-disabled="!famedit.editable">
+              </div>
+            </div>
+          </div>
+          <div class="col-sm-3">
+            <div style="margin-right:10px;">
+              <label class="form-control-label text-center margin">
+                <p class="label">共通3</p>
+              </label>
+              <div>
+                <input type="text" class="form-control input-sm disabled-color" ng-model="famedit.daichou.kyoutsuu3"
+                  style="text-align: left" ng-disabled="!famedit.editable">
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col-sm-3">
+            <div style="margin-right:10px;">
+              <label class="form-control-label text-center margin">
+                <p class="label">独自1</p>
+              </label>
+              <div>
+                <input type="text" class="form-control input-sm disabled-color" ng-model="famedit.daichou.dokuji1"
+                  style="text-align: left" ng-disabled="!famedit.editable">
+              </div>
+            </div>
+          </div>
+          <div class="col-sm-3">
+            <div style="margin-right:10px;">
+              <label class="form-control-label text-center margin">
+                <p class="label">独自2</p>
+              </label>
+              <div>
+                <input type="text" class="form-control input-sm disabled-color" ng-model="famedit.daichou.dokuji2"
+                  style="text-align: left" ng-disabled="!famedit.editable">
+              </div>
+            </div>
+          </div>
+          <div class="col-sm-3">
+            <div style="margin-right:10px;">
+              <label class="form-control-label text-center margin">
+                <p class="label">独自3</p>
+              </label>
+              <div>
+                <input type="text" class="form-control input-sm disabled-color" ng-model="famedit.daichou.dokuji3"
+                  style="text-align: left" ng-disabled="!famedit.editable">
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- ng-disabled="!famedit.editable"-->
+      <!--
+編集可の場合famedit.editable=true(編集モード)
+編集不可の場合famedit.editable=false(閲覧モード)
+-->
+      <div flow-init="{target: 'api/index.php/UploadController/upload',singleFile:true}" flow-name="flow"
+        flow-files-submitted="$flow.upload();"
+        flow-file-success="famedit.fileUploadSuccess1( $file, $message, $flow ,$index)">
+        <div class="row">
+          <div class="col-sm-12">
+            <span style="position:relative; top:10px; right:5px; font-weight:bold;">図面貼付</span>
+            <!--
+            <button class="btn btn-sm btn-info text-center" ng-click="" style="width:8em;margin: 20px 0px 0px 5px;">
+              <span class="glyphicon glyphicon-picture"></span>　表示</button>
+-->
+            <button class="btn btn-sm btn-default text-center" flow-btn style="width:8em;margin: 20px 0px 0px 5px;"
+              ng-disabled="!famedit.editable">
+              <span class="glyphicon glyphicon-hand-up"></span>　図面選択</button>
+            <button class="btn btn-sm btn-danger text-center" ng-show="famedit.zumen.path"
+              ng-click="famedit.DeleteZumen();" style="width:8em;margin: 20px 20px 0px 5px;"
+              ng-disabled="!famedit.editable">
+              <span class="glyphicon glyphicon-remove"></span>　図面削除</button>
+          </div>
+        </div>
+        <div class="row" style="margin:20px" ng-switch on="famedit.editable">
+          <div ng-switch-when="true" class="drop" flow-drop ng-class="dropClass" flow-prevent-drop
+            style="max-width:980px;" flow-drop-enabled="famedit.editable" flow-drag-enter="dropClass='drag-over'"
+            flow-drag-leave="dropClass=''">
+            <div ng-show="$flow.support && !famedit.zumen.path && famedit.editable">
+              <p>図面をドラッグしてください。</p>
+            </div>
+
+            <img ng-src="{{famedit.zumen.path}}" ng-show="famedit.zumen.path" style="width:100%;max-width:1280px"
+              ng-disabled="!famedit.editable">
+            <div class="progress progress-striped" ng-show="$flow.isUploading()">
+              <div class="progress-bar" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"
+                ng-style="{width: ($flow.progress() * 100) + '%'}" style="width: 100%;">
+                <span class="sr-only ng-binding">% Complete</span>
+              </div>
+            </div>
+          </div>
+          <div ng-switch-default>
+            <img ng-src="{{famedit.zumen.path}}" style="width:100%;max-width:1280px" ng-disabled="!famedit.editable">
+          </div>
+        </div>
+      </div>
+    </div>
+  </form>
+
+  <div class="row" style="padding-top:50px"></div>
+
+  <div id="footerArea">
+    <div class="row" style="margin-top : 8px; margin-left : 3px;">
+      <div class="col-sm-3" style="text-align:center;" ng-if="!famedit.gdh_url">
+        <a ng-click="famedit.location('/fam_main/0/0/0/0');" class="btn btn-xs btn-inverse btn-sm">
+          <span class="glyphicon glyphicon-arrow-left"></span>&nbsp;道路施設検索ページに戻る</a>
+      </div>
+      <div class="col-sm-3" style="text-align:center;" ng-if="famedit.gdh_url">
+        <a ng-click="famedit.locationGdh()" class="btn btn-xs btn-inverse btn-sm">
+          <span class="glyphicon glyphicon-arrow-left"></span>&nbsp;案内標識データベース検索ページに戻る</a>
+      </div>
+      <div class="col-sm-5" style="text-align:center;">
+        <div class="btn-group" role="group">
+          <a class="btn btn-xs btn-success btn-sm" ng-click="famedit.anchorScroll('shisetsuinfo')">
+            <span class="glyphicon glyphicon-chevron-up"></span>　施設管理情報</a>
+          <a class="btn btn-xs btn-success btn-sm" ng-click="famedit.anchorScroll('tenkenrireki')">
+            <span class="glyphicon glyphicon-chevron-up"></span>　点検補修履歴</a>
+          <a ng-if="famedit.shisetsu.shisetsu_kbn==1 && famedit.daichou.hyoushiki_syu_cd==1"
+            class="btn btn-xs btn-success btn-sm" ng-click="famedit.anchorScroll('gdh_db')">
+            <span class="glyphicon glyphicon-chevron-up"></span>　案内標識データベース</a>
+          <a class="btn btn-xs btn-success btn-sm" ng-click="famedit.anchorScroll('other')">
+            <span class="glyphicon glyphicon-chevron-up"></span>　その他</a>
+        </div>
+      </div>
+      <div class="col-sm-2">
+        <!--        <div class="col-sm-6" style="text-align:center;"> -->
+        <!--追加-->
+        <div style="text-align:right;" ng-show="!famedit.editable">
+          <form name="excel_form" method="POST" action="api/index.php/OutputExcel/dlDaichouData" target="_blank">
+            <input type="hidden" name="sno" ng-value="famedit.sno">
+            <input type="hidden" name="shisetsu_kbn" ng-value="famedit.shisetsu.shisetsu_kbn">
+            <button type="submit" class="btn btn-xs btn-info btn-sm" ng-disabled="famedit.editable">
+              <span class="glyphicon glyphicon-print"></span>&nbsp;施設台帳の出力</button>
+          </form>
+        </div>
+      </div>
+      <!--追加-->
+      <div class="col-sm-2">
+        <!--        <div class="col-sm-6" style="text-align:center;">
+          <button type="button" class="btn btn-xs btn-success btn-sm">
+            <span class="glyphicon glyphicon-hand-right"></span>&nbsp;ファイル添付</button>
+        </div>-->
+        <div style="text-align:right;">
+          <button type="button" class="btn btn-xs btn-info btn-sm" ng-click="famedit.save()" ng-show="famedit.editable"
+            ng-disabled="famForm.$invalid">
+            <span class="glyphicon glyphicon glyphicon-save"></span>&nbsp;確定保存</button>
+          <span class="label" style="color:red" ng-show="famedit.editable && famForm.$invalid">&nbsp;赤枠項目が入力不正です</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 保存中オーバーレイ -->
+  <div class="waitOverlay " ng-show="famedit.waitOverlay">
+    <div
+      style="width:100vw;height:100vh;font-size:60px;display: table-cell;text-align: center;vertical-align: middle; ">
+      <i class="fa fa-spinner fa-spin fa-3x fa-fw "></i>
+      <br>
+      <span>施設台帳を保存中です。
+        <br />しばらくお待ちください。</span>
+    </div>
+  </div>
+
+</div>

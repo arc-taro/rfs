@@ -1,0 +1,236 @@
+<uib-tabset active="active">
+  <uib-tab index="0">
+    <uib-tab-heading>
+      <span style="font-size:16px;">施設情報</span>
+    </uib-tab-heading>
+    <div class="container">
+      <div class=" col-sm-12 form-inline " style="float:left;">
+        <div class="form-group input-append text-left" style="margin:0 10px 0 15px;">
+          <label class="form-control-label text-center margin">
+            <p class="label">交差単路</p>
+          </label>
+          <div class="form-inline">
+            <select class="form-control input-sm btn-group-justified" ng-model="famedit.daichou.kousa_tanro_cd" ng-options="kousa_tanro.kousa_tanro_cd as kousa_tanro.kousa_tanro for kousa_tanro in famedit.kousa_tanro_arr" style="width:12em; text-align: left" ng-disabled="!famedit.editable">
+              <option value="">---</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-group input-append text-left" style="margin:0 10px 0 15px;">
+          <label class="form-control-label text-center margin">
+            <p class="label">種類番号</p>
+          </label>
+          <div class="form-inline">
+            <input type="text" class="form-control input-sm" ng-model="famedit.daichou.syurui_bangou" style="width:12em; text-align: left" ng-disabled="!famedit.editable">
+          </div>
+        </div>
+        <div class="form-group input-append text-left" style="margin:0 10px 0 15px;">
+          <label class="form-control-label text-center margin">
+            <p class="label">交差路線</p>
+          </label>
+          <div class="form-inline">
+            <input type="text" class="form-control input-sm" ng-model="famedit.daichou.kousa_rosen" style="width:12em; text-align: left" ng-disabled="!famedit.editable">
+          </div>
+        </div>
+      </div>
+      <div class=" col-sm-12 form-inline " style="float:left;">
+        <div class="form-group input-append text-left" style="margin:0 10px 0 15px;">
+          <label class="form-control-label text-center margin">
+            <p class="label">標識種別</p>
+          </label>
+          <div class="form-inline">
+            <select class="form-control input-sm btn-group-justified" ng-model="famedit.daichou.hyoushiki_syu_cd" ng-options="hyoushiki_syu.hyoushiki_syu_cd as hyoushiki_syu.hyoushiki_syu for hyoushiki_syu in famedit.hyoushiki_syu_arr" style="width:12em; text-align: left" ng-disabled="!famedit.editable">
+              <option value="">---</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-group input-append text-left" style="margin:0 10px 0 15px;">
+          <label class="form-control-label text-center margin">
+            <p class="label">標識種別に関する留意事項</p>
+          </label>
+          <div class="form-inline">
+            <input type="text" class="form-control input-sm" ng-model="famedit.daichou.ryuui_jikou" style="width:26.2em; text-align: left" ng-disabled="!famedit.editable">
+          </div>
+        </div>
+      </div>
+
+      <div class=" col-sm-12">
+        <hr class="style4">
+      </div>
+      <div class=" col-sm-12 form-inline " style="float:left;">
+        <h6 style="margin:10px 10px 0 15px;">&nbsp;板形状</h6>
+        <div class="form-group input-append text-left" style="margin:0 10px 0 15px;">
+          <label class="form-control-label text-center margin">
+            <p class="label">板寸法</p>
+          </label>
+          <div class="form-inline">
+            <input type="text" class="form-control input-sm" ng-model="famedit.daichou.ban_sunpou" style="width:16em; text-align: left" ng-disabled="!famedit.editable">
+          </div>
+        </div>
+        <div class="form-group input-append text-left" style="margin:0 10px 0 5px;">
+          <label class="form-control-label text-center margin">
+            <p class="label">文字サイズ</p>
+          </label>
+          <div class="form-inline">
+            <input type="text" class="form-control input-sm" ng-model="famedit.daichou.ban_moji_size" style="width:16em; text-align: left" ng-disabled="!famedit.editable">
+          </div>
+        </div>
+        <div class="form-group input-append text-left" style="margin:0 10px 0 5px;">
+          <label class="form-control-label text-center margin">
+            <p class="label">板の材質</p>
+          </label>
+          <div class="form-inline">
+            <input type="text" class="form-control input-sm" ng-model="famedit.daichou.ban_zaishitsu" style="width:16em; text-align: left" ng-disabled="!famedit.editable">
+          </div>
+        </div>
+        <div class="form-group input-append text-left" style="margin:0 5px 0 5px;">
+          <label class="form-control-label text-center margin">
+            <p class="label">反射・照明</p>
+          </label>
+          <div class="form-inline">
+            <input type="text" class="form-control input-sm" ng-model="famedit.daichou.ban_hansya_syoumei" style="width:16em; text-align: left" ng-disabled="!famedit.editable">
+          </div>
+        </div>
+      </div>
+      <div class=" col-sm-12 form-inline " style="float:left;">
+        <div class="form-group" style="margin:0 10px 0 15px;">
+          <p class="control-label label2">番号表記</p>
+          <div class="radio-inline">
+            <input type="radio" value="1" ng-model="famedit.daichou.ban_no_hyouki_umu" ng-disabled="!famedit.editable">
+            <p class="label5">有</p>
+          </div>
+          <div class="radio-inline">
+            <input type="radio" value="2" ng-model="famedit.daichou.ban_no_hyouki_umu" ng-disabled="!famedit.editable">
+            <p class="label5">無</p>
+          </div>
+          <div class="radio-inline">
+            <input type="radio" value="0" ng-model="famedit.daichou.ban_no_hyouki_umu" ng-disabled="!famedit.editable">
+            <p class="label5">不明</p>
+          </div>
+        </div>
+        <div class="form-group" style="margin:0 15px 0 15px;">
+          <p class="control-label label2">他言語</p>
+          <div class="radio-inline">
+            <input type="radio" value="1" ng-model="famedit.daichou.ban_tagengo_umu" ng-disabled="!famedit.editable">
+            <p class="label5">有</p>
+          </div>
+          <div class="radio-inline">
+            <input type="radio" value="2" ng-model="famedit.daichou.ban_tagengo_umu" ng-disabled="!famedit.editable">
+            <p class="label5">無</p>
+          </div>
+          <div class="radio-inline">
+            <input type="radio" value="0" ng-model="famedit.daichou.ban_tagengo_umu" ng-disabled="!famedit.editable">
+            <p class="label5">不明</p>
+          </div>
+        </div>
+        <div class="form-group input-append text-left" style="margin:0 15px 0 5px;">
+          <label class="form-control-label text-center margin">
+            <p class="label">共架標識 ※該当時のみ</p>
+          </label>
+          <div class="form-inline">
+            <input type="text" class="form-control input-sm" ng-model="famedit.daichou.ban_kyouka1" style="width:16em; text-align: left" ng-disabled="!famedit.editable">
+          </div>
+        </div>
+        <div class="form-group input-append text-left" style="margin:0 5px 0 5px;">
+          <label class="form-control-label text-center margin">
+            <p class="label">裏面内容※該当時のみ</p>
+          </label>
+          <div class="form-inline">
+            <input type="text" class="form-control input-sm" ng-model="famedit.daichou.ban_kyouka2" style="width:16em; text-align: left" ng-disabled="!famedit.editable">
+          </div>
+        </div>
+      </div>
+
+      <div class=" col-sm-12">
+        <hr class="style4">
+      </div>
+
+      <div class=" col-sm-12 form-inline " style="float:left;">
+        <h6 style="margin:10px 10px 0 15px;">&nbsp;支柱形状</h6>
+        <div class="form-group input-append text-left" style="margin:0 10px 0 15px;">
+          <label class="form-control-label text-center margin">
+            <p class="label">支柱方式</p>
+          </label>
+          <div class="form-inline">
+            <select class="form-control input-sm btn-group-justified" ng-model="famedit.daichou.shichuu_houshiki_cd" ng-options="shichuu_houshiki.shichuu_houshiki_cd as shichuu_houshiki.shichuu_houshiki for shichuu_houshiki in famedit.shichuu_houshiki_arr" style="width:12em; text-align: left" ng-disabled="!famedit.editable">
+              <option value="">---</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-group input-append text-left" style="margin:0 30px 0 5px;">
+          <label class="form-control-label text-center margin">
+            <p class="label">支柱方式備考</p>
+          </label>
+          <div class="form-inline">
+            <input type="text" class="form-control input-sm" ng-model="famedit.daichou.shichuu_houshiki_bikou" style="width:12em; text-align: left" ng-disabled="!famedit.editable">
+          </div>
+        </div>
+        <div class="form-group input-append text-left" style="margin:0 10px 0 15px;">
+          <label class="form-control-label text-center margin">
+            <p class="label">支柱規格</p>
+          </label>
+          <div class="form-inline">
+            <select class="form-control input-sm btn-group-justified" ng-model="famedit.daichou.shichuu_kikaku_cd" ng-options="shichuu_kikaku.shichuu_kikaku_cd as shichuu_kikaku.shichuu_kikaku for shichuu_kikaku in famedit.shichuu_kikaku_arr" style="width:12em; text-align: left" ng-disabled="!famedit.editable">
+              <option value="">---</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-group input-append text-left" style="margin:0 10px 0 5px;">
+          <label class="form-control-label text-center margin">
+            <p class="label">支柱規格備考</p>
+          </label>
+          <div class="form-inline">
+            <input type="text" class="form-control input-sm" ng-model="famedit.daichou.shichuu_kikaku_bikou" style="width:12em; text-align: left" ng-disabled="!famedit.editable">
+          </div>
+        </div>
+        <div class="form-group input-append text-left" style="margin:0 30px 0 5px;">
+          <label class="form-control-label text-center margin">
+            <p class="label">支柱塗装</p>
+          </label>
+          <div class="form-inline">
+            <input type="text" class="form-control input-sm" ng-model="famedit.daichou.shichuu_tosou" style="width:12em; text-align: left" ng-disabled="!famedit.editable">
+          </div>
+        </div>
+      </div>
+
+      <div class=" col-sm-12 form-inline " style="float:left;">
+        <div class="form-group input-append text-left" style="margin:0 10px 0 15px;">
+          <label class="form-control-label text-center margin">
+            <p class="label">基礎形式</p>
+          </label>
+          <div class="form-inline">
+            <input type="text" class="form-control input-sm" ng-model="famedit.daichou.shichuu_kiso_keishiki" style="width:20em; text-align: left" ng-disabled="!famedit.editable">
+          </div>
+        </div>
+        <div class="form-group input-append text-left" style="margin:0 10px 0 15px;">
+          <label class="form-control-label text-center margin">
+            <p class="label">基礎寸法</p>
+          </label>
+          <div class="form-inline">
+            <input type="text" class="form-control input-sm" ng-model="famedit.daichou.shichuu_sunpou" style="width:20em; text-align: left" ng-disabled="!famedit.editable">
+          </div>
+        </div>
+      </div>
+
+      <div class=" col-sm-12">
+        <hr class="style4">
+      </div>
+
+      <div class=" col-sm-12 form-inline " style="float:left;">
+        <div class="form-group input-append text-left" style="margin:0 10px 0 15px;">
+          <label class="form-control-label text-center margin">
+            <p class="label">標識柱No</p>
+          </label>
+          <div class="form-inline">
+            <input type="text" class="form-control input-sm" ng-model="famedit.daichou.hyoushikityuu_no" style="width:20em; text-align: left" ng-disabled="!famedit.editable">
+          </div>
+        </div>
+      </div>
+    </div>
+  </uib-tab>
+  <uib-tab index="1">
+    <uib-tab-heading>
+      <span style="font-size:16px;">電気</span>
+    </uib-tab-heading>
+    <div ng-include="famedit.denki"></div>
+  </uib-tab>
+</uib-tabset>

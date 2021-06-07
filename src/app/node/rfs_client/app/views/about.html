@@ -1,0 +1,48 @@
+<div class="modal-header">
+    <div class="modal-title">施設の健全性一覧 <a ng-click="close()" style="float:right; cursor:pointer;"><i class="fa fa-times"></i></a></div>
+</div>
+<div class="modal-body">
+    <div class="container">
+
+        <table class="table table-bordered">
+
+            <thead>
+                <tr style="border-bottom: 3px solid #4682b4;">
+                    <th>施設</th>
+                    <th>健全性
+                        <br/>（点検前）</th>
+                    <th>健全性
+                        <br/>（措置後）</th>
+                    <th>部材</th>
+                    <th>健全性
+                        <br/>（点検前）</th>
+                    <th>健全性
+                        <br/>（措置後）</th>
+                    <th>部材詳細</th>
+                    <th>点検箇所</th>
+                    <th>健全性
+                        <br/>（点検前）</th>
+                    <th>健全性
+                        <br/>（措置後）</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr ng-repeat="judgedata in about.judgedatas ">
+                    <td rowspan="{{judgedata.cnt_shisetsu}}" ng-show="$index==0">{{judgedata.shisetsu_kbn_nm}}</td>
+                    <td rowspan="{{judgedata.cnt_shisetsu}}" ng-show="$index==0" ng-class="{'bg-danger-c':judgedata.check_shisetsu_judge ==4,'bg-warning-c':judgedata.check_shisetsu_judge ==3,'bg-green-c':judgedata.check_shisetsu_judge==2,'bg-blue-c':judgedata.check_shisetsu_judge==1, 'bg-mijisshi-c':judgedata.check_shisetsu_judge==0}">{{judgedata.check_shisetsu_judge_str}}</td>
+                    <td rowspan="{{judgedata.cnt_shisetsu}}" ng-show="$index==0" ng-class="{'bg-danger-c':judgedata.measures_shisetsu_judge ==4,'bg-warning-c':judgedata.measures_shisetsu_judge ==3,'bg-green-c':judgedata.measures_shisetsu_judge==2,'bg-blue-c':judgedata.measures_shisetsu_judge==1, 'bg-mijisshi-c':judgedata.measures_shisetsu_judge==0}">{{judgedata.measures_shisetsu_judge_str}}</td>
+                    <td rowspan="{{judgedata.cnt_buzai}}" ng-show="judgedata.buzai_cd!=about.judgedatas[$index-1].buzai_cd">{{judgedata.buzai_nm}}</td>
+                    <td rowspan="{{judgedata.cnt_buzai}}" ng-show="judgedata.buzai_cd!=about.judgedatas[$index-1].buzai_cd" ng-class="{'bg-danger-c':judgedata.check_buzai_judge ==4,'bg-warning-c':judgedata.check_buzai_judge ==3,'bg-green-c':judgedata.check_buzai_judge==2,'bg-blue-c':judgedata.check_buzai_judge==1, 'bg-mijisshi-c':judgedata.check_buzai_judge==0}">{{judgedata.check_buzai_judge_str}}</td>
+                    <td rowspan="{{judgedata.cnt_buzai}}" ng-show="judgedata.buzai_cd!=about.judgedatas[$index-1].buzai_cd" ng-class="{'bg-danger-c':judgedata.measures_buzai_judge ==4,'bg-warning-c':judgedata.measures_buzai_judge ==3,'bg-green-c':judgedata.measures_buzai_judge==2,'bg-blue-c':judgedata.measures_buzai_judge==1, 'bg-mijisshi-c':judgedata.measures_buzai_judge==0}">{{judgedata.measures_buzai_judge_str}}</td>
+                    <td rowspan="{{judgedata.cnt_buzai_detail}}" ng-show="judgedata.buzai_cd!=about.judgedatas[$index-1].buzai_cd || judgedata.buzai_detail_cd!=about.judgedatas[$index-1].buzai_detail_cd">{{judgedata.buzai_detail_nm}}</td>
+                    <td>{{judgedata.tenken_kasyo_nm}}</td>
+                    <td ng-class="{'bg-danger-c':judgedata.check_judge ==4,'bg-warning-c':judgedata.check_judge ==3,'bg-green-c':judgedata.check_judge==2,'bg-blue-c':judgedata.check_judge==1, 'bg-mijisshi-c':judgedata.check_judge==0}">{{judgedata.check_judge_str}}</td>
+                    <td ng-class="{'bg-danger-c':judgedata.measures_judge ==4,'bg-warning-c':judgedata.measures_judge ==3,'bg-green-c':judgedata.measures_judge==2,'bg-blue-c':judgedata.measures_judge==1, 'bg-mijisshi-c':judgedata.measures_judge==0}">{{judgedata.measures_judge_str}}</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+<div class="modal-footer">
+    <button class="btn btn-primary" type="button" ng-click="close()">閉じる</button>
+</div>

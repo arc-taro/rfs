@@ -1,0 +1,19 @@
+<div class="row" style="margin-top:15px;">
+  <h6 style="margin-top:30px">&nbsp;電気通信施設点検</h6>
+  <table class="fam01 table-bordered">
+    <tbody>
+      <tr>
+        <th>点検年</th>
+        <th>点検結果</th>
+        <th>開く</th>
+      </tr>
+      <tr ng-repeat="row in famedit.chk_denki">
+        <td>{{row.w_chk_dt}}</td>
+        <td>{{row.result_str}}</td>
+        <td>
+          <a style="cursor:pointer;" ng-href="{{famedit.ele_url}}edit/{{row.chk_mng_no}}" target="_blank">開く</a>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>

@@ -1,0 +1,78 @@
+<uib-tabset active="active">
+  <uib-tab index="0">
+    <uib-tab-heading>
+      <span style="font-size:16px;">施設情報</span>
+    </uib-tab-heading>
+    <div class="container">
+      <div class=" col-sm-12 form-inline " style="float:left;margin-top:10px;">
+        <div class="form-group" style="margin:0 40px 0 15px;">
+          <p class="control-label label2">階段</p>
+          <div class="radio-inline">
+            <input type="radio" value="1" ng-model="famedit.daichou.kaidan" ng-disabled="!famedit.editable">
+            <p class="label5">有</p>
+          </div>
+          <div class="radio-inline">
+            <input type="radio" value="2" ng-model="famedit.daichou.kaidan" ng-disabled="!famedit.editable">
+            <p class="label5">無</p>
+          </div>
+          <div class="radio-inline">
+            <input type="radio" value="0" ng-model="famedit.daichou.kaidan" ng-disabled="!famedit.editable">
+            <p class="label5">不明</p>
+          </div>
+        </div>
+        <div class="form-group" style="margin:0 40px 0 15px;">
+          <p class="control-label label2">スロープ</p>
+          <div class="radio-inline">
+            <input type="radio" value="1" ng-model="famedit.daichou.slope" ng-disabled="!famedit.editable">
+            <p class="label5">有</p>
+          </div>
+          <div class="radio-inline">
+            <input type="radio" value="2" ng-model="famedit.daichou.slope" ng-disabled="!famedit.editable">
+            <p class="label5">無</p>
+          </div>
+          <div class="radio-inline">
+            <input type="radio" value="0" ng-model="famedit.daichou.slope" ng-disabled="!famedit.editable">
+            <p class="label5">不明</p>
+          </div>
+        </div>
+        <div class="form-group" style="margin:0 40px 0 15px;">
+          <p class="control-label label2">押上げ</p>
+          <div class="radio-inline">
+            <input type="radio" value="1" ng-model="famedit.daichou.oshiage" ng-disabled="!famedit.editable">
+            <p class="label5">有</p>
+          </div>
+          <div class="radio-inline">
+            <input type="radio" value="2" ng-model="famedit.daichou.oshiage" ng-disabled="!famedit.editable">
+            <p class="label5">無</p>
+          </div>
+          <div class="radio-inline">
+            <input type="radio" value="0" ng-model="famedit.daichou.oshiage" ng-disabled="!famedit.editable">
+            <p class="label5">不明</p>
+          </div>
+        </div>
+        <div class="form-group" style="margin:0 40px 0 15px;">
+          <p class="control-label label2">ヒーティング</p>
+          <div class="radio-inline">
+            <input type="radio" value="1" ng-model="famedit.daichou.heating" ng-disabled="!famedit.editable">
+            <p class="label5">有</p>
+          </div>
+          <div class="radio-inline">
+            <input type="radio" value="2" ng-model="famedit.daichou.heating" ng-disabled="!famedit.editable">
+            <p class="label5">無</p>
+          </div>
+          <div class="radio-inline">
+            <input type="radio" value="0" ng-model="famedit.daichou.heating" ng-disabled="!famedit.editable">
+            <p class="label5">不明</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </uib-tab>
+  <uib-tab index="1">
+    <uib-tab-heading>
+      <span style="font-size:16px;">電気</span>
+    </uib-tab-heading>
+    <div ng-include="famedit.denki"></div>
+  </uib-tab>
+</uib-tabset>

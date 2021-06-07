@@ -1,0 +1,90 @@
+<div id="snow_removal">
+  <!-- Navbar Start-->
+  <div class="navbar navbar-default navbar-fixed-top zidx5009">
+    <div class="container">
+      <a style="color:white;" class="navbar-brand" ng-href="#/sys_top">
+        <img src="images/logo.png" class="img-rounded">道路施設管理システム</a>
+    </div>
+  </div>
+  <!-- End of Navber -->
+
+  <div class="row" style="margin-top:100px;">
+    <div class="col-sm-12">
+      <div class="col-sm-offset-3">
+        <div class="row">
+          <div class="col-sm-12">
+            <input type="checkbox" ng-model="srcsv.chk_bs" name="#" id="bs" />
+            <label for="bs" class="sample_label">防雪柵データ</label>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-sm-12">
+            <input type="checkbox" ng-model="srcsv.chk_rh" name="#" id="rh" />
+            <label for="rh" class="sample_label">ロードヒーティングデータ</label>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div style="top:42px;left:0px;z-index:1000; width:165px;" class="sidebar sidebar-nav affix container-fluid background2" role="complementary">
+      <div class="form-group row" style="margin:10px 0 10px 0;">
+        <label class=" form-control-label margin">
+          <p class="label3">建設管理部</p>
+        </label>
+        <select ng-show="srcsv.ath_syozoku_cd==1 || srcsv.ath_syozoku_cd==10001" class="form-control input-sm" ng-model="srcsv.dogen"
+          ng-options="row as row.dogen_mei for row in srcsv.dogen_syucchoujo_dat.dogen_info" ng-change="srcsv.chgDogen()" required>
+          <option value="">全て</option>
+        </select>
+        <select ng-hide="srcsv.ath_syozoku_cd==1 || srcsv.ath_syozoku_cd==10001" class="form-control input-sm" ng-model="srcsv.dogen"
+          ng-options="row as row.dogen_mei for row in srcsv.dogen_syucchoujo_dat.dogen_info" ng-change="srcsv.chgDogen()" required>
+        </select>
+      </div>
+      <div class="form-group row" style="margin:0 0 20px 0;">
+        <label class=" form-control-label margin">
+          <p class="label3">管理区域（出張所）</p>
+        </label>
+        <select ng-show="srcsv.ath_syozoku_cd==1 || srcsv.ath_syozoku_cd==2 || srcsv.ath_syozoku_cd==10001" class="form-control input-sm"
+          ng-model="srcsv.syucchoujo" ng-options="row as row.syucchoujo_mei for row in srcsv.dogen.syucchoujo_row.syucchoujo_info"
+          ng-change="srcsv.chgSyucchoujo()" required>
+          <option value="">全て</option>
+        </select>
+        <select ng-show="srcsv.ath_syozoku_cd==3 || srcsv.ath_syozoku_cd==4" class="form-control input-sm" ng-model="srcsv.syucchoujo"
+          ng-options="row as row.syucchoujo_mei for row in srcsv.dogen.syucchoujo_row.syucchoujo_info" ng-change="srcsv.chgSyucchoujo()"
+          required>
+        </select>
+      </div>
+    </div>
+  </div>
+
+  <div id="footerdamy"></div>
+  <div id="footerArea2">
+    <div class="row" style="margin-top : 8px">
+      <div class="col-sm-3" style="text-align:center;">
+        <a ng-href="#/sys_top" type="button" class="btn btn-xs btn-inverse btn-sm">
+          <span class="glyphicon glyphicon-arrow-left"></span>&nbsp;施設管理システムTOPに戻る</a>
+      </div>
+      <div class="col-sm-9">
+        <form name="snow_removal_form" method="POST" action="api/index.php/SnowRemovalController/CreateSnowRemovalCsv">
+          <input type="hidden" name="dogen_cd" value="{{srcsv.dogen.dogen_cd}} ">
+          <input type="hidden" name="syucchoujo_cd" value="{{srcsv.syucchoujo.syucchoujo_cd}}">
+          <input type="hidden" name="chk_bs" value="{{srcsv.chk_bs}} ">
+          <input type="hidden" name="chk_rh" value="{{srcsv.chk_rh}} ">
+          <button type="submit" class="btn btn-xs btn-info btn-sm pull-right" style="margin-right: 20px" ng-disabled="(!srcsv.chk_bs && !srcsv.chk_rh) || ((srcsv.ath_syozoku_cd==3 || srcsv.ath_syozoku_cd==4) && srcsv.ath_syucchoujo_cd != srcsv.syucchoujo.syucchoujo_cd)">
+            <span class="glyphicon glyphicon-download-alt"></span>&nbsp;除雪システム用CSV出力</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 読込み中オーバーレイ -->
+<div class="waitOverlay " ng-show="srcsv.waitLoadOverlay ">
+  <div style="width:100vw;height:100vh;font-size:60px;display: table-cell;text-align: center;vertical-align: middle; ">
+    <i class="fa fa-spinner fa-spin fa-3x fa-fw "></i>
+    <br>
+    <span>集計中です。
+      <br />しばらくお待ちください。</span>
+  </div>
+</div>

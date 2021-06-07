@@ -1,0 +1,51 @@
+this.yh_dat = {
+  "yh_row": [{
+      "idx": 1,
+      "str": "20年以上",
+      "cnt_all": 0,
+      "cnt_kyouyou": 0,
+      "cnt_kyuushi": 0,
+      "shisetsu_kbn": "5"
+    }
+             , {
+      "idx": 2,
+      "str": "10年以上20年未満",
+      "cnt_all": 0,
+      "cnt_kyouyou": 0,
+      "cnt_kyuushi": 0,
+      "shisetsu_kbn": "5"
+    }
+             , {
+      "idx": 3,
+      "str": "5年以上10年未満",
+      "cnt_all": 0,
+      "cnt_kyouyou": 0,
+      "cnt_kyuushi": 0,
+      "shisetsu_kbn": "5"
+    }
+             , {
+      "idx": 4,
+      "str": "5年未満",
+      "cnt_all": 0,
+      "cnt_kyouyou": 0,
+      "cnt_kyuushi": 0,
+      "shisetsu_kbn": "5"
+    }
+             , {
+      "idx": 5,
+      "str": "設置年度不明",
+      "cnt_all": 21930,
+      "cnt_kyouyou": 21930,
+      "cnt_kyuushi": 0,
+      "shisetsu_kbn": "5"
+    }
+             , {
+      "idx": 6,
+      "str": "計",
+      "cnt_all": 21930,
+      "cnt_kyouyou": 21930,
+      "cnt_kyuushi": 0,
+      "shisetsu_kbn": "5"
+    }
+            ]
+};

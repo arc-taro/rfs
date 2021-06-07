@@ -1,0 +1,185 @@
+<div>
+    <div class="row ">
+        <div class="col-sm-2">
+            <div class="form-group row" style="margin:30px 0 20px 0;">
+                <label class=" form-control-label">
+                    <p style="margin:0 0 -10px 0">建設管路部</p>
+                </label>
+                <select class="form-control" ng-model="sel" ng-options="kensetsukanri.name for naiyou in detail.naiyou" required>
+                    <option value="">---</option>
+                </select>
+            </div>
+            <div class="form-group row" style="margin:0 0 30px 0;">
+                <label class=" form-control-label">
+                    <p style="margin:0 0 -10px 0">管理区域（出張所）</p>
+                </label>
+                <select class="form-control" ng-model="sel" ng-options="naiyou.name for naiyou in detail.naiyou" required>
+                    <option value="">----</option>
+                </select>
+            </div>
+            <div style="margin:20px 0 10px 0">
+                <button type="button" class="btn btn-success btn-lg btn-block">
+                    <span style="font-size: 18px;">施設の管理</span></button>
+            </div>
+            <div style="margin:20px 0 10px 0">
+                <button type="button" class="btn btn-success btn-lg btn-block">
+                    <span style="font-size: 18px;">定期点検の管理</span></button>
+            </div>
+        </div>
+        <div class="col-sm-10">
+            <div style="position: relative;">
+                <h1>定期点検の実施状況</h1>
+                <a class="btn btn-xs btn-inverse btn-sm" ng-href="#/main"><i class="glyphicon glyphicon-thumbs-up"></i>　詳細検索</a>
+            </div>
+
+            <div style="margin-top: 25px;">
+                <div class="row">
+                    <div class="col-sm-9">
+                        <h2> 道路標識（門型以外） </h2>
+                    </div>
+                    <div class="col-sm-3">
+                        <div style="position: absolute; right: 30px;">
+                            <button type="button" class="btn btn-info">
+                                <span class="glyphicon glyphicon-print"></span>　点検調査票出力</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="container">
+                    <table class="type02 table-bordered">
+                        <tbody>
+                            <tr>
+                                <th rowspan="2">点検状況</th>
+                                <th rowspan="2">施設数</th>
+                                <th rowspan="2">未実施</th>
+                                <th colspan="4">健全度</th>
+                            </tr>
+                            <tr style="border-bottom: 3px solid #ccc;">
+                                <th>Ⅰ</th>
+                                <th>Ⅱ</th>
+                                <th>Ⅲ</th>
+                                <th>Ⅳ</th>
+                            </tr>
+                            <tr>
+                                <th>点検</th>
+                                <td rowspan="2">1</td>
+                                <td>2</td>
+                                <td>3</td>
+                                <td>4</td>
+                                <td>5</td>
+                                <td>6</td>
+                            </tr>
+                            <tr>
+                                <th>措置実施</th>
+                                <td>7</td>
+                                <td>8</td>
+                                <td>9</td>
+                                <td>10</td>
+                                <td>11</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div style="margin-top: 25px;">
+                <div class="row">
+                    <div class="col-sm-9">
+                        <h2> 道路照明施設 </h2>
+                    </div>
+                    <div class="col-sm-3">
+                        <div style="position: absolute; right: 30px;">
+                            <button type="button" class="btn btn-info">
+                                <span class="glyphicon glyphicon-print"></span>　点検調査票出力</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="container">
+                    <table class="type02 table-bordered">
+                        <tbody>
+                            <tr>
+                                <th rowspan="2">点検状況</th>
+                                <th rowspan="2">施設数</th>
+                                <th rowspan="2">未実施</th>
+                                <th colspan="4">健全度</th>
+                            </tr>
+                            <tr style="border-bottom: 3px solid #ccc;">
+                                <th>Ⅰ</th>
+                                <th>Ⅱ</th>
+                                <th>Ⅲ</th>
+                                <th>Ⅳ</th>
+                            </tr>
+                            <tr>
+                                <th>点検</th>
+                                <td rowspan="2">1</td>
+                                <td>2</td>
+                                <td>3</td>
+                                <td>4</td>
+                                <td>5</td>
+                                <td>6</td>
+                            </tr>
+                            <tr>
+                                <th>措置実施</th>
+                                <td>7</td>
+                                <td>8</td>
+                                <td>9</td>
+                                <td>10</td>
+                                <td>11</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div style="margin-top: 25px;">
+                <div class="row">
+                    <div class="col-sm-9">
+                        <h2> 道路照明施設 </h2>
+                    </div>
+                    <div class="col-sm-3">
+                        <div style="position: absolute; right: 30px;">
+                            <button type="button" class="btn btn-info">
+                                <span class="glyphicon glyphicon-print"></span>　点検調査票出力</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="container">
+                    <table class="type02 table-bordered">
+                        <tbody>
+                            <tr>
+                                <th rowspan="2">点検状況</th>
+                                <th rowspan="2">施設数</th>
+                                <th rowspan="2">未実施</th>
+                                <th colspan="4">健全度</th>
+                            </tr>
+                            <tr style="border-bottom: 3px solid #ccc;">
+                                <th>Ⅰ</th>
+                                <th>Ⅱ</th>
+                                <th>Ⅲ</th>
+                                <th>Ⅳ</th>
+                            </tr>
+                            <tr>
+                                <th>点検</th>
+                                <td rowspan="2">1</td>
+                                <td>2</td>
+                                <td>3</td>
+                                <td>4</td>
+                                <td>5</td>
+                                <td>6</td>
+                            </tr>
+                            <tr>
+                                <th>措置実施</th>
+                                <td>7</td>
+                                <td>8</td>
+                                <td>9</td>
+                                <td>10</td>
+                                <td>11</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+
+        </div>
+    </div>
+</div>

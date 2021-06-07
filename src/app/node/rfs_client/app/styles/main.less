@@ -1,0 +1,286 @@
+.check_custom {
+  input[type="checkbox"] {
+    display: none;
+  }
+
+  label {
+    display: block;
+    cursor: pointer;
+    margin: 5px;
+  }
+
+  input[type="checkbox"]+label:before {
+    width: 20px;
+    height: 20px;
+    line-height: 18px;
+    font-size: 32px;
+    display: inline-block;
+    vertical-align: middle;
+    text-align: center;
+    content: "\2713";
+    color: transparent;
+    padding: 0;
+    border-radius: 5px;
+    border: 2px solid #dddddd;
+    background-color: #fff;
+    margin: -2px 5px 0 0;
+    -webkit-transition: .1s;
+    transition: .1s;
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+  }
+
+  input[type="checkbox"][disabled]+label:before {
+    background-color: #f0f0f0;
+  }
+
+  input[type="checkbox"]:checked+label {
+    color: #4cae4c;
+  }
+
+  input[type="checkbox"]:checked+label:before {
+    font-size: 15px;
+    background: #fff !important;
+    border-color: #4cae4c !important;
+    color: #4cae4c !important;
+  }
+
+  input[type="checkbox"][disabled]:checked+label {
+    color: #bbbbbb;
+  }
+
+  input[type="checkbox"][disabled]:checked+label:before {
+    font-size: 15px;
+    background: #f0f0f0 !important;
+    border-color: #dddddd !important;
+    color: #bbbbbb !important;
+  }
+}
+
+table.gdh-table {
+  border-style: solid;
+  border-width: 2px;
+  table-layout: fixed;
+
+  th {
+    border-style: solid;
+    border-width: 1px;
+  }
+
+  thead {
+    th {
+      background-color: #003A85;
+      border-bottom-color: #000;
+      border-bottom-width: 1px;
+      border-style: solid;
+      border-width: 1px;
+      vertical-align: middle;
+      color: white;
+    }
+  }
+
+  tbody {
+    th {
+      background-color: #003A85;
+      width: 25%;
+    }
+
+    tr {
+      &.nendo {
+        background-color: #F5A9A9;
+      }
+    }
+
+    td {
+      border-style: solid;
+      border-width: 1px;
+
+      &.chk_header {
+        vertical-align: middle;
+        font-weight: bold;
+        background-color: #003A85;
+      }
+
+      &.nendo {
+        background-color: pink; //color: white;
+      }
+    }
+  }
+
+  select.ng-invalid {
+    border: solid 2px red;
+  }
+
+  input.ng-invalid {
+    border: solid 2px red;
+  }
+
+  textarea.ng-invalid {
+    border: solid 2px red;
+  }
+}
+
+table {
+  td.bg-NG-ore {
+    background-color: #F5C949; //color: white;
+  }
+
+  td.bg-NG-red {
+    background-color: #F5A9A9; //color: white;
+  }
+}
+
+.link-margin {
+  padding-top: 77px;
+  margin-top: -77px;
+}
+
+#snow_removal {
+  input[type=checkbox] {
+    display: none;
+    /* checkboxを非表示にする */
+  }
+
+  .sample_label {
+    position: relative;
+    /* ボックスの位置を指定する */
+    padding: 0 0 0 42px;
+    /* ボックス内側の余白を指定する */
+  }
+
+  .sample_label:hover:after {
+    border-color: #0171bd;
+    /* ボックスの境界線を実線で指定する */
+  }
+
+  .sample_label:after,
+  .sample_label:before {
+    position: absolute;
+    /* ボックスの位置を指定する */
+    content: "";
+    /* ボックスのコンテンツ */
+    display: block;
+    /* ブロックレベル要素化する */
+    top: 50%;
+    /* 上部から配置の基準位置を決める */
+  }
+
+  .sample_label:after {
+    left: 15px;
+    /* 左から配置の基準位置を決める */
+    margin-top: -10px;
+    /* チェック枠の位置 */
+    width: 15px;
+    /* ボックスの横幅を指定する */
+    height: 15px;
+    /* ボックスの高さを指定する */
+    border: 2px solid #ccc;
+    /* ボックスの境界線を実線で指定する */
+    border-radius: 6px;
+    /* ボックスの角丸を指定する */
+  }
+
+  .sample_label:before {
+    left: 21px;
+    /* 左から配置の基準位置を決める */
+    margin-top: -7px;
+    /* チェックマークの位置 */
+    width: 5px;
+    /* ボックスの横幅を指定する */
+    height: 9px;
+    /* ボックスの高さを指定する */
+    border-right: 3px solid #0171bd;
+    /* 境界線（右）のスタイルを指定する */
+    border-bottom: 3px solid #0171bd;
+    /* 境界線（下）のスタイルを指定する */
+    transform: rotate(45deg);
+    /* 要素を回転させる */
+    opacity: 0;
+    /* 要素を透過指定する */
+  }
+
+  input[type=checkbox]:checked+.sample_label:before {
+    opacity: 1;
+    /* 要素を表示する */
+  }
+}
+
+@md-checkbox-margin: 5px 0px;
+@md-checkbox-checked-color: rgb(51, 122, 183);
+@md-checkbox-border-color: rgba(0, 0, 0, 0.54);
+@md-checkbox-checked-disabled-color: rgb(122, 122, 122);
+@md-checkbox-size: 20px;
+@md-checkbox-padding: 4px;
+@md-checkmark-width: 2px;
+@md-checkmark-color: #fff;
+
+.md-checkbox {
+  position: relative;
+  margin: @md-checkbox-margin;
+
+  input[type="checkbox"] {
+    display: none;
+    margin-right: @md-checkbox-size - 10px;
+    margin-left: 0px;
+
+    &:checked+label:before {
+      background: @md-checkbox-checked-color;
+      border-color: @md-checkbox-checked-color;
+      animation: ripple 0.2s linear forwards;
+    }
+
+    &:checked:disabled+label:before {
+      background: @md-checkbox-checked-disabled-color;
+      border-color: @md-checkbox-checked-disabled-color;
+      animation: ripple 0.2s linear forwards;
+    }
+
+    &:disabled+label,
+    &:disabled+label:before {
+      cursor: not-allowed;
+    }
+
+    &:checked+label:after {
+      @md-checkmark-size: @md-checkbox-size - 2*@md-checkbox-padding;
+      transform: rotate(-45deg);
+      top: (@md-checkbox-size / 2) - (@md-checkmark-size / 4) - @md-checkbox-size/10;
+      left: @md-checkbox-padding;
+      width: @md-checkmark-size;
+      height: @md-checkmark-size / 2;
+      border: @md-checkmark-width solid @md-checkmark-color;
+      border-top-style: none;
+      border-right-style: none;
+    }
+  }
+
+  label {
+    cursor: pointer;
+    padding: 0px 0px 0px (@md-checkbox-size + 10px);
+    margin-left: 5px;
+    line-height: normal;
+
+    &:before,
+    &:after {
+      content: "";
+      position: absolute;
+      left: 0;
+      top: 0;
+    }
+
+    &:before {
+      // box
+      width: @md-checkbox-size;
+      height: @md-checkbox-size;
+      background: #fff;
+      border: 2px solid @md-checkbox-border-color;
+      border-radius: 2px;
+      cursor: pointer;
+      transition: background .3s;
+    }
+  }
+
+  .form-inline & {
+    display: inline-block;
+  }
+}

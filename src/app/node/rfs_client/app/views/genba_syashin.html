@@ -1,0 +1,18 @@
+<div class="modal-header">
+    <div class="modal-title">現場写真 <a ng-click="close()" style="float:right;cursor:pointer;"><i class="fa fa-times"></i></a></div>
+    <select ng-model="album_title" ng-change="title_change()" ng-options="title.title_cd as title.title for title in title_list"></select>
+</div>
+<!--<div class="modal-body" style="height:50vh;overflow-y:scroll;overflow-x:none">-->
+<div class="modal-body">
+    <div class="row">
+        <div class="col-xs-6" ng-repeat="photo in photo_list" style="padding:10px">
+            <img data-drag="true" data-jqyoui-options="{revert: 'invalid'}" jqyoui-draggable="{animate:true,onStop:'reset()'}" ng-model="photo.src" src="{{photo.src}}" style="width: 100%;max-width:520px" />
+            <span style="overflow:hidden">
+                {{photo.description}}
+            </span>
+        </div>
+    </div>
+</div>
+<div class="modal-footer">
+    <button class="btn btn-primary" type="button" ng-click="close()">閉じる</button>
+</div>

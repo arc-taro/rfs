@@ -1,0 +1,517 @@
+<div>
+  <!-- Navbar Start-->
+  <div class="navbar navbar-default navbar-fixed-top zidx5009">
+    <div class="container">
+      <a style="color:white;" class="navbar-brand" href="#">
+        <img src="images/logo.png" class="img-rounded">道路附属物管理システム</a>
+    </div>
+  </div>
+  <!-- End of Navber -->
+  <div class="row">
+
+    <div class="row">
+      <div class="col-sm-9">
+        <div class="form-group input-append text-left" style="padding-left:170px; padding-top: 48px;">
+          <label class="form-control-label text-center margin">
+            <p class="label">点検年度</p>
+          </label>
+          <div class="form-inline">
+            <div class="form-group">
+              <select class="form-control input-sm" ng-model="raftop.target_nendo_from"
+                ng-options="nendo.year as nendo.gengou for nendo in raftop.target_nendo"
+                style="width:10em; text-align: left">
+                <option value="">---</option>
+              </select>
+              <span>~</span>
+              <select class="form-control input-sm" ng-model="raftop.target_nendo_to"
+                ng-options="nendo.year as nendo.gengou for nendo in raftop.target_nendo"
+                style="width:10em; text-align: left">
+                <option value="">---</option>
+              </select>
+              <div class="form-group input-append text-center" style="margin-left:15px;">
+                <button type="button" class="btn btn-sm btn-info btn-group-justified text-center" style="width:8em;"
+                  ng-click="raftop.btnDisp()">
+                  <span class="glyphicon glyphicon-th-list"></span>　表示</button>
+              </div>
+            </div>
+            <!--</div>-->
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="row" ng-show="raftop.ath_syozoku_cd==1">
+      <div class="col-sm-9">
+        <div class="form-group input-append text-left" style="padding-left:170px;">
+          <div class="form-inline">
+            <div class="form-group">
+              <select class="input-sm form-control" ng-model="raftop.sum_nendo"
+                ng-options="nendo.year as nendo.gengou for nendo in raftop.target_nendo"
+                style="width:10em; text-align: left">
+                <option value="">---</option>
+              </select>
+              <span>&nbsp;</span>
+              <select class="input-sm form-control" ng-model="raftop.sum_select"
+                ng-options="shisetsu_kbn.shisetsu_kbn as shisetsu_kbn.shisetsu_kbn_nm for shisetsu_kbn in raftop.shisetsu_kbns"
+                style="width:10em; text-align: left">
+                <option value="">---</option>
+              </select>
+              <div class="form-group input-append text-center" style="margin-left:15px;">
+                <form name="csv_list_form" method="GET" action="api/index.php/SumHuzokubutsuController/sumHuzokubutsu"
+                  ng-submit="raftop.submitList()">
+                  <input type="hidden" name="nendo" value="{{raftop.sum_nendo}} ">
+                  <input type="hidden" name="shisetsu_kbn" value="{{raftop.sum_select}}">
+                  <button type="submit" class="btn btn-xs btn-info btn-sm" style="width:14em;"
+                    ng-disabled="!raftop.sum_select">
+                    <span class="glyphicon glyphicon-print"></span>&nbsp;CSVリストを出力</button>
+                </form>
+
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="row" ng-show="raftop.ath_syozoku_cd==10001 || raftop.ath_syozoku_cd==1">
+      <div class="col-sm-12">
+        <div class="text-left" style="padding-left:170px;">
+          <p style="font-size:90%">※管理者権限の場合に表示されます。</p>
+          <p style="font-size:90%">※選択した年度の、選択した施設について全道分をCSV出力します。</p>
+        </div>
+      </div>
+    </div>
+
+    <!--<div ng-show="raftop.disp_sum">-->
+    <div class="col-sm-12" style="padding-left:151px; padding-top: 10px;">
+      <div class="col-sm-6" style="margin-top:20px">
+        <h3 style="font-weight: bold"> 1. 道路標識&nbsp;&nbsp;&nbsp;&nbsp;
+          <a ng-click="raftop.linkMain(raftop.sum_dh[0].shisetsu_kbn,0,0);"
+            style="cursor:pointer;">{{raftop.sum_dh[5].cnt}}施設</a>
+        </h3>
+        <div class="form-inline">
+          <div class="form-group" style="vertical-align: top;margin-right:10px">
+            <table class="raf" style="font-size:12px; margin-top:-10px;">
+              <thead>
+                <tr class="active">
+                  <th>点検実施状況</th>
+                  <th>箇所数</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr ng-repeat=" row_dh in raftop.sum_dh">
+                  <th ng-class="{'small_sum' : row_dh.phase==999, 'small_sum_th' : row_dh.phase!=999}">
+                    {{row_dh.phase_str}}</th>
+                  <td ng-class="{'small_sum' : row_dh.phase==999}">
+                    <a ng-click="raftop.linkMain(row_dh.shisetsu_kbn,row_dh.phase,1);"
+                      style="cursor:pointer;">{{row_dh.cnt}}</a>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="form-group" style="vertical-align: top">
+            <table class="raf" style="font-size:12px; margin-top:-10px;">
+              <thead>
+                <tr class="active">
+                  <th>措置実施状況</th>
+                  <th>箇所数</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr ng-repeat=" row_dh_sochi in raftop.sum_dh_sochi">
+                  <th ng-class="{'small_sum' : row_dh_sochi.idx==4, 'small_sum_th' : row_dh_sochi.idx!=4}">
+                    {{row_dh_sochi.sochi_str}}</th>
+                  <td ng-class="{'small_sum' : row_dh_sochi.idx==4}">
+                    <a ng-click="raftop.linkMain(row_dh_sochi.shisetsu_kbn,row_dh_sochi.idx,2);"
+                      style="cursor:pointer;">{{row_dh_sochi.sochi_cnt}}</a>
+                    <span ng-show="row_dh_sochi.idx==2"
+                      style="color: red">&nbsp;&nbsp;(うちⅣ：{{row_dh_sochi.judge4_cnt}})</span>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+            <p class="label">※点検中～点検完了までの内訳</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-sm-6" style="margin-top:20px">
+        <h3 style="font-weight: bold"> 2. 道路照明施設&nbsp;&nbsp;&nbsp;&nbsp;
+          <a ng-click="raftop.linkMain(raftop.sum_ss[0].shisetsu_kbn,0,0);"
+            style="cursor:pointer;">{{raftop.sum_ss[5].cnt}}施設</a>
+        </h3>
+        <div class="form-inline">
+          <div class="form-group" style="vertical-align: top;margin-right:10px">
+            <table class="raf" style="font-size:12px; margin-top:-10px;">
+              <thead>
+                <tr class="active">
+                  <th>点検実施状況</th>
+                  <th>箇所数</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr ng-repeat=" row_ss in raftop.sum_ss">
+                  <th ng-class="{'small_sum' : row_ss.phase==999, 'small_sum_th' : row_ss.phase!=999}">
+                    {{row_ss.phase_str}}</th>
+                  <td ng-class="{'small_sum' : row_ss.phase==999}">
+                    <a ng-click="raftop.linkMain(row_ss.shisetsu_kbn,row_ss.phase,1);"
+                      style="cursor:pointer;">{{row_ss.cnt}}</a>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="form-group" style="vertical-align: top">
+            <table class="raf table-bordered" style="font-size:12px; margin-top:-10px;">
+              <thead>
+                <tr class="active">
+                  <th>措置実施状況</th>
+                  <th>箇所数</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr ng-repeat=" row_ss_sochi in raftop.sum_ss_sochi">
+                  <th ng-class="{'small_sum' : row_ss_sochi.idx==4, 'small_sum_th' : row_ss_sochi.idx!=4}">
+                    {{row_ss_sochi.sochi_str}}</th>
+                  <td ng-class="{'small_sum' : row_ss_sochi.idx==4}">
+                    <a ng-click="raftop.linkMain(row_ss_sochi.shisetsu_kbn,row_ss_sochi.idx,2);"
+                      style="cursor:pointer;">{{row_ss_sochi.sochi_cnt}}</a>
+                    <span ng-show="row_ss_sochi.idx==2"
+                      style="color: red">&nbsp;&nbsp;(うちⅣ：{{row_ss_sochi.judge4_cnt}})</span>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+            <p class="label">※点検中～点検完了までの内訳</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-sm-12" style="padding-left:151px; padding-top: 10px;">
+      <div class="col-sm-6" style="margin-top:20px">
+        <h3 style="font-weight: bold"> 3. 道路情報提供装置&nbsp;&nbsp;&nbsp;&nbsp;
+          <a ng-click="raftop.linkMain(raftop.sum_jd[0].shisetsu_kbn,0,0);"
+            style="cursor:pointer;">{{raftop.sum_jd[5].cnt}}施設</a>
+        </h3>
+        <div class="form-inline">
+          <div class="form-group" style="vertical-align: top;margin-right:10px">
+            <table class="raf" style="font-size:12px; margin-top:-10px;">
+              <thead>
+                <tr class="active">
+                  <th>点検実施状況</th>
+                  <th>箇所数</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr ng-repeat=" row_jd in raftop.sum_jd">
+                  <th ng-class="{'small_sum' : row_jd.phase==999, 'small_sum_th' : row_jd.phase!=999}">
+                    {{row_jd.phase_str}}</th>
+                  <td ng-class="{'small_sum' : row_jd.phase==999}">
+                    <a ng-click="raftop.linkMain(row_jd.shisetsu_kbn,row_jd.phase,1);"
+                      style="cursor:pointer;">{{row_jd.cnt}}</a>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="form-group" style="vertical-align: top">
+            <table class="raf table-bordered" style="font-size:12px; margin-top:-10px;">
+              <thead>
+                <tr class="active">
+                  <th>措置実施状況</th>
+                  <th>箇所数</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr ng-repeat=" row_jd_sochi in raftop.sum_jd_sochi">
+                  <th ng-class="{'small_sum' : row_jd_sochi.idx==4, 'small_sum_th' : row_jd_sochi.idx!=4}">
+                    {{row_jd_sochi.sochi_str}}</th>
+                  <td ng-class="{'small_sum' : row_jd_sochi.idx==4}">
+                    <a ng-click="raftop.linkMain(row_jd_sochi.shisetsu_kbn,row_jd_sochi.idx,2);"
+                      style="cursor:pointer;">{{row_jd_sochi.sochi_cnt}}</a>
+                    <span ng-show="row_jd_sochi.idx==2"
+                      style="color: red">&nbsp;&nbsp;(うちⅣ：{{row_jd_sochi.judge4_cnt}})</span>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+            <p class="label">※点検中～点検完了までの内訳</p>
+          </div>
+        </div>
+      </div>
+      <div class="col-sm-6" style="margin-top:20px">
+        <h3 style="font-weight: bold"> 4. 防雪柵&nbsp;&nbsp;&nbsp;&nbsp;
+          <a ng-click="raftop.linkMain(raftop.sum_bs[0].shisetsu_kbn,0,0);"
+            style="cursor:pointer;">{{raftop.sum_bs[5].cnt}}施設</a>
+        </h3>
+        <div class="form-inline">
+          <div class="form-group" style="vertical-align: top;margin-right:10px">
+            <table class="raf" style="font-size:12px; margin-top:-10px;">
+              <thead>
+                <tr class="active">
+                  <th>点検実施状況</th>
+                  <th>箇所数</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr ng-repeat=" row_bs in raftop.sum_bs">
+                  <th ng-class="{'small_sum' : row_bs.phase==999, 'small_sum_th' : row_bs.phase!=999}">
+                    {{row_bs.phase_str}}</th>
+                  <td ng-class="{'small_sum' : row_bs.phase==999}">
+                    <a ng-click="raftop.linkMain(row_bs.shisetsu_kbn,row_bs.phase,1);"
+                      style="cursor:pointer;">{{row_bs.cnt}}</a>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="form-group" style="vertical-align: top">
+            <table class="raf table-bordered" style="font-size:12px; margin-top:-10px;">
+              <thead>
+                <tr class="active">
+                  <th>措置実施状況</th>
+                  <th>箇所数</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr ng-repeat=" row_bs_sochi in raftop.sum_bs_sochi">
+                  <th ng-class="{'small_sum' : row_bs_sochi.idx==4, 'small_sum_th' : row_bs_sochi.idx!=4}">
+                    {{row_bs_sochi.sochi_str}}</th>
+                  <td ng-class="{'small_sum' : row_bs_sochi.idx==4}">
+                    <a ng-click="raftop.linkMain(row_bs_sochi.shisetsu_kbn,row_bs_sochi.idx,2);"
+                      style="cursor:pointer;">{{row_bs_sochi.sochi_cnt}}</a>
+                    <span ng-show="row_bs_sochi.idx==2"
+                      style="color: red">&nbsp;&nbsp;(うちⅣ：{{row_bs_sochi.judge4_cnt}})</span>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+            <p class="label">※点検中～点検完了までの内訳</p>
+          </div>
+        </div>
+      </div>
+
+    </div>
+    <div class="col-sm-12" style="padding-left:151px; padding-top: 10px;">
+      <div class="col-sm-6" style="margin-top:20px">
+        <h3 style="font-weight: bold"> 5. スノーポール&nbsp;&nbsp;&nbsp;&nbsp;
+          <a ng-click="raftop.linkMain(raftop.sum_yh[0].shisetsu_kbn,0,0);"
+            style="cursor:pointer;">{{raftop.sum_yh[5].cnt}}施設</a>
+        </h3>
+        <div class="form-inline">
+          <div class="form-group" style="vertical-align: top;margin-right:10px">
+            <table class="raf" style="font-size:12px; margin-top:-10px;">
+              <thead>
+                <tr class="active">
+                  <th>点検実施状況</th>
+                  <th>箇所数</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr ng-repeat=" row_yh in raftop.sum_yh">
+                  <th ng-class="{'small_sum' : row_yh.phase==999, 'small_sum_th' : row_yh.phase!=999}">
+                    {{row_yh.phase_str}}</th>
+                  <td ng-class="{'small_sum' : row_yh.phase==999}">
+                    <a ng-click="raftop.linkMain(row_yh.shisetsu_kbn,row_yh.phase,1);"
+                      style="cursor:pointer;">{{row_yh.cnt}}</a>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="form-group" style="vertical-align: top">
+            <table class="raf" style="font-size:12px; margin-top:-10px;">
+              <thead>
+                <tr class="active">
+                  <th>措置実施状況</th>
+                  <th>箇所数</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr ng-repeat=" row_yh_sochi in raftop.sum_yh_sochi">
+                  <th ng-class="{'small_sum' : row_yh_sochi.idx==4, 'small_sum_th' : row_yh_sochi.idx!=4}">
+                    {{row_yh_sochi.sochi_str}}</th>
+                  <td ng-class="{'small_sum' : row_yh_sochi.idx==4}">
+                    <a ng-click="raftop.linkMain(row_yh_sochi.shisetsu_kbn,row_yh_sochi.idx,2);"
+                      style="cursor:pointer;">{{row_yh_sochi.sochi_cnt}}</a>
+                    <span ng-show="row_yh_sochi.idx==2"
+                      style="color: red">&nbsp;&nbsp;(うちⅣ：{{row_yh_sochi.judge4_cnt}})</span>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+            <p class="label">※点検中～点検完了までの内訳</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-sm-6" style="margin-top:20px">
+        <h3 style="font-weight: bold"> 6. 冠水警報表示&nbsp;&nbsp;&nbsp;&nbsp;
+          <a ng-click="raftop.linkMain(raftop.sum_kk[0].shisetsu_kbn,0,0);"
+            style="cursor:pointer;">{{raftop.sum_kk[5].cnt}}施設</a>
+        </h3>
+        <div class="form-inline">
+          <div class="form-group" style="vertical-align: top;margin-right:10px">
+            <table class="raf" style="font-size:12px; margin-top:-10px;">
+              <thead>
+                <tr class="active">
+                  <th>点検実施状況</th>
+                  <th>箇所数</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr ng-repeat=" row_kk in raftop.sum_kk">
+                  <th ng-class="{'small_sum' : row_kk.phase==999, 'small_sum_th' : row_kk.phase!=999}">
+                    {{row_kk.phase_str}}</th>
+                  <td ng-class="{'small_sum' : row_kk.phase==999}">
+                    <a ng-click="raftop.linkMain(row_kk.shisetsu_kbn,row_kk.phase,1);"
+                      style="cursor:pointer;">{{row_kk.cnt}}</a>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="form-group" style="vertical-align: top">
+            <table class="raf table-bordered" style="font-size:12px; margin-top:-10px;">
+              <thead>
+                <tr class="active">
+                  <th>措置実施状況</th>
+                  <th>箇所数</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr ng-repeat=" row_kk_sochi in raftop.sum_kk_sochi">
+                  <th ng-class="{'small_sum' : row_kk_sochi.idx==4, 'small_sum_th' : row_kk_sochi.idx!=4}">
+                    {{row_kk_sochi.sochi_str}}</th>
+                  <td ng-class="{'small_sum' : row_kk_sochi.idx==4}">
+                    <a ng-click="raftop.linkMain(row_kk_sochi.shisetsu_kbn,row_kk_sochi.idx,2);"
+                      style="cursor:pointer;">{{row_kk_sochi.sochi_cnt}}</a>
+                    <span ng-show="row_kk_sochi.idx==2"
+                      style="color: red">&nbsp;&nbsp;(うちⅣ：{{row_kk_sochi.judge4_cnt}})</span>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+            <p class="label">※点検中～点検完了までの内訳</p>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="col-sm-12" style="padding-left:151px; padding-top: 10px;">
+      <div class="col-sm-6" style="margin-top:20px">
+        <h3 style="font-weight: bold"> 7. トンネル警報表示&nbsp;&nbsp;&nbsp;&nbsp;
+          <a ng-click="raftop.linkMain(raftop.sum_tk[0].shisetsu_kbn,0,0);"
+            style="cursor:pointer;">{{raftop.sum_tk[5].cnt}}施設</a>
+        </h3>
+        <div class="form-inline">
+          <div class="form-group" style="vertical-align: top;margin-right:10px">
+            <table class="raf" style="font-size:12px; margin-top:-10px;">
+              <thead>
+                <tr class="active">
+                  <th>点検実施状況</th>
+                  <th>箇所数</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr ng-repeat=" row_tk in raftop.sum_tk">
+                  <th ng-class="{'small_sum' : row_tk.phase==999, 'small_sum_th' : row_tk.phase!=999}">
+                    {{row_tk.phase_str}}</th>
+                  <td ng-class="{'small_sum' : row_tk.phase==999}">
+                    <a ng-click="raftop.linkMain(row_tk.shisetsu_kbn,row_tk.phase,1);"
+                      style="cursor:pointer;">{{row_tk.cnt}}</a>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="form-group" style="vertical-align: top">
+            <table class="raf" style="font-size:12px; margin-top:-10px;">
+              <thead>
+                <tr class="active">
+                  <th>措置実施状況</th>
+                  <th>箇所数</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr ng-repeat=" row_tk_sochi in raftop.sum_tk_sochi">
+                  <th ng-class="{'small_sum' : row_tk_sochi.idx==4, 'small_sum_th' : row_tk_sochi.idx!=4}">
+                    {{row_tk_sochi.sochi_str}}</th>
+                  <td ng-class="{'small_sum' : row_tk_sochi.idx==4}">
+                    <a ng-click="raftop.linkMain(row_tk_sochi.shisetsu_kbn,row_tk_sochi.idx,2);"
+                      style="cursor:pointer;">{{row_tk_sochi.sochi_cnt}}</a>
+                    <span ng-show="row_tk_sochi.idx==2"
+                      style="color: red">&nbsp;&nbsp;(うちⅣ：{{row_tk_sochi.judge4_cnt}})</span>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+            <p class="label">※点検中～点検完了までの内訳</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!--</div>-->
+
+    <div style="top:42px;left:0px;z-index:1000; width:151px;" class="sidebar-nav affix container-fluid background"
+      role="complementary">
+      <div class="form-group row" style="margin:10px 0 10px 0;">
+        <label class=" form-control-label margin">
+          <p class="label3">建設管理部</p>
+        </label>
+        <select class="form-control input-sm" ng-model="raftop.dogen"
+          ng-options="row as row.dogen_mei for row in raftop.dogen_syucchoujo_dat.dogen_info"
+          ng-change="raftop.chgDogen()" required>
+        </select>
+      </div>
+      <div class="form-group row" style="margin:0 0 20px 0;">
+        <label class=" form-control-label margin">
+          <p class="label3">管理区域（出張所）</p>
+        </label>
+        <select ng-show="raftop.ath_syozoku_cd==1 || raftop.ath_syozoku_cd==2 || raftop.ath_syozoku_cd==10001"
+          class="form-control input-sm" ng-model="raftop.syucchoujo"
+          ng-options="row as row.syucchoujo_mei for row in raftop.dogen.syucchoujo_row.syucchoujo_info"
+          ng-change="raftop.chgSyucchoujo()" required>
+          <option value="">全て</option>
+        </select>
+        <select ng-show="raftop.ath_syozoku_cd==3 || raftop.ath_syozoku_cd==4" class="form-control input-sm"
+          ng-model="raftop.syucchoujo"
+          ng-options="row as row.syucchoujo_mei for row in raftop.dogen.syucchoujo_row.syucchoujo_info"
+          ng-change="raftop.chgSyucchoujo()" required>
+        </select>
+      </div>
+
+      <div style="margin:20px 0 10px 0;">
+        <a ng-href="#/kenzen_sum" class="sys_btn">健全性
+          <br>集計</a>
+      </div>
+    </div>
+  </div>
+
+  <div id="footerdamy">
+  </div>
+  <div id="footerArea2">
+    <div class="row" style="margin-top : 8px">
+      <div class="col-sm-3" style="text-align:center;">
+        <a ng-href="#/sys_top" type="button" class="btn btn-xs btn-inverse btn-sm">
+          <span class="glyphicon glyphicon-arrow-left"></span>&nbsp;道路施設管理システムTOPに戻る</a>
+      </div>
+      <div class="col-sm-2" style="text-align:center;"
+        ng-show="raftop.ath_syozoku_cd <= 2 || raftop.ath_syozoku_cd == 10001 || (raftop.ath_syozoku_cd == 3 && (raftop.ath_syucchoujo_cd==raftop.mng_syucchoujo_cd))">
+        <a ng-href="#/raf_target" type="button" class="btn btn-xs btn-warning btn-sm">【点検対象施設登録】</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 読込み中オーバーレイ -->
+<div class="waitOverlay " ng-show="raftop.waitLoadOverlay ">
+  <div style="width:100vw;height:100vh;font-size:60px;display: table-cell;text-align: center;vertical-align: middle; ">
+    <i class="fa fa-spinner fa-spin fa-3x fa-fw "></i>
+    <br>
+    <span>集計中です。
+      <br />しばらくお待ちください。</span>
+  </div>
+</div>

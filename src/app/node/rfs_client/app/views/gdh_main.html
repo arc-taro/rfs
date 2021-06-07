@@ -1,0 +1,278 @@
+<div>
+  <!-- Navbar Start-->
+  <div class="navbar navbar-default navbar-fixed-top" style="border-bottom: 0px;">
+    <div class="container">
+      <a style="color:white;cursor:pointer;" class="navbar-brand" ng-click="gdhmain.location('#')"><img
+          src="images/logo.png" class="img-rounded">道路施設管理システム</a>
+    </div>
+
+
+    <div class="row" style="padding-top: 0px;">
+      <div class="col-sm-12" style="position: relative;">
+        <div class="h_main" style="position: absolute;"
+          ng-class="{'h_main-info' : !gdhmain.editable, 'h_main-danger' : gdhmain.editable}">【現在】：
+          <span ng-show="gdhmain.editable">編集可</span>
+          <span ng-hide="gdhmain.editable" style="color : red;">編集不可</span>
+        </div>
+        <div class="h_main" style="margin-left:-15px;"
+          ng-class="{'h_main-info' : !gdhmain.editable, 'h_main-danger' : gdhmain.editable}">
+          案内標識データベース
+        </div>
+        <div
+          ng-show="(gdhmain.ath_syozoku_cd == 3 && gdhmain.ath_syucchoujo_cd==gdhmain.mng_syucchoujo_cd) || gdhmain.ath_syozoku_cd == 1">
+          <span ng-if="!gdhmain.editable">
+            <button type="button" class="btn btn-xs btn-primary btn-danger"
+              style="position: absolute; top: 5px; right: 30px;" ng-click="gdhmain.chgMode()"
+              ng-show="gdhmain.gdh_idx > 0">
+              <span class="glyphicon glyphicon-pencil"></span>&nbsp;編集モードへ</button>
+          </span>
+          <span ng-if="gdhmain.editable">
+            <button type="button" class="btn btn-xs btn-primary btn-info"
+              style="position: absolute; top: 5px; right: 30px;" ng-click="gdhmain.chgMode()"
+              ng-show="gdhmain.gdh_idx > 0">
+              <span class="glyphicon glyphicon-file"></span>&nbsp;閲覧モードへ</button>
+          </span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="row" style="margin-top:88px">
+    <div class="col-sm-9">
+      <h2> 案内標識データベース </h2>
+    </div>
+    <div class="col-sm-3">
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-sm-1"></div>
+    <div class="col-sm-3">
+      <label class="margin">案内標識種別</label>
+      <select class="form-control input-sm margin" ng-model="gdhmain.gdh_syubetsu_cd"
+        ng-options="gdh_syubetsu_row.gdh_syubetsu_cd as gdh_syubetsu_row.gdh_syubetsu for gdh_syubetsu_row in gdhmain.mst.gdh_syubetsu"
+        ng-disabled="!gdhmain.editable">
+        <option value="">---</option>
+      </select>
+    </div>
+    <div class="col-sm-3">
+      <label class="margin">交差区分</label>
+      <select class="form-control input-sm margin" ng-model="gdhmain.kousa_kbn_cd"
+        ng-options="kousa_row.kousa_kbn_cd as kousa_row.kousa_kbn for kousa_row in gdhmain.mst.kousa"
+        ng-disabled="!gdhmain.editable">
+        <option value="">---</option>
+      </select>
+    </div>
+    <div class="col-sm-5"></div>
+  </div>
+
+  <!-- 写真 -->
+  <div class="row">
+    <div class="col-sm-1"></div>
+    <div class="col-sm-10">
+      <div flow-init="{target: 'api/index.php/UploadController/upload',singleFile:true}" flow-name="gdhmain.flow"
+        flow-files-submitted="$flow.upload()" flow-file-success="gdhmain.fileUploadSuccess( $file, $message, $flow )"
+        data-drop="true" data-jqyoui-options
+        jqyoui-droppable="{onOver:'gdhmain.dragOver',onOut:'gdhmain.dragOut',onDrop:'gdhmain.dragDrop(gdhmain.pic_data[0].path)'}"
+        ng-model="gdhmain.pic_data[0].path">
+        <div class="row">
+          <div class="col-sm-12">
+            <span style="position:relative; top:10px; right:5px; font-weight:bold;">案内標識写真</span>
+            <button type="button" class="btn btn-default btn-sm" flow-btn style="width:8em;margin: 20px 0px 0px 5px;"
+              ng-disabled="!gdhmain.editable">
+              <span class="glyphicon glyphicon-hand-up"></span>　写真選択</button>
+            <button class="btn btn-info btn-sm" ng-click="gdhmain.openGenbaSyashin()"
+              style="width:8em;margin: 20px 0px 0px 5px;" ng-disabled="!gdhmain.editable">
+              <span class="glyphicon glyphicon-camera"></span>　現場写真</button>
+            <button class="btn btn-sm btn-danger text-center"
+              ng-show="gdhmain.pic_data[0].path != 'dummy' && gdhmain.pic_data[0].path != null"
+              ng-click="gdhmain.removeAttach($flow);" style="width:8em;margin: 20px 20px 0px 5px;"
+              ng-disabled="!gdhmain.editable">
+              <span class="glyphicon glyphicon-remove"></span>　写真削除</button>
+          </div>
+        </div>
+        <div class="row" style="margin:20px" ng-switch on="gdhmain.editable">
+          <div ng-switch-when="true" class="drop" flow-drop ng-class="dropClass" flow-prevent-drop
+            style="max-width:400px;" flow-drop-enabled="gdhmain.editable" flow-drag-enter="dropClass='drag-over'"
+            flow-drag-leave="dropClass=''">
+            <div ng-show="$flow.support && !gdhmain.pic_data[0].path && gdhmain.editable">
+              <p>写真をドラッグしてください。</p>
+            </div>
+            <div ng-hide="gdhmain.pic_data[0].path == 'dummy'">
+              <img ng-src="{{gdhmain.pic_data[0].path}}" class="gdh_pic_large" ng-disabled="!gdhmain.editable">
+            </div>
+            <div class="progress progress-striped" ng-show="$flow.isUploading()">
+              <div class="progress-bar" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"
+                ng-style="{width: ($flow.progress() * 100) + '%'}" style="width: 100%;">
+                <span class="sr-only ng-binding">% Complete</span>
+              </div>
+            </div>
+          </div>
+          <div ng-switch-default>
+            <img ng-src="{{gdhmain.pic_data[0].path}}" class="gdh_pic_large" ng-show="gdhmain.pic_data[0].path">
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-sm-1"></div>
+  </div>
+
+  <div class="row">
+    <div class="col-sm-1"></div>
+    <div class="col-sm-3">
+      <label class="margin">撮影日</label>
+      <div class="form-inline">
+        <div class="input-group">
+          <input name="input" ng-model="gdhmain.pic_data[0].shooting_dt" uib-datepicker-popup="yyyy-MM-dd"
+            is-open="chk_dt1.opened" class="form-control input-sm disabled-color" placeholder="" required
+            current-text="今日" clear-text="クリア" close-text="閉じる" datepicker-options="{showWeeks:false}"
+            style="width:15em; text-align: left; " disabled>
+          <span class="input-group-btn">
+            <button type="button" class="btn btn-sm btn-default" ng-click="chk_dt1.opened = !chk_dt1.opened"
+              ng-class="{'editable':gdhmain.editable}" style="height:35px" ng-disabled="!gdhmain.editable"><i
+                class="glyphicon glyphicon-calendar"></i></button>
+          </span>
+        </div>
+      </div>
+    </div>
+    <div class="col-sm-3">
+      <label class="margin">標識板色</label>
+      <select class="form-control input-sm margin" ng-model="gdhmain.brd_color_cd"
+        ng-options="brd_color_row.brd_color_cd as brd_color_row.brd_color for brd_color_row in gdhmain.mst.brd_color"
+        ng-disabled="!gdhmain.editable">
+        <option value="">---</option>
+      </select>
+    </div>
+    <div class="col-sm-5"></div>
+  </div>
+
+  <div class="row">
+    <div class="col-sm-1"></div>
+    <div class="col-sm-5">
+      <label class="margin">コメント</label>
+      <input type="text" class="form-control input-sm disabled-color" ng-model="gdhmain.pic_data[0].description"
+        ng-disabled="!gdhmain.editable">
+    </div>
+    <div class="col-sm-6"></div>
+  </div>
+
+  <!-- 表 -->
+  <div class="row" style="margin-top: 10px;">
+    <div class="col-sm-1"></div>
+    <div class="col-sm-10">
+      <table class="table table-border gdh-table">
+        <thead>
+          <tr>
+            <th class="text-center">
+              対象
+            </th>
+            <th class="text-center">
+              対応状況
+            </th>
+            <th class="text-center">
+              予定年度
+            </th>
+            <th class="text-center">
+              対策工法
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr ng-repeat="item in gdhmain.response_status">
+            <td>{{item.taisaku_kbn}}</td>
+            <!-- 対応状況 -->
+            <td>
+
+              <!--               <div ng-if="item.taisaku_kbn_cd <= 2">
+                <select class="form-control input-sm margin" ng-model="item.taisaku_status_cd" ng-options="taisaku_status_row.taisaku_status_cd as taisaku_status_row.taisaku_status for taisaku_status_row in gdhmain.mst.taisaku_status_min"
+                  ng-disabled="!gdhmain.editable">
+                  <option value="">---</option>
+                </select>
+              </div>
+ -->
+              <!-- <div ng-if="item.taisaku_kbn_cd >= 3"> -->
+              <div>
+                <select class="form-control input-sm margin" ng-model="item.taisaku_status_cd"
+                  ng-options="taisaku_status_row.taisaku_status_cd as taisaku_status_row.taisaku_status for taisaku_status_row in gdhmain.mst.taisaku_status"
+                  ng-disabled="!gdhmain.editable">
+                  <option value="">---</option>
+                </select>
+              </div>
+            </td>
+            <!-- 予定年度 -->
+            <td>
+              <div>
+                <select class="form-control input-sm margin" ng-model="item.yotei_nendo_yyyy"
+                  ng-options="yotei_nendo_row.year as yotei_nendo_row.gengou for yotei_nendo_row in gdhmain.mst.yotei_nendo"
+                  ng-disabled="!gdhmain.editable || (gdhmain.editable && gdhmain.min_gdh_idx > 0 && gdhmain.min_gdh_idx != gdhmain.gdh_idx)">
+                  <option value="">---</option>
+                </select>
+              </div>
+            </td>
+            <!-- 対策工法 -->
+            <td>
+              <div>
+                <select class="form-control input-sm margin" ng-model="item.taisaku_kouhou_cd"
+                  ng-options="taisaku_kouhou_row.taisaku_kouhou_cd as taisaku_kouhou_row.taisaku_kouhou for taisaku_kouhou_row in gdhmain.mst.taisaku_kouhou"
+                  ng-disabled="!gdhmain.editable">
+                  <option value="">---</option>
+                </select>
+              </div>
+            </td>
+          </tr>
+          <tr>
+            <td>道央道を表示</td>
+            <td>
+              <div>
+                <select class="form-control input-sm margin" ng-model="gdhmain.dououdou"
+                  ng-options="gaitou_higaitou_row.gaitou_higaitou_cd as gaitou_higaitou_row.gaitou_higaitou for gaitou_higaitou_row in gdhmain.mst.gaitou_higaitou"
+                  ng-disabled="!gdhmain.editable">
+                  <option value="">---</option>
+                </select>
+              </div>
+            </td>
+            <td></td>
+            <td></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="col-sm-1"></div>
+  </div>
+  <br>
+  <br>
+  <br>
+  <br>
+  <br>
+
+  <div id="footerArea">
+    <div class="row" style="margin-top : 8px; margin-left : 3px;">
+      <div class="col-sm-2" style="text-align:center;">
+        <a ng-click="gdhmain.locationFamEdit()" class="btn btn-xs btn-inverse btn-sm">
+          <span class="glyphicon glyphicon-arrow-left"></span>&nbsp;施設台帳画面に戻る</a>
+      </div>
+      <div class="col-sm-6" style="text-align:center;">
+      </div>
+      <div class="col-sm-4">
+        <div class="col-sm-11">
+          <div style="text-align:right;" ng-show="gdhmain.editable">
+            <button type="button" class="btn btn-xs btn-info btn-sm" ng-click="gdhmain.save()"
+              ng-hide="((gdhmain.ath_syozoku_cd == 3 || gdhmain.ath_syozoku_cd == 4) && (gdhmain.ath_syucchoujo_cd!=gdhmain.mng_syucchoujo_cd))">
+              <span class="glyphicon glyphicon glyphicon-save"></span>&nbsp;保存</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 保存中オーバーレイ -->
+  <div class="waitOverlay " ng-show="gdhmain.waitOverlay">
+    <div
+      style="width:100vw;height:100vh;font-size:60px;display: table-cell;text-align: center;vertical-align: middle; ">
+      <i class="fa fa-spinner fa-spin fa-3x fa-fw "></i>
+      <br>
+      <span>案内標識データベースを保存中です。<br />しばらくお待ちください。</span>
+    </div>
+  </div>
+
+</div>

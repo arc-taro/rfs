@@ -1,0 +1,69 @@
+<ng-form name="repair_cost_form">
+  <div style="margin-left:10px;">
+    <div class=" col-sm-12 form-inline " style="float:left;">
+      <h6 style="margin-top:30px">&nbsp;修理費</h6>
+      <div class="form-inline " style="float:left; margin-top:-10px">
+        <div class="form-group input-append text-left">
+          <label class="form-control-label text-center margin">
+            <p class="label">年度</p>
+          </label>
+          <div class="form-inline">
+            <select class="form-control input-sm" ng-model="famedit.s_nendo_row" ng-options="nendo as nendo.gengou for nendo in famedit.secchi_nendo" style="width:8em; text-align: left" ng-disabled="!famedit.editable">
+              <option value="">---</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-group input-append text-left">
+          <label class="form-control-label text-center margin">
+            <p class="label">修理費<span class="infont_11">(千円)</span></p>
+          </label>
+          <div class="form-inline">
+            <input type="number" class="form-control input-sm" ng-model="famedit.repair_cost" style="width:6em; text-align: left" min="0" max="1000000" ng-disabled="!famedit.editable">
+          </div>
+        </div>
+        <div class="form-group input-append text-left">
+          <label class="form-control-label text-center margin">
+            <p class="label">修理内容</p>
+          </label>
+          <div class="form-inline">
+            <input type="text" class="form-control input-sm" ng-model="famedit.repair_naiyou" style="width:25em; text-align: left" ng-disabled="!famedit.editable">
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class=" col-sm-12 form-inline " style="float:left;">
+      <div class="row form-inline" style="margin:15px 0 0 0;">
+        <div class="form-group input-append text-center" style="margin-right:12px;">
+          <button type="button" class="btn btn-sm btn-info text-center" ng-click="famedit.addClicRepairCost()" style="width:8em;" ng-disabled="!famedit.editable || repair_cost_form.$invalid">
+            <span class="glyphicon glyphicon-chevron-down"></span>　追加</button>
+        </div>
+        <div class="form-group input-append text-center">
+          <span style="font-size: 80%;">追加をクリックすると表に反映し、削除したい行をチェックすると、台帳保存時に削除します</span>
+        </div>
+      </div>
+    </div>
+    <div class=" col-sm-12 form-inline " style="float:left;margin-top:15px;">
+      <table class="fam_cost table-bordered" style="word-break:break-all;">
+        <tbody>
+          <tr>
+            <th rowspan="2" style="width:50px">削除</th>
+            <th rowspan="2" style="width:50px">年度</th>
+            <th>修理費</th>
+            <th rowspan="2" style="width:300px">修理内容</th>
+          </tr>
+          <tr>
+            <th>千円</th>
+          </tr>
+          <tr ng-repeat="s_row in famedit.repair_cost_arr">
+            <td>
+              <input type="checkbox" ng-model="s_row.delflg" ng-disabled="!famedit.editable">
+            </td>
+            <td>{{s_row.nendo}}</td>
+            <td>{{s_row.repair_cost}}</td>
+            <td style="text-align:left;">{{s_row.repair_naiyou}}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</ng-form>

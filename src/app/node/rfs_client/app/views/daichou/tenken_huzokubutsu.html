@@ -1,0 +1,27 @@
+<div class="row">
+  <h6>&nbsp;附属物点検</h6>
+  <table class="fam01 table-bordered">
+    <tbody>
+      <tr>
+        <th>点検年</th>
+        <th>健全性</th>
+        <th>部材</th>
+        <th style="width:500px">所見</th>
+        <th>措置年</th>
+        <th>再判定区分</th>
+      </tr>
+      <tr ng-repeat="row in famedit.huzokubutsu">
+        <!-- <td>{{row.chk_dt}}</td> -->
+        <td>{{row.w_chk_dt}}</td>
+        <td>{{row.check_shisetsu_judge_nm}}</td>
+        <td>{{row.buzai_nm}}</td>
+        <td style="text-align: left">{{row.syoken}}</td>
+        <td>{{row.sochi_dt}}</td>
+        <td>
+          <a style="cursor:pointer;" ng-href="#/tenken/{{row.sno}}/{{row.struct_idx}}/{{row.chk_mng_no}}"
+            target="_blank">開く</a>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>

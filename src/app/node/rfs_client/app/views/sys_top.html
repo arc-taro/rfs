@@ -1,0 +1,1012 @@
+<div>
+  <!-- Navbar Start-->
+  <div class="navbar navbar-default navbar-fixed-top zidx5009">
+    <div class="container">
+      <a style="color:white;" class="navbar-brand" ng-href="#">
+        <img src="images/logo.png" class="img-rounded">道路施設管理システム</a>
+    </div>
+  </div>
+  <!-- End of Navber -->
+
+  <!--
+  <div class="row" style="margin-bottom:-20px;" ng-hide="systop.disp_sum">
+    <div class="col-sm-12">
+      <div class="form-group input-append text-left" style="padding-left:170px; padding-top: 48px;">
+        <label class="form-control-label text-center margin">
+          <p class="label">&nbsp;</p>
+        </label>
+        <div class="form-inline" style="text-align:center;">
+          <div class="form-group">
+            <div class="form-group input-append text-center" style="margin-left:15px;">
+              <button type="button" class="btn btn-sm btn-info btn-group-justified text-center" style="width:8em;" ng-click="systop.btnDisp()">
+                <span class="glyphicon glyphicon-th-list"></span>　施設集計</button>
+            </div>
+            <label>
+              <p class="label">ボタンをクリックすると集計を行います</p>
+            </label>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+-->
+
+  <div class="row" style="margin-top:60px;">
+    <div class="col-sm-offset-2">
+      <p class="blink">道路附属物点検システムへは、左メニュー下部のボタンからお入りください。</p>
+    </div>
+  </div>
+
+  <!--
+<div class="row">
+  <div class="col-sm-offset-2">
+    <p style="font-size:90%">※現在、以下の施設は附属物点検に関する5施設（道路標識、道路照明施設、道路情報提供システム、防雪柵、スノーポール）の情報が表示されています。
+      <br>　全ての施設登録は11月末を予定しています。</p>
+  </div>
+</div>-->
+
+  <div class="row sys_top_table">
+    <div id="s1" class="col-sm-12">
+      <div class="col-sm-6" style="margin-top:20px">
+        <h3 style="font-weight: bold"> 1. 道路標識&nbsp;&nbsp;&nbsp;&nbsp;
+          <a ng-href="#/fam_main/1/{{systop.sum_dh[0].shisetsu_kbn}}/6/-1/">{{systop.sum_dh[5].cnt_all}}施設</a>
+        </h3>
+        <table class="sys table-bordered" style="font-size:12px; margin-top:-10px;">
+          <thead>
+            <tr class="active">
+              <th>設置年度</th>
+              <th>供用</th>
+              <th>休止</th>
+              <th>未登録</th>
+              <th>計</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr ng-repeat=" row_dh in systop.sum_dh">
+              <th>{{row_dh.str}}</th>
+              <td ng-class="{'small_sum' : row_dh.idx==6}">
+                <a ng-href="#/fam_main/1/{{row_dh.shisetsu_kbn}}/{{row_dh.idx}}/1/">{{row_dh.cnt_kyouyou}}</a>
+              </td>
+              <td ng-class="{'small_sum' : row_dh.idx==6}">
+                <a ng-href="#/fam_main/1/{{row_dh.shisetsu_kbn}}/{{row_dh.idx}}/0/">{{row_dh.cnt_kyuushi}}</a>
+              </td>
+              <td ng-class="{'small_sum' : row_dh.idx==6}">
+                <a ng-href="#/fam_main/1/{{row_dh.shisetsu_kbn}}/{{row_dh.idx}}/-2/">{{row_dh.cnt_noinput}}</a>
+              </td>
+              <td ng-class="{'small_sum' : row_dh.idx!=6, 'big_sum' : row_dh.idx==6}">
+                <a ng-href="#/fam_main/1/{{row_dh.shisetsu_kbn}}/{{row_dh.idx}}/-1/">{{row_dh.cnt_all}}</a>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="col-sm-6" style="margin-top:20px">
+        <h3 style="font-weight: bold"> 2. 道路照明施設&nbsp;&nbsp;&nbsp;&nbsp;
+          <a ng-href="#/fam_main/1/{{systop.sum_ss[0].shisetsu_kbn}}/6/-1/">{{systop.sum_ss[5].cnt_all}}施設</a>
+        </h3>
+        <table class="sys table-bordered" style="font-size:12px; margin-top:-10px;">
+          <thead>
+            <tr class="active">
+              <th>設置年度</th>
+              <th>供用</th>
+              <th>休止</th>
+              <th>未登録</th>
+              <th>計</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr ng-repeat=" row_ss in systop.sum_ss">
+              <th>{{row_ss.str}}</th>
+              <td ng-class="{'small_sum' : row_ss.idx==6}">
+                <a ng-href="#/fam_main/1/{{row_ss.shisetsu_kbn}}/{{row_ss.idx}}/1/">{{row_ss.cnt_kyouyou}}</a>
+              </td>
+              <td ng-class="{'small_sum' : row_ss.idx==6}">
+                <a ng-href="#/fam_main/1/{{row_ss.shisetsu_kbn}}/{{row_ss.idx}}/0/">{{row_ss.cnt_kyuushi}}</a>
+              </td>
+              <td ng-class="{'small_sum' : row_ss.idx==6}">
+                <a ng-href="#/fam_main/1/{{row_ss.shisetsu_kbn}}/{{row_ss.idx}}/-2/">{{row_ss.cnt_noinput}}</a>
+              </td>
+              <td ng-class="{'small_sum' : row_ss.idx!=6, 'big_sum' : row_ss.idx==6}">
+                <a ng-href="#/fam_main/1/{{row_ss.shisetsu_kbn}}/{{row_ss.idx}}/-1/">{{row_ss.cnt_all}}</a>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div id="s3" class="col-sm-12">
+      <div class="col-sm-6" style="margin-top:20px">
+        <h3 style="font-weight: bold"> 3. 道路情報提供装置&nbsp;&nbsp;&nbsp;&nbsp;
+          <a ng-href="#/fam_main/1/{{systop.sum_jd[0].shisetsu_kbn}}/6/-1/">{{systop.sum_jd[5].cnt_all}}施設</a>
+        </h3>
+        <table class="sys table-bordered" style="font-size:12px; margin-top:-10px;">
+          <thead>
+            <tr class="active">
+              <th>設置年度</th>
+              <th>供用</th>
+              <th>休止</th>
+              <th>未登録</th>
+              <th>計</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr ng-repeat=" row_jd in systop.sum_jd">
+              <th>{{row_jd.str}}</th>
+              <td ng-class="{'small_sum' : row_jd.idx==6}">
+                <a ng-href="#/fam_main/1/{{row_jd.shisetsu_kbn}}/{{row_jd.idx}}/1/">{{row_jd.cnt_kyouyou}}</a>
+              </td>
+              <td ng-class="{'small_sum' : row_jd.idx==6}">
+                <a ng-href="#/fam_main/1/{{row_jd.shisetsu_kbn}}/{{row_jd.idx}}/0/">{{row_jd.cnt_kyuushi}}</a>
+              </td>
+              <td ng-class="{'small_sum' : row_jd.idx==6}">
+                <a ng-href="#/fam_main/1/{{row_jd.shisetsu_kbn}}/{{row_jd.idx}}/-2/">{{row_jd.cnt_noinput}}</a>
+              </td>
+              <td ng-class="{'small_sum' : row_jd.idx!=6, 'big_sum' : row_jd.idx==6}">
+                <a ng-href="#/fam_main/1/{{row_jd.shisetsu_kbn}}/{{row_jd.idx}}/-1/">{{row_jd.cnt_all}}</a>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="col-sm-6" style="margin-top:20px">
+        <h3 style="font-weight: bold"> 4. 防雪柵&nbsp;&nbsp;&nbsp;&nbsp;
+          <a ng-href="#/fam_main/1/{{systop.sum_bs[0].shisetsu_kbn}}/6/-1/">{{systop.sum_bs[5].cnt_all}}施設</a>
+        </h3>
+        <table class="sys table-bordered" style="font-size:12px; margin-top:-10px;">
+          <thead>
+            <tr class="active">
+              <th>設置年度</th>
+              <th>供用</th>
+              <th>休止</th>
+              <th>未登録</th>
+              <th>計</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr ng-repeat=" row_bs in systop.sum_bs">
+              <th>{{row_bs.str}}</th>
+              <td ng-class="{'small_sum' : row_bs.idx==6}">
+                <a ng-href="#/fam_main/1/{{row_bs.shisetsu_kbn}}/{{row_bs.idx}}/1/">{{row_bs.cnt_kyouyou}}</a>
+              </td>
+              <td ng-class="{'small_sum' : row_bs.idx==6}">
+                <a ng-href="#/fam_main/1/{{row_bs.shisetsu_kbn}}/{{row_bs.idx}}/0/">{{row_bs.cnt_kyuushi}}</a>
+              </td>
+              <td ng-class="{'small_sum' : row_bs.idx==6}">
+                <a ng-href="#/fam_main/1/{{row_bs.shisetsu_kbn}}/{{row_bs.idx}}/-2/">{{row_bs.cnt_noinput}}</a>
+              </td>
+              <td ng-class="{'small_sum' : row_bs.idx!=6, 'big_sum' : row_bs.idx==6}">
+                <a ng-href="#/fam_main/1/{{row_bs.shisetsu_kbn}}/{{row_bs.idx}}/-1/">{{row_bs.cnt_all}}</a>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div id="s5" class="col-sm-12">
+      <div class="col-sm-6" style="margin-top:20px">
+        <h3 style="font-weight: bold"> 5. 大型スノーポール&nbsp;&nbsp;&nbsp;&nbsp;
+          <a ng-href="#/fam_main/1/{{systop.sum_yh[0].shisetsu_kbn}}/6/-1/">{{systop.sum_yh[5].cnt_all}}施設</a>
+        </h3>
+        <table class="sys table-bordered" style="font-size:12px; margin-top:-10px;">
+          <thead>
+            <tr class="active">
+              <th>設置年度</th>
+              <th>供用</th>
+              <th>休止</th>
+              <th>未登録</th>
+              <th>計</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr ng-repeat=" row_yh in systop.sum_yh">
+              <th>{{row_yh.str}}</th>
+              <td ng-class="{'small_sum' : row_yh.idx==6}">
+                <a ng-href="#/fam_main/1/{{row_yh.shisetsu_kbn}}/{{row_yh.idx}}/1/">{{row_yh.cnt_kyouyou}}</a>
+              </td>
+              <td ng-class="{'small_sum' : row_yh.idx==6}">
+                <a ng-href="#/fam_main/1/{{row_yh.shisetsu_kbn}}/{{row_yh.idx}}/0/">{{row_yh.cnt_kyuushi}}</a>
+              </td>
+              <td ng-class="{'small_sum' : row_yh.idx==6}">
+                <a ng-href="#/fam_main/1/{{row_yh.shisetsu_kbn}}/{{row_yh.idx}}/-2/">{{row_yh.cnt_noinput}}</a>
+              </td>
+              <td ng-class="{'small_sum' : row_yh.idx!=6, 'big_sum' : row_yh.idx==6}">
+                <a ng-href="#/fam_main/1/{{row_yh.shisetsu_kbn}}/{{row_yh.idx}}/-1/">{{row_yh.cnt_all}}</a>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="col-sm-6" style="margin-top:20px">
+        <h3 style="font-weight: bold"> 6. 冠水警報表示&nbsp;&nbsp;&nbsp;&nbsp;
+          <a ng-href="#/fam_main/1/{{systop.sum_kk[0].shisetsu_kbn}}/6/-1/">{{systop.sum_kk[5].cnt_all}}施設</a>
+        </h3>
+        <table class="sys table-bordered" style="font-size:12px; margin-top:-10px;">
+          <thead>
+            <tr class="active">
+              <th>設置年度</th>
+              <th>供用</th>
+              <th>休止</th>
+              <th>未登録</th>
+              <th>計</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr ng-repeat=" row_kk in systop.sum_kk">
+              <th>{{row_kk.str}}</th>
+              <td ng-class="{'small_sum' : row_kk.idx==6}">
+                <a ng-href="#/fam_main/1/{{row_kk.shisetsu_kbn}}/{{row_kk.idx}}/1/">{{row_kk.cnt_kyouyou}}</a>
+              </td>
+              <td ng-class="{'small_sum' : row_kk.idx==6}">
+                <a ng-href="#/fam_main/1/{{row_kk.shisetsu_kbn}}/{{row_kk.idx}}/0/">{{row_kk.cnt_kyuushi}}</a>
+              </td>
+              <td ng-class="{'small_sum' : row_kk.idx==6}">
+                <a ng-href="#/fam_main/1/{{row_kk.shisetsu_kbn}}/{{row_kk.idx}}/-2/">{{row_kk.cnt_noinput}}</a>
+              </td>
+              <td ng-class="{'small_sum' : row_kk.idx!=6, 'big_sum' : row_kk.idx==6}">
+                <a ng-href="#/fam_main/1/{{row_kk.shisetsu_kbn}}/{{row_kk.idx}}/-1/">{{row_kk.cnt_all}}</a>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div id="s7" class="col-sm-12">
+      <div class="col-sm-6" style="margin-top:20px">
+        <h3 style="font-weight: bold"> 7. トンネル警報表示&nbsp;&nbsp;&nbsp;&nbsp;
+          <a ng-href="#/fam_main/1/{{systop.sum_tk[0].shisetsu_kbn}}/6/-1/">{{systop.sum_tk[5].cnt_all}}施設</a>
+        </h3>
+        <table class="sys table-bordered" style="font-size:12px; margin-top:-10px;">
+          <thead>
+            <tr class="active">
+              <th>設置年度</th>
+              <th>供用</th>
+              <th>休止</th>
+              <th>未登録</th>
+              <th>計</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr ng-repeat=" row_tk in systop.sum_tk">
+              <th>{{row_tk.str}}</th>
+              <td ng-class="{'small_sum' : row_tk.idx==6}">
+                <a ng-href="#/fam_main/1/{{row_tk.shisetsu_kbn}}/{{row_tk.idx}}/1/">{{row_tk.cnt_kyouyou}}</a>
+              </td>
+              <td ng-class="{'small_sum' : row_tk.idx==6}">
+                <a ng-href="#/fam_main/1/{{row_tk.shisetsu_kbn}}/{{row_tk.idx}}/0/">{{row_tk.cnt_kyuushi}}</a>
+              </td>
+              <td ng-class="{'small_sum' : row_tk.idx==6}">
+                <a ng-href="#/fam_main/1/{{row_tk.shisetsu_kbn}}/{{row_tk.idx}}/-2/">{{row_tk.cnt_noinput}}</a>
+              </td>
+              <td ng-class="{'small_sum' : row_tk.idx!=6, 'big_sum' : row_tk.idx==6}">
+                <a ng-href="#/fam_main/1/{{row_tk.shisetsu_kbn}}/{{row_tk.idx}}/-1/">{{row_tk.cnt_all}}</a>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="col-sm-6" style="margin-top:20px">
+        <h3 style="font-weight: bold"> 8. 気象情報収集装置（監視局）&nbsp;&nbsp;&nbsp;&nbsp;
+          <a ng-href="#/fam_main/1/{{systop.sum_ka[0].shisetsu_kbn}}/6/-1/">{{systop.sum_ka[5].cnt_all}}施設</a>
+        </h3>
+        <table class="sys table-bordered" style="font-size:12px; margin-top:-10px;">
+          <thead>
+            <tr class="active">
+              <th>設置年度</th>
+              <th>供用</th>
+              <th>休止</th>
+              <th>未登録</th>
+              <th>計</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr ng-repeat=" row_ka in systop.sum_ka">
+              <th>{{row_ka.str}}</th>
+              <td ng-class="{'small_sum' : row_ka.idx==6}">
+                <a ng-href="#/fam_main/1/{{row_ka.shisetsu_kbn}}/{{row_ka.idx}}/1/">{{row_ka.cnt_kyouyou}}</a>
+              </td>
+              <td ng-class="{'small_sum' : row_ka.idx==6}">
+                <a ng-href="#/fam_main/1/{{row_ka.shisetsu_kbn}}/{{row_ka.idx}}/0/">{{row_ka.cnt_kyuushi}}</a>
+              </td>
+              <td ng-class="{'small_sum' : row_ka.idx==6}">
+                <a ng-href="#/fam_main/1/{{row_ka.shisetsu_kbn}}/{{row_ka.idx}}/-2/">{{row_ka.cnt_noinput}}</a>
+              </td>
+              <td ng-class="{'small_sum' : row_ka.idx!=6, 'big_sum' : row_ka.idx==6}">
+                <a ng-href="#/fam_main/1/{{row_ka.shisetsu_kbn}}/{{row_ka.idx}}/-1/">{{row_ka.cnt_all}}</a>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div id="s9" class="col-sm-12">
+      <div class="col-sm-6" style="margin-top:20px">
+        <h3 style="font-weight: bold"> 9. 気象情報収集装置（受信局）&nbsp;&nbsp;&nbsp;&nbsp;
+          <a ng-href="#/fam_main/1/{{systop.sum_kb[0].shisetsu_kbn}}/6/-1/">{{systop.sum_kb[5].cnt_all}}施設</a>
+        </h3>
+        <table class="sys table-bordered" style="font-size:12px; margin-top:-10px;">
+          <thead>
+            <tr class="active">
+              <th>設置年度</th>
+              <th>供用</th>
+              <th>休止</th>
+              <th>未登録</th>
+              <th>計</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr ng-repeat=" row_kb in systop.sum_kb">
+              <th>{{row_kb.str}}</th>
+              <td ng-class="{'small_sum' : row_kb.idx==6}">
+                <a ng-href="#/fam_main/1/{{row_kb.shisetsu_kbn}}/{{row_kb.idx}}/1/">{{row_kb.cnt_kyouyou}}</a>
+              </td>
+              <td ng-class="{'small_sum' : row_kb.idx==6}">
+                <a ng-href="#/fam_main/1/{{row_kb.shisetsu_kbn}}/{{row_kb.idx}}/0/">{{row_kb.cnt_kyuushi}}</a>
+              </td>
+              <td ng-class="{'small_sum' : row_kb.idx==6}">
+                <a ng-href="#/fam_main/1/{{row_kb.shisetsu_kbn}}/{{row_kb.idx}}/-2/">{{row_kb.cnt_noinput}}</a>
+              </td>
+              <td ng-class="{'small_sum' : row_kb.idx!=6, 'big_sum' : row_kb.idx==6}">
+                <a ng-href="#/fam_main/1/{{row_kb.shisetsu_kbn}}/{{row_kb.idx}}/-1/">{{row_kb.cnt_all}}</a>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="col-sm-6" style="margin-top:20px">
+        <h3 style="font-weight: bold"> 10. 気象情報収集装置（中継局）&nbsp;&nbsp;&nbsp;&nbsp;
+          <a ng-href="#/fam_main/1/{{systop.sum_kc[0].shisetsu_kbn}}/6/-1/">{{systop.sum_kc[5].cnt_all}}施設</a>
+        </h3>
+        <table class="sys table-bordered" style="font-size:12px; margin-top:-10px;">
+          <thead>
+            <tr class="active">
+              <th>設置年度</th>
+              <th>供用</th>
+              <th>休止</th>
+              <th>未登録</th>
+              <th>計</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr ng-repeat=" row_kc in systop.sum_kc">
+              <th>{{row_kc.str}}</th>
+              <td ng-class="{'small_sum' : row_kc.idx==6}">
+                <a ng-href="#/fam_main/1/{{row_kc.shisetsu_kbn}}/{{row_kc.idx}}/1/">{{row_kc.cnt_kyouyou}}</a>
+              </td>
+              <td ng-class="{'small_sum' : row_kc.idx==6}">
+                <a ng-href="#/fam_main/1/{{row_kc.shisetsu_kbn}}/{{row_kc.idx}}/0/">{{row_kc.cnt_kyuushi}}</a>
+              </td>
+              <td ng-class="{'small_sum' : row_kc.idx==6}">
+                <a ng-href="#/fam_main/1/{{row_kc.shisetsu_kbn}}/{{row_kc.idx}}/-2/">{{row_kc.cnt_noinput}}</a>
+              </td>
+              <td ng-class="{'small_sum' : row_kc.idx!=6, 'big_sum' : row_kc.idx==6}">
+                <a ng-href="#/fam_main/1/{{row_kc.shisetsu_kbn}}/{{row_kc.idx}}/-1/">{{row_kc.cnt_all}}</a>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div id="s11" class="col-sm-12">
+      <div class="col-sm-6" style="margin-top:20px">
+        <h3 style="font-weight: bold"> 11. 気象情報収集装置（観測局）&nbsp;&nbsp;&nbsp;&nbsp;
+          <a ng-href="#/fam_main/1/{{systop.sum_kd[0].shisetsu_kbn}}/6/-1/">{{systop.sum_kd[5].cnt_all}}施設</a>
+        </h3>
+        <table class="sys table-bordered" style="font-size:12px; margin-top:-10px;">
+          <thead>
+            <tr class="active">
+              <th>設置年度</th>
+              <th>供用</th>
+              <th>休止</th>
+              <th>未登録</th>
+              <th>計</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr ng-repeat=" row_kd in systop.sum_kd">
+              <th>{{row_kd.str}}</th>
+              <td ng-class="{'small_sum' : row_kd.idx==6}">
+                <a ng-href="#/fam_main/1/{{row_kd.shisetsu_kbn}}/{{row_kd.idx}}/1/">{{row_kd.cnt_kyouyou}}</a>
+              </td>
+              <td ng-class="{'small_sum' : row_kd.idx==6}">
+                <a ng-href="#/fam_main/1/{{row_kd.shisetsu_kbn}}/{{row_kd.idx}}/0/">{{row_kd.cnt_kyuushi}}</a>
+              </td>
+              <td ng-class="{'small_sum' : row_kd.idx==6}">
+                <a ng-href="#/fam_main/1/{{row_kd.shisetsu_kbn}}/{{row_kd.idx}}/-2/">{{row_kd.cnt_noinput}}</a>
+              </td>
+              <td ng-class="{'small_sum' : row_kd.idx!=6, 'big_sum' : row_kd.idx==6}">
+                <a ng-href="#/fam_main/1/{{row_kd.shisetsu_kbn}}/{{row_kd.idx}}/-1/">{{row_kd.cnt_all}}</a>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="col-sm-6" style="margin-top:20px">
+        <h3 style="font-weight: bold"> 12. 気象情報収集装置（ITV）&nbsp;&nbsp;&nbsp;&nbsp;
+          <a ng-href="#/fam_main/1/{{systop.sum_ki[0].shisetsu_kbn}}/6/-1/">{{systop.sum_ki[5].cnt_all}}施設</a>
+        </h3>
+        <table class="sys table-bordered" style="font-size:12px; margin-top:-10px;">
+          <thead>
+            <tr class="active">
+              <th>設置年度</th>
+              <th>供用</th>
+              <th>休止</th>
+              <th>未登録</th>
+              <th>計</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr ng-repeat=" row_ki in systop.sum_ki">
+              <th>{{row_ki.str}}</th>
+              <td ng-class="{'small_sum' : row_ki.idx==6}">
+                <a ng-href="#/fam_main/1/{{row_ki.shisetsu_kbn}}/{{row_ki.idx}}/1/">{{row_ki.cnt_kyouyou}}</a>
+              </td>
+              <td ng-class="{'small_sum' : row_ki.idx==6}">
+                <a ng-href="#/fam_main/1/{{row_ki.shisetsu_kbn}}/{{row_ki.idx}}/0/">{{row_ki.cnt_kyuushi}}</a>
+              </td>
+              <td ng-class="{'small_sum' : row_ki.idx==6}">
+                <a ng-href="#/fam_main/1/{{row_ki.shisetsu_kbn}}/{{row_ki.idx}}/-2/">{{row_ki.cnt_noinput}}</a>
+              </td>
+              <td ng-class="{'small_sum' : row_ki.idx!=6, 'big_sum' : row_ki.idx==6}">
+                <a ng-href="#/fam_main/1/{{row_ki.shisetsu_kbn}}/{{row_ki.idx}}/-1/">{{row_ki.cnt_all}}</a>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div id="s13" class="col-sm-12">
+      <div class="col-sm-6" style="margin-top:20px">
+        <h3 style="font-weight: bold"> 13. 道路情報板（C型）&nbsp;&nbsp;&nbsp;&nbsp;
+          <a ng-href="#/fam_main/1/{{systop.sum_jh[0].shisetsu_kbn}}/6/-1/">{{systop.sum_jh[5].cnt_all}}施設</a>
+        </h3>
+        <table class="sys table-bordered" style="font-size:12px; margin-top:-10px;">
+          <thead>
+            <tr class="active">
+              <th>設置年度</th>
+              <th>供用</th>
+              <th>休止</th>
+              <th>未登録</th>
+              <th>計</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr ng-repeat=" row_jh in systop.sum_jh">
+              <th>{{row_jh.str}}</th>
+              <td ng-class="{'small_sum' : row_jh.idx==6}">
+                <a ng-href="#/fam_main/1/{{row_jh.shisetsu_kbn}}/{{row_jh.idx}}/1/">{{row_jh.cnt_kyouyou}}</a>
+              </td>
+              <td ng-class="{'small_sum' : row_jh.idx==6}">
+                <a ng-href="#/fam_main/1/{{row_jh.shisetsu_kbn}}/{{row_jh.idx}}/0/">{{row_jh.cnt_kyuushi}}</a>
+              </td>
+              <td ng-class="{'small_sum' : row_jh.idx==6}">
+                <a ng-href="#/fam_main/1/{{row_jh.shisetsu_kbn}}/{{row_jh.idx}}/-2/">{{row_jh.cnt_noinput}}</a>
+              </td>
+              <td ng-class="{'small_sum' : row_jh.idx!=6, 'big_sum' : row_jh.idx==6}">
+                <a ng-href="#/fam_main/1/{{row_jh.shisetsu_kbn}}/{{row_jh.idx}}/-1/">{{row_jh.cnt_all}}</a>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="col-sm-6" style="margin-top:20px">
+        <h3 style="font-weight: bold"> 14. 遮断機&nbsp;&nbsp;&nbsp;&nbsp;
+          <a ng-href="#/fam_main/1/{{systop.sum_sd[0].shisetsu_kbn}}/6/-1/">{{systop.sum_sd[5].cnt_all}}施設</a>
+        </h3>
+        <table class="sys table-bordered" style="font-size:12px; margin-top:-10px;">
+          <thead>
+            <tr class="active">
+              <th>設置年度</th>
+              <th>供用</th>
+              <th>休止</th>
+              <th>未登録</th>
+              <th>計</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr ng-repeat=" row_sd in systop.sum_sd">
+              <th>{{row_sd.str}}</th>
+              <td ng-class="{'small_sum' : row_sd.idx==6}">
+                <a ng-href="#/fam_main/1/{{row_sd.shisetsu_kbn}}/{{row_sd.idx}}/1/">{{row_sd.cnt_kyouyou}}</a>
+              </td>
+              <td ng-class="{'small_sum' : row_sd.idx==6}">
+                <a ng-href="#/fam_main/1/{{row_sd.shisetsu_kbn}}/{{row_sd.idx}}/0/">{{row_sd.cnt_kyuushi}}</a>
+              </td>
+              <td ng-class="{'small_sum' : row_sd.idx==6}">
+                <a ng-href="#/fam_main/1/{{row_sd.shisetsu_kbn}}/{{row_sd.idx}}/-2/">{{row_sd.cnt_noinput}}</a>
+              </td>
+              <td ng-class="{'small_sum' : row_sd.idx!=6, 'big_sum' : row_sd.idx==6}">
+                <a ng-href="#/fam_main/1/{{row_sd.shisetsu_kbn}}/{{row_sd.idx}}/-1/">{{row_sd.cnt_all}}</a>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div id="s15" class="col-sm-12">
+      <!--
+      <div class="col-sm-6" style="margin-top:20px">
+        <h3 style="font-weight: bold"> 13. ドット線&nbsp;&nbsp;&nbsp;&nbsp;<a ng-href="#/fam_main/1/{{systop.sum_dt[0].shisetsu_kbn}}/6/-1/">{{systop.sum_dt[5].cnt_all}}施設</a></h3>
+        <table class="sys table-bordered" style="font-size:12px; margin-top:-10px;">
+          <thead>
+            <tr class="active">
+              <th>設置年度</th>
+              <th>供用</th>
+              <th>休止</th>
+              <th>未登録</th>
+              <th>計</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr ng-repeat=" row_dt in systop.sum_dt">
+              <th>{{row_dt.str}}</th>
+              <td ng-class="{'small_sum' : row_dt.idx==6}"><a ng-href="#/fam_main/1/{{row_dt.shisetsu_kbn}}/{{row_dt.idx}}/1/">{{row_dt.cnt_kyouyou}}</a></td>
+              <td ng-class="{'small_sum' : row_dt.idx==6}"><a ng-href="#/fam_main/1/{{row_dt.shisetsu_kbn}}/{{row_dt.idx}}/0/">{{row_dt.cnt_kyuushi}}</a></td>
+              <td ng-class="{'small_sum' : row_dt.idx==6}"><a ng-href="#/fam_main/1/{{row_dt.shisetsu_kbn}}/{{row_dt.idx}}/-2/">{{row_dt.cnt_noinput}}</a></td>
+              <td ng-class="{'small_sum' : row_dt.idx!=6, 'big_sum' : row_dt.idx==6}"><a ng-href="#/fam_main/1/{{row_dt.shisetsu_kbn}}/{{row_dt.idx}}/-1/">{{row_dt.cnt_all}}</a></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+-->
+      <div class="col-sm-6" style="margin-top:20px">
+        <h3 style="font-weight: bold"> 15. トンネル&nbsp;&nbsp;&nbsp;&nbsp;
+          <a ng-href="#/fam_main/1/{{systop.sum_tt[0].shisetsu_kbn}}/6/-1/">{{systop.sum_tt[5].cnt_all}}施設</a>
+        </h3>
+        <table class="sys table-bordered" style="font-size:12px; margin-top:-10px;">
+          <thead>
+            <tr class="active">
+              <th>設置年度</th>
+              <th>供用</th>
+              <th>休止</th>
+              <th>未登録</th>
+              <th>計</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr ng-repeat=" row_tt in systop.sum_tt">
+              <th>{{row_tt.str}}</th>
+              <td ng-class="{'small_sum' : row_tt.idx==6}">
+                <a ng-href="#/fam_main/1/{{row_tt.shisetsu_kbn}}/{{row_tt.idx}}/1/">{{row_tt.cnt_kyouyou}}</a>
+              </td>
+              <td ng-class="{'small_sum' : row_tt.idx==6}">
+                <a ng-href="#/fam_main/1/{{row_tt.shisetsu_kbn}}/{{row_tt.idx}}/0/">{{row_tt.cnt_kyuushi}}</a>
+              </td>
+              <td ng-class="{'small_sum' : row_tt.idx==6}">
+                <a ng-href="#/fam_main/1/{{row_tt.shisetsu_kbn}}/{{row_tt.idx}}/-2/">{{row_tt.cnt_noinput}}</a>
+              </td>
+              <td ng-class="{'small_sum' : row_tt.idx!=6, 'big_sum' : row_tt.idx==6}">
+                <a ng-href="#/fam_main/1/{{row_tt.shisetsu_kbn}}/{{row_tt.idx}}/-1/">{{row_tt.cnt_all}}</a>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="col-sm-6" style="margin-top:20px">
+        <h3 style="font-weight: bold"> 16. 駐車公園&nbsp;&nbsp;&nbsp;&nbsp;
+          <a ng-href="#/fam_main/1/{{systop.sum_ck[0].shisetsu_kbn}}/6/-1/">{{systop.sum_ck[5].cnt_all}}施設</a>
+        </h3>
+        <table class="sys table-bordered" style="font-size:12px; margin-top:-10px;">
+          <thead>
+            <tr class="active">
+              <th>設置年度</th>
+              <th>供用</th>
+              <th>休止</th>
+              <th>未登録</th>
+              <th>計</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr ng-repeat=" row_ck in systop.sum_ck">
+              <th>{{row_ck.str}}</th>
+              <td ng-class="{'small_sum' : row_ck.idx==6}">
+                <a ng-href="#/fam_main/1/{{row_ck.shisetsu_kbn}}/{{row_ck.idx}}/1/">{{row_ck.cnt_kyouyou}}</a>
+              </td>
+              <td ng-class="{'small_sum' : row_ck.idx==6}">
+                <a ng-href="#/fam_main/1/{{row_ck.shisetsu_kbn}}/{{row_ck.idx}}/0/">{{row_ck.cnt_kyuushi}}</a>
+              </td>
+              <td ng-class="{'small_sum' : row_ck.idx==6}">
+                <a ng-href="#/fam_main/1/{{row_ck.shisetsu_kbn}}/{{row_ck.idx}}/-2/">{{row_ck.cnt_noinput}}</a>
+              </td>
+              <td ng-class="{'small_sum' : row_ck.idx!=6, 'big_sum' : row_ck.idx==6}">
+                <a ng-href="#/fam_main/1/{{row_ck.shisetsu_kbn}}/{{row_ck.idx}}/-1/">{{row_ck.cnt_all}}</a>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div id="s17" class="col-sm-12">
+      <div class="col-sm-6" style="margin-top:20px">
+        <h3 style="font-weight: bold"> 17. 緑化樹木&nbsp;&nbsp;&nbsp;&nbsp;
+          <a ng-href="#/fam_main/1/{{systop.sum_sk[0].shisetsu_kbn}}/6/-1/">{{systop.sum_sk[5].cnt_all}}施設</a>
+        </h3>
+        <table class="sys table-bordered" style="font-size:12px; margin-top:-10px;">
+          <thead>
+            <tr class="active">
+              <th>設置年度</th>
+              <th>供用</th>
+              <th>休止</th>
+              <th>未登録</th>
+              <th>計</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr ng-repeat=" row_sk in systop.sum_sk">
+              <th>{{row_sk.str}}</th>
+              <td ng-class="{'small_sum' : row_sk.idx==6}">
+                <a ng-href="#/fam_main/1/{{row_sk.shisetsu_kbn}}/{{row_sk.idx}}/1/">{{row_sk.cnt_kyouyou}}</a>
+              </td>
+              <td ng-class="{'small_sum' : row_sk.idx==6}">
+                <a ng-href="#/fam_main/1/{{row_sk.shisetsu_kbn}}/{{row_sk.idx}}/0/">{{row_sk.cnt_kyuushi}}</a>
+              </td>
+              <td ng-class="{'small_sum' : row_sk.idx==6}">
+                <a ng-href="#/fam_main/1/{{row_sk.shisetsu_kbn}}/{{row_sk.idx}}/-2/">{{row_sk.cnt_noinput}}</a>
+              </td>
+              <td ng-class="{'small_sum' : row_sk.idx!=6, 'big_sum' : row_sk.idx==6}">
+                <a ng-href="#/fam_main/1/{{row_sk.shisetsu_kbn}}/{{row_sk.idx}}/-1/">{{row_sk.cnt_all}}</a>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="col-sm-6" style="margin-top:20px">
+        <h3 style="font-weight: bold"> 18. 立体横断&nbsp;&nbsp;&nbsp;&nbsp;
+          <a ng-href="#/fam_main/1/{{systop.sum_bh[0].shisetsu_kbn}}/6/-1/">{{systop.sum_bh[5].cnt_all}}施設</a>
+        </h3>
+        <table class="sys table-bordered" style="font-size:12px; margin-top:-10px;">
+          <thead>
+            <tr class="active">
+              <th>設置年度</th>
+              <th>供用</th>
+              <th>休止</th>
+              <th>未登録</th>
+              <th>計</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr ng-repeat=" row_bh in systop.sum_bh">
+              <th>{{row_bh.str}}</th>
+              <td ng-class="{'small_sum' : row_bh.idx==6}">
+                <a ng-href="#/fam_main/1/{{row_bh.shisetsu_kbn}}/{{row_bh.idx}}/1/">{{row_bh.cnt_kyouyou}}</a>
+              </td>
+              <td ng-class="{'small_sum' : row_bh.idx==6}">
+                <a ng-href="#/fam_main/1/{{row_bh.shisetsu_kbn}}/{{row_bh.idx}}/0/">{{row_bh.cnt_kyuushi}}</a>
+              </td>
+              <td ng-class="{'small_sum' : row_bh.idx==6}">
+                <a ng-href="#/fam_main/1/{{row_bh.shisetsu_kbn}}/{{row_bh.idx}}/-2/">{{row_bh.cnt_noinput}}</a>
+              </td>
+              <td ng-class="{'small_sum' : row_bh.idx!=6, 'big_sum' : row_bh.idx==6}">
+                <a ng-href="#/fam_main/1/{{row_bh.shisetsu_kbn}}/{{row_bh.idx}}/-1/">{{row_bh.cnt_all}}</a>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!--
+    <div id="s17" class="col-sm-12">
+      <div class="col-sm-6" style="margin-top:20px">
+        <h3 style="font-weight: bold"> 18. 擁壁&nbsp;&nbsp;&nbsp;&nbsp;<a ng-href="#/fam_main/1/{{systop.sum_dy[0].shisetsu_kbn}}/6/-1/">{{systop.sum_dy[5].cnt_all}}施設</a></h3>
+        <table class="sys table-bordered" style="font-size:12px; margin-top:-10px;">
+          <thead>
+            <tr class="active">
+              <th>設置年度</th>
+              <th>供用</th>
+              <th>休止</th>
+              <th>未登録</th>
+              <th>計</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr ng-repeat=" row_dy in systop.sum_dy">
+              <th>{{row_dy.str}}</th>
+              <td ng-class="{'small_sum' : row_dy.idx==6}"><a ng-href="#/fam_main/1/{{row_dy.shisetsu_kbn}}/{{row_dy.idx}}/1/">{{row_dy.cnt_kyouyou}}</a></td>
+              <td ng-class="{'small_sum' : row_dy.idx==6}"><a ng-href="#/fam_main/1/{{row_dy.shisetsu_kbn}}/{{row_dy.idx}}/0/">{{row_dy.cnt_kyuushi}}</a></td>
+              <td ng-class="{'small_sum' : row_dy.idx==6}"><a ng-href="#/fam_main/1/{{row_dy.shisetsu_kbn}}/{{row_dy.idx}}/-2/">{{row_dy.cnt_noinput}}</a></td>
+              <td ng-class="{'small_sum' : row_dy.idx!=6, 'big_sum' : row_dy.idx==6}"><a ng-href="#/fam_main/1/{{row_dy.shisetsu_kbn}}/{{row_dy.idx}}/-1/">{{row_dy.cnt_all}}</a></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+-->
+
+    <div id="s19" class="col-sm-12">
+      <!--
+      <div class="col-sm-6" style="margin-top:20px">
+        <h3 style="font-weight: bold"> 19. 法面&nbsp;&nbsp;&nbsp;&nbsp;<a ng-href="#/fam_main/1/{{systop.sum_dn[0].shisetsu_kbn}}/6/-1/">{{systop.sum_dn[5].cnt_all}}施設</a></h3>
+        <table class="sys table-bordered" style="font-size:12px; margin-top:-10px;">
+          <thead>
+            <tr class="active">
+              <th>設置年度</th>
+              <th>供用</th>
+              <th>休止</th>
+              <th>未登録</th>
+              <th>計</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr ng-repeat=" row_dn in systop.sum_dn">
+              <th>{{row_dn.str}}</th>
+              <td ng-class="{'small_sum' : row_dn.idx==6}"><a ng-href="#/fam_main/1/{{row_dn.shisetsu_kbn}}/{{row_dn.idx}}/1/">{{row_dn.cnt_kyouyou}}</a></td>
+              <td ng-class="{'small_sum' : row_dn.idx==6}"><a ng-href="#/fam_main/1/{{row_dn.shisetsu_kbn}}/{{row_dn.idx}}/0/">{{row_dn.cnt_kyuushi}}</a></td>
+              <td ng-class="{'small_sum' : row_dn.idx==6}"><a ng-href="#/fam_main/1/{{row_dn.shisetsu_kbn}}/{{row_dn.idx}}/-2/">{{row_dn.cnt_noinput}}</a></td>
+              <td ng-class="{'small_sum' : row_dn.idx!=6, 'big_sum' : row_dn.idx==6}"><a ng-href="#/fam_main/1/{{row_dn.shisetsu_kbn}}/{{row_dn.idx}}/-1/">{{row_dn.cnt_all}}</a></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="col-sm-6" style="margin-top:20px">
+
+        <h3 style="font-weight: bold"> 17. 浸出装置&nbsp;&nbsp;&nbsp;&nbsp;<a ng-href="#/fam_main/1/{{systop.sum_ts[0].shisetsu_kbn}}/6/-1/">{{systop.sum_ts[5].cnt_all}}施設</a></h3>
+        <table class="sys table-bordered" style="font-size:12px; margin-top:-10px;">
+          <thead>
+            <tr class="active">
+              <th>設置年度</th>
+              <th>供用</th>
+              <th>休止</th>
+              <th>未登録</th>
+              <th>計</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr ng-repeat=" row_ts in systop.sum_ts">
+              <th>{{row_ts.str}}</th>
+              <td ng-class="{'small_sum' : row_ts.idx==6}"><a ng-href="#/fam_main/1/{{row_ts.shisetsu_kbn}}/{{row_ts.idx}}/1/">{{row_ts.cnt_kyouyou}}</a></td>
+              <td ng-class="{'small_sum' : row_ts.idx==6}"><a ng-href="#/fam_main/1/{{row_ts.shisetsu_kbn}}/{{row_ts.idx}}/0/">{{row_ts.cnt_kyuushi}}</a></td>
+              <td ng-class="{'small_sum' : row_ts.idx==6}"><a ng-href="#/fam_main/1/{{row_ts.shisetsu_kbn}}/{{row_ts.idx}}/-2/">{{row_ts.cnt_noinput}}</a></td>
+              <td ng-class="{'small_sum' : row_ts.idx!=6, 'big_sum' : row_ts.idx==6}"><a ng-href="#/fam_main/1/{{row_ts.shisetsu_kbn}}/{{row_ts.idx}}/-1/">{{row_ts.cnt_all}}</a></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+-->
+      <div class="col-sm-6" style="margin-top:20px">
+        <h3 style="font-weight: bold"> 19. ロードヒーティング&nbsp;&nbsp;&nbsp;&nbsp;
+          <a ng-href="#/fam_main/1/{{systop.sum_rh[0].shisetsu_kbn}}/6/-1/">{{systop.sum_rh[5].cnt_all}}施設</a>
+        </h3>
+        <table class="sys table-bordered" style="font-size:12px; margin-top:-10px;">
+          <thead>
+            <tr class="active">
+              <th>設置年度</th>
+              <th>供用</th>
+              <th>一部休止</th>
+              <th>休止</th>
+              <th>未登録</th>
+              <th>計</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr ng-repeat=" row_rh in systop.sum_rh">
+              <th>{{row_rh.str}}</th>
+              <td ng-class="{'small_sum' : row_rh.idx==6}">
+                <a ng-href="#/fam_main/1/{{row_rh.shisetsu_kbn}}/{{row_rh.idx}}/1/">{{row_rh.cnt_kyouyou}}</a>
+              </td>
+              <td ng-class="{'small_sum' : row_rh.idx==6}">
+                <a ng-href="#/fam_main/1/{{row_rh.shisetsu_kbn}}/{{row_rh.idx}}/2/">{{row_rh.cnt_ichibu}}</a>
+              </td>
+              <td ng-class="{'small_sum' : row_rh.idx==6}">
+                <a ng-href="#/fam_main/1/{{row_rh.shisetsu_kbn}}/{{row_rh.idx}}/0/">{{row_rh.cnt_kyuushi}}</a>
+              </td>
+              <td ng-class="{'small_sum' : row_rh.idx==6}">
+                <a ng-href="#/fam_main/1/{{row_rh.shisetsu_kbn}}/{{row_rh.idx}}/-2/">{{row_rh.cnt_noinput}}</a>
+              </td>
+              <td ng-class="{'small_sum' : row_rh.idx!=6, 'big_sum' : row_rh.idx==6}">
+                <a ng-href="#/fam_main/1/{{row_rh.shisetsu_kbn}}/{{row_rh.idx}}/-1/">{{row_rh.cnt_all}}</a>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="col-sm-6" style="margin-top:20px"></div>
+    </div>
+
+    <!--
+    <div id="s21" class="col-sm-12">
+      <div class="col-sm-6" style="margin-top:20px">
+        <h3 style="font-weight: bold"> 21. ロードヒーティング&nbsp;&nbsp;&nbsp;&nbsp;<a ng-href="#/fam_main/1/{{systop.sum_rh[0].shisetsu_kbn}}/6/-1/">{{systop.sum_rh[5].cnt_all}}施設</a></h3>
+        <table class="sys table-bordered" style="font-size:12px; margin-top:-10px;">
+          <thead>
+            <tr class="active">
+              <th>設置年度</th>
+              <th>供用</th>
+              <th>一部休止</th>
+              <th>休止</th>
+              <th>未登録</th>
+              <th>計</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr ng-repeat=" row_rh in systop.sum_rh">
+              <th>{{row_rh.str}}</th>
+              <td ng-class="{'small_sum' : row_rh.idx==6}"><a ng-href="#/fam_main/1/{{row_rh.shisetsu_kbn}}/{{row_rh.idx}}/1/">{{row_rh.cnt_kyouyou}}</a></td>
+              <td ng-class="{'small_sum' : row_rh.idx==6}"><a ng-href="#/fam_main/1/{{row_rh.shisetsu_kbn}}/{{row_rh.idx}}/2/">{{row_rh.cnt_ichibu}}</a></td>
+              <td ng-class="{'small_sum' : row_rh.idx==6}"><a ng-href="#/fam_main/1/{{row_rh.shisetsu_kbn}}/{{row_rh.idx}}/0/">{{row_rh.cnt_kyuushi}}</a></td>
+              <td ng-class="{'small_sum' : row_rh.idx==6}"><a ng-href="#/fam_main/1/{{row_rh.shisetsu_kbn}}/{{row_rh.idx}}/-2/">{{row_rh.cnt_noinput}}</a></td>
+              <td ng-class="{'small_sum' : row_rh.idx!=6, 'big_sum' : row_rh.idx==6}"><a ng-href="#/fam_main/1/{{row_rh.shisetsu_kbn}}/{{row_rh.idx}}/-1/">{{row_rh.cnt_all}}</a></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="col-sm-6" style="margin-top:20px"></div>
+    </div>
+-->
+
+    <div style="top:42px;left:0px;z-index:1000; width:165px;"
+      class="sidebar sidebar-nav affix container-fluid background2" role="complementary">
+      <div class="form-group row" style="margin:10px 0 10px 0;">
+        <label class=" form-control-label margin">
+          <p class="label3">建設管理部</p>
+        </label>
+        <select class="form-control input-sm" ng-model="systop.dogen"
+          ng-options="row as row.dogen_mei for row in systop.dogen_syucchoujo_dat.dogen_info"
+          ng-change="systop.chgDogen()" required>
+          <!-- 建管は必須にする
+<option value="">---</option>
+-->
+        </select>
+      </div>
+      <div class="form-group row" style="margin:0 0 20px 0;">
+        <label class=" form-control-label margin">
+          <p class="label3">管理区域（出張所）</p>
+        </label>
+        <select ng-show="systop.ath_syozoku_cd==1 || systop.ath_syozoku_cd==2 || systop.ath_syozoku_cd==10001"
+          class="form-control input-sm" ng-model="systop.syucchoujo"
+          ng-options="row as row.syucchoujo_mei for row in systop.dogen.syucchoujo_row.syucchoujo_info"
+          ng-change="systop.chgSyucchoujo()" required>
+          <option value="">全て</option>
+        </select>
+        <select ng-show="systop.ath_syozoku_cd==3 || systop.ath_syozoku_cd==4" class="form-control input-sm"
+          ng-model="systop.syucchoujo"
+          ng-options="row as row.syucchoujo_mei for row in systop.dogen.syucchoujo_row.syucchoujo_info"
+          ng-change="systop.chgSyucchoujo()" required>
+        </select>
+      </div>
+
+      <div class="left_h" ng-click="sys_top.shisetsukind = !sys_top.shisetsukind">
+        <a style="color:white;">
+          <i class="fa" ng-class="{'fa-plus' : sys_top.shisetsukind , 'fa-minus' : !sys_top.shisetsukind}"></i> 施設種別
+        </a>
+      </div>
+
+      <div uib-collapse="sys_top.shisetsukind">
+        <div class="left_s">
+          <a ng-href="#/fam_main/1/1/6/-1/">道路標識</a>
+        </div>
+        <div class="left_s">
+          <a ng-href="#/fam_main/1/3/6/-1/">道路照明施設</a>
+        </div>
+        <div class="left_s">
+          <a ng-href="#/fam_main/1/2/6/-1/">道路情報提供装置</a>
+        </div>
+        <div class="left_s">
+          <a ng-href="#/fam_main/1/4/6/-1/">防雪柵</a>
+        </div>
+        <div class="left_s">
+          <a ng-href="#/fam_main/1/5/6/-1/">大型スノーポール</a>
+        </div>
+        <div class="left_s">
+          <a ng-href="#/fam_main/1/22/6/-1/">冠水警報表示</a>
+        </div>
+        <div class="left_s">
+          <a ng-href="#/fam_main/1/23/6/-1/">トンネル警報表示</a>
+        </div>
+        <div class="left_s">
+          <a ng-href="#/fam_main/1/6/6/-1/">気象情報（監視局）</a>
+        </div>
+        <div class="left_s">
+          <a ng-href="#/fam_main/1/7/6/-1/">気象情報（受信局）</a>
+        </div>
+        <div class="left_s">
+          <a ng-href="#/fam_main/1/8/6/-1/">気象情報（中継局）</a>
+        </div>
+        <div class="left_s">
+          <a ng-href="#/fam_main/1/9/6/-1/">気象情報（観測局）</a>
+        </div>
+        <div class="left_s">
+          <a ng-href="#/fam_main/1/10/6/-1/">気象情報（ITV）</a>
+        </div>
+        <div class="left_s">
+          <a ng-href="#/fam_main/1/11/6/-1/">道路情報板（C型）</a>
+        </div>
+        <div class="left_s">
+          <a ng-href="#/fam_main/1/12/6/-1/">遮断機</a>
+        </div>
+        <!--
+        <div class="left_s">
+          <a ng-href="#/fam_main/1/13/6/-1/">ドット線</a>
+        </div>
+-->
+        <div class="left_s">
+          <a ng-href="#/fam_main/1/14/6/-1/">トンネル</a>
+        </div>
+        <div class="left_s">
+          <a ng-href="#/fam_main/1/15/6/-1/">駐車公園</a>
+        </div>
+        <div class="left_s">
+          <a ng-href="#/fam_main/1/16/6/-1/">緑化樹木</a>
+        </div>
+        <div class="left_s">
+          <a ng-href="#/fam_main/1/17/6/-1/">立体横断</a>
+        </div>
+        <!--
+        <div class="left_s">
+          <a ng-href="#/fam_main/1/18/6/-1/">擁壁</a>
+        </div>
+        <div class="left_s">
+          <a ng-href="#/fam_main/1/19/6/-1/">法面</a>
+        </div>
+        <div class="left_s">
+          <a ng-href="#/fam_main/1/20/6/-1/">浸出装置</a>
+        </div>
+-->
+        <div class="left_s">
+          <a ng-href="#/fam_main/1/21/6/-1/">ロードヒーティング</a>
+        </div>
+      </div>
+
+      <div style="margin:20px 0 10px 0;">
+        <a ng-href="#/raf_top" class="sys_btn">道路附属物
+          <br>施設点検</a>
+      </div>
+      <div style="margin:10px 0 20px 0;">
+        <a ng-href="{{systop.ele_url}}" class="sys_btn2">電気通信
+          <br>施設点検</a>
+      </div>
+      <div id="footerdamy-side"></div>
+    </div>
+  </div>
+  <div id="footerdamy"></div>
+  <div id="footerArea2">
+    <div class="row" style="margin-top : 8px">
+      <div class="col-sm-3" style="text-align:center;">
+        <a ng-href="{{systop.imm_url}}" type="button" class="btn btn-xs btn-inverse btn-sm">
+          <span class="glyphicon glyphicon-arrow-left"></span>&nbsp;公共土木施設維持管理システムTOPに戻る</a>
+      </div>
+
+      <div
+        ng-show="systop.ath_syozoku_cd <= 2 || systop.ath_syozoku_cd == 10001 || (systop.ath_syozoku_cd == 3 && (systop.ath_syucchoujo_cd==systop.mng_syucchoujo_cd))"
+        class="col-sm-3" style="text-align:center;">
+        <a ng-click="systop.editBaseInfo()" type="button" class="btn btn-xs btn-success btn-sm">
+          <span class="glyphicon glyphicon-list-alt"></span>&nbsp;基本情報登録</a>
+      </div>
+
+      <!--
+      <div ng-show="systop.syucchoujo.syucchoujo_cd==0" class="col-sm-3" style="text-align:center;">
+        <button ng-click="systop.editBaseInfo(0)" type="button" class="btn btn-xs btn-success btn-sm">
+          <span class="glyphicon glyphicon-list-alt"></span>&nbsp;基本情報登録</button>
+      </div>
+      <div ng-show="systop.syucchoujo.syucchoujo_cd!=0" class="col-sm-3" style="text-align:center;">
+        <a ng-href="#/shisetsu_info" ng-click="systop.editBaseInfo(0)" type="button" class="btn btn-xs btn-success btn-sm">
+          <span class="glyphicon glyphicon-list-alt"></span>&nbsp;基本情報登録</a>
+      </div>
+-->
+
+      <!-- リリース時までkanrisyaのみ -->
+      <div class="col-sm-6">
+        <a type="button" class="btn btn-xs btn-primary btn-sm pull-right" style="margin-right: 20px"
+          ng-href="#/snow_removal">
+          <span class="glyphicon glyphicon-hand-right"></span>&nbsp;除雪システム用CSV出力画面へ</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 読込み中オーバーレイ -->
+<div class="waitOverlay " ng-show="systop.waitLoadOverlay ">
+  <div style="width:100vw;height:100vh;font-size:60px;display: table-cell;text-align: center;vertical-align: middle; ">
+    <i class="fa fa-spinner fa-spin fa-3x fa-fw "></i>
+    <br>
+    <span>集計中です。
+      <br />しばらくお待ちください。</span>
+  </div>
+</div>

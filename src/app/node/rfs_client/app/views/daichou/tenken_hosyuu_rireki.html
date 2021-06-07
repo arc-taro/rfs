@@ -1,0 +1,75 @@
+<div class="row">
+  <h6 style="margin-top:30px">&nbsp;その他点検</h6>
+  <div class="form-inline " style="float:left; margin-top:-10px">
+    <div class="form-group input-append text-left">
+      <label class="form-control-label text-center margin">
+        <p class="label">点検年</p>
+      </label>
+      <div class="form-inline">
+        <select class="form-control input-sm btn-group-justified" ng-model="famedit.chk_year" ng-options="nendo as nendo.gengou for nendo in famedit.secchi_nendo" style="width:8em; text-align: left" ng-disabled="!famedit.editable">
+          <option value="">---</option>
+        </select>
+      </div>
+    </div>
+    <div class="form-group input-append text-left">
+      <label class="form-control-label text-center margin">
+        <p class="label">点検内容</p>
+      </label>
+      <div class="form-inline">
+        <input type="text" class="form-control input-sm" ng-model="famedit.chk_naiyou" style="width:25em; text-align: left" ng-disabled="!famedit.editable">
+      </div>
+    </div>
+    <div class="form-group input-append text-left">
+      <label class="form-control-label text-center margin">
+        <p class="label">補修年</p>
+      </label>
+      <div class="form-inline">
+        <select class="form-control input-sm btn-group-justified" ng-model="famedit.hosyuu_year" ng-options="nendo as nendo.gengou for nendo in famedit.secchi_nendo" style="width:8em; text-align: left" ng-disabled="!famedit.editable">
+          <option value="">---</option>
+        </select>
+      </div>
+    </div>
+    <div class="form-group input-append text-left">
+      <label class="form-control-label text-center margin">
+        <p class="label">補修内容</p>
+      </label>
+      <div class="form-inline">
+        <input type="text" class="form-control input-sm" ng-model="famedit.hosyuu_naiyou" style="width:25em; text-align: left" ng-disabled="!famedit.editable">
+      </div>
+    </div>
+  </div>
+</div>
+<div class="row">
+
+  <div class="row form-inline" style="margin:15px 0 0 0;" ng-show="famedit.editable">
+    <div class="form-group input-append text-center" style="margin-right:12px;">
+      <button type="button" class="btn btn-sm btn-info text-center" ng-click="famedit.addClickHosyuuRireki()" style="width:8em;" ng-disabled="!famedit.editable">
+        <span class="glyphicon glyphicon-chevron-down"></span>　追加</button>
+    </div>
+    <div class="form-group input-append">
+      <span style="font-size: 80%;">その他の点検については、上記に点検年や内容、補修年や内容を選択・記述して、<br>追加をクリックすると表に反映し、削除したい行をチェックすると、台帳保存時に削除します</span>
+    </div>
+  </div>
+</div>
+<div class="row" style="margin-top:15px;">
+  <table class="fam01 table-bordered" style="word-break:break-all;">
+    <tbody>
+      <tr>
+        <th style="width:50px">削除</th>
+        <th style="width:50px">点検年</th>
+        <th style="width:200px">点検内容</th>
+        <th style="width:50px">補修年</th>
+        <th style="width:200px">補修内容</th>
+      </tr>
+      <tr ng-repeat="row in famedit.hosyuu">
+        <td>
+          <input type="checkbox" ng-model="row.delflg" ng-disabled="!famedit.editable">
+        </td>
+        <td>{{row.check_nendo}}</td>
+        <td style="text-align:left;">{{row.check_naiyou}}</td>
+        <td>{{row.repair_nendo}}</td>
+        <td style="text-align:left;">{{row.repair_naiyou}}</td>
+      </tr>
+    </tbody>
+  </table>
+</div>

@@ -1,0 +1,104 @@
+<uib-tabset active="active">
+  <uib-tab index="0">
+    <uib-tab-heading>
+      <span style="font-size:16px;">施設情報</span>
+    </uib-tab-heading>
+    <div class="container">
+      <div class=" col-sm-12 form-inline " style="float:left;">
+        <div class="form-group input-append text-left" style="margin:0 20px 0 15px;">
+          <label class="form-control-label text-center margin">
+            <p class="label">交差単路</p>
+          </label>
+          <div class="form-inline">
+            <select class="form-control input-sm btn-group-justified" ng-model="famedit.daichou.kousa_tanro_cd" ng-options="kousa_tanro.kousa_tanro_cd as kousa_tanro.kousa_tanro for kousa_tanro in famedit.kousa_tanro_arr" style="width:10em; text-align: left" ng-disabled="!famedit.editable">
+              <option value="">---</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-group input-append text-left" style="margin-right:20px;">
+          <label class="form-control-label text-center margin">
+            <p class="label">交差路線</p>
+          </label>
+          <div class="form-inline">
+            <input type="text" class="form-control input-sm" ng-model="famedit.daichou.kousa_rosen" style="width:10em; text-align: left" ng-disabled="!famedit.editable">
+          </div>
+        </div>
+        <div class="form-group input-append text-left" style="margin-right:20px;">
+          <label class="form-control-label text-center margin">
+            <p class="label">路線現況番号</p>
+          </label>
+          <div class="form-inline">
+            <input type="text" class="form-control input-sm" ng-model="famedit.daichou.rosen_genkyou" style="width:10em; text-align: left" ng-disabled="!famedit.editable">
+          </div>
+        </div>
+        <div class="form-group input-append text-left" style="margin-right:20px;">
+          <label class="form-control-label text-center margin">
+            <p class="label">形式</p>
+          </label>
+          <div class="form-inline">
+            <select class="form-control input-sm btn-group-justified" ng-model="famedit.daichou.keishiki_cd" ng-options="keishiki.keishiki_cd as keishiki.keishiki for keishiki in famedit.keishiki_arr" style="width:10em; text-align: left" ng-disabled="!famedit.editable">
+              <option value="">---</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-group input-append text-left" style="margin-right:10px;">
+          <label class="form-control-label text-center margin">
+            <p class="label">機器種別</p>
+          </label>
+          <div class="form-inline">
+            <select class="form-control input-sm btn-group-justified" ng-model="famedit.daichou.kiki_syu_cd" ng-options="kiki_syu.kiki_syu_cd as kiki_syu.kiki_syu for kiki_syu in famedit.kiki_syu_arr" style="width:10em; text-align: left" ng-disabled="!famedit.editable">
+              <option value="">---</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+
+      <div class=" col-sm-12 form-inline " style="float:left;">
+        <div class="form-group input-append text-left" style="margin:0 20px 0 15px;">
+          <label class="form-control-label text-center margin">
+            <p class="label">公共単独</p>
+          </label>
+          <div class="form-inline">
+            <select class="form-control input-sm btn-group-justified" ng-model="famedit.daichou.koukyou_tandoku_cd" ng-options="koukyou_tandoku.koukyou_tandoku_cd as koukyou_tandoku.koukyou_tandoku for koukyou_tandoku in famedit.koukyou_tandoku_arr" style="width:10em; text-align: left" ng-disabled="!famedit.editable">
+              <option value="">---</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-group input-append text-left" style="margin-right:20px;">
+          <label class="form-control-label text-center margin">
+            <p class="label">表示仕様</p>
+          </label>
+          <div class="form-inline">
+            <select class="form-control input-sm btn-group-justified" ng-model="famedit.daichou.hyouji_shiyou_cd" ng-options="hyouji_shiyou.hyouji_shiyou_cd as hyouji_shiyou.hyouji_shiyou for hyouji_shiyou in famedit.hyouji_shiyou_arr" style="width:10em; text-align: left" ng-disabled="!famedit.editable">
+              <option value="">---</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-group input-append text-left" style="margin-right:20px;">
+          <label class="form-control-label text-center margin">
+            <p class="label">メーカー名</p>
+          </label>
+          <div class="form-inline">
+            <input type="text" class="form-control input-sm" ng-model="famedit.daichou.maker_nm" style="width:15em; text-align: left" ng-disabled="!famedit.editable">
+          </div>
+        </div>
+        <div class="form-group input-append text-left" style="margin-right:20px;">
+          <label class="form-control-label text-center margin">
+            <p class="label">設置業者</p>
+          </label>
+          <div class="form-inline">
+            <input type="text" class="form-control input-sm" ng-model="famedit.daichou.secchi_gyousya" style="width:15em; text-align: left" ng-disabled="!famedit.editable">
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </uib-tab>
+  <uib-tab index="1">
+    <uib-tab-heading>
+      <span style="font-size:16px;">通信回線・電気</span>
+    </uib-tab-heading>
+    <div ng-include="famedit.tuushinkaisen_denki"></div>
+  </uib-tab>
+</uib-tabset>

@@ -1,0 +1,771 @@
+<!-- Navbar Start-->
+<div class="navbar navbar-default navbar-fixed-top" style="border-bottom: 0px;">
+  <div class="container">
+    <a style="color:white;cursor:pointer;" class="navbar-brand" ng-click="shisetsu.location('#')"><img
+        src="images/logo.png" class="img-rounded">道路施設管理システム</a>
+  </div>
+  <!-- End of Navber -->
+  <div ng-switch="shisetsu.idPhase">
+    <div ng-switch-when="true" class="row" style="padding-top: 10px;">
+      <!--div style="padding-left:160px"-->
+      <div class="h_main2" style="margin-left:-15px;">
+        {{shisetsu.title}}
+      </div>
+    </div>
+    <div ng-switch-when="false" class="row" style="padding-top: 10px;">
+      <div class="col-sm-12" style="position: relative;">
+        <div class="h_main" style="position: absolute;"
+          ng-class="{'h_main-info' : !shisetsu.editable, 'h_main-danger' : shisetsu.editable}">【現在】：
+          <span ng-show="shisetsu.editable">編集可</span>
+          <span ng-hide="shisetsu.editable" style="color : red;">編集不可</span>
+        </div>
+        <div class="h_main" style="margin-left:-15px;"
+          ng-class="{'h_main-info' : !shisetsu.editable, 'h_main-danger' : shisetsu.editable}">
+          {{shisetsu.title}}
+        </div>
+        <div
+          ng-hide="((shisetsu.ath_syozoku_cd == 3 || shisetsu.ath_syozoku_cd == 4) && (shisetsu.ath_syucchoujo_cd!=shisetsu.mng_syucchoujo_cd))">
+          <span ng-if="!shisetsu.editable">
+            <button type="button" class="btn btn-xs btn-primary btn-danger"
+              style="position: absolute; top: 5px; right: 30px;" ng-click="shisetsu.chgMode()">
+              <span class="glyphicon glyphicon-pencil"></span>&nbsp;編集モードへ</button>
+          </span>
+          <span ng-if="shisetsu.editable">
+            <button type="button" class="btn btn-xs btn-primary btn-info"
+              style="position: absolute; top: 5px; right: 30px;" ng-click="shisetsu.chgMode()">
+              <span class="glyphicon glyphicon-file"></span>&nbsp;閲覧モードへ</button>
+          </span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<form name="shisetsuForm" novalidate>
+  <div class="row">
+    <div class="row" style="font-weight: bold;margin:30px 0 20px 0; text-align: center;">
+      {{shisetsu.kanrisya.dogen_mei}}建設管理部&nbsp;&nbsp;&nbsp;{{shisetsu.kanrisya.syucchoujo_mei}}
+    </div>
+    <hr class="style2" style="margin-top:-15px">
+    <div class="row">
+      <div class="col-sm-6">
+        <div class="row" ng-show="!shisetsu.idPhase">
+          <div class="col-sm-2"></div>
+          <div class="col-sm-10 form-inline">
+            <div class="form-group">
+              <label class="margin">
+                <p class="label">施設名</p>
+              </label>
+              <div>
+                <select class="form-control input-sm btn-group-justified disabled-color"
+                  ng-model="shisetsu.data.shisetsu_kbn"
+                  ng-options="row.shisetsu_kbn as row.shisetsu_kbn_nm for row in shisetsu.shisetsu_kbn_dat"
+                  style="width:auto; text-align: left" ng-change="shisetsu.shisetsuChange()"
+                  ng-disabled="shisetsu.idPhase==false">
+                  <option value="">---</option>
+                </select>
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="form-control-label text-center margin">
+                <p class="label">施設管理番号</p>
+              </label>
+              <div class="form-inline">
+                <div class="form-group">
+                  <input type="text" ng-model="shisetsu.data.shisetsu_cd" class="form-control input-sm ime_eisu"
+                    style="width:10em; text-align: left;" ng-disabled="!shisetsu.editable">
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="row" ng-show="!shisetsu.idPhase">
+          <div class="col-sm-2"></div>
+          <div class="col-sm-10 form-inline">
+            <div class="form-group input-append text-left" style="margin-right:10px;">
+              <label class="form-control-label text-center margin">
+                <p class="label">整理番号</p>
+              </label>
+              <div class="form-inline">
+                <div class="form-group">
+                  <input type="text" class="form-control input-sm" ng-model="shisetsu.data.seiri_no"
+                    style="width:10em; text-align: left" ng-disabled="!shisetsu.editable">
+                </div>
+              </div>
+            </div>
+            <div class="form-group input-append text-left" style="width:7em;">
+              <label class="form-control-label text-center margin">
+                <p class="label">供用区分</p>
+                <!--<p class="control-label label2">供用区分</p>-->
+              </label>
+              <div class="form-inline">
+                <select class="form-control input-sm" ng-model="shisetsu.data.kyouyou_kbn"
+                  ng-options="kyouyou_kbn.kyouyou_kbn as kyouyou_kbn.kyouyou_kbn_str for kyouyou_kbn in shisetsu.mst_kyouyou_kbn"
+                  ng-disabled="!shisetsu.editable">
+                </select>
+              </div>
+            </div>
+
+
+            <div class="form-group input-append text-left">
+              <label class="form-control-label text-center margin">
+                <p class="label">設置年度</p>
+              </label>
+              <div class="form-inline">
+                <select class="form-control input-sm btn-group-justified" ng-model="shisetsu.data.secchi_row"
+                  ng-options="nendo as nendo.gengou for nendo in shisetsu.nendo_secchi"
+                  style="width:auto; text-align: left" ng-disabled="!shisetsu.editable">
+                  <option value="">---</option>
+                </select>
+              </div>
+            </div>
+            <div class="form-group input-append text-left" ng-show="sno!=0">
+              <label class="form-control-label text-center margin">
+                <p class="label">廃止年度</p>
+              </label>
+              <div class="form-inline">
+                <select class="form-control input-sm btn-group-justified" ng-model="shisetsu.data.haishi_row"
+                  ng-options="nendo2 as nendo2.gengou for nendo2 in shisetsu.nendo_haishi"
+                  style="width:auto; text-align: left" ng-disabled="!shisetsu.editable">
+                  <option value="">---</option>
+                </select>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div ng-show="!shisetsu.idPhase">
+          <div class="row">
+            <div class="col-sm-2"></div>
+            <div class="col-sm-10 form-inline">
+              <div class="form-group input-append text-left">
+                <label class="form-control-label text-center margin">
+                  <p class="label">路線名</p>
+                </label>
+                <div class="form-inline">
+                  <select class="form-control input-sm btn-group-justified" ng-model="shisetsu.data.rrow"
+                    ng-options="rrow as rrow.rosen_nm for rrow in shisetsu.rosen_dat"
+                    style="width:18em; text-align: left" ng-change="shisetsu.chgRosen()"
+                    ng-required="shisetsu.data.shisetsu_kbn<=5" ng-disabled="!shisetsu.editable">
+                    <option value="">---</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="row" ng-show="!shisetsu.idPhase">
+          <div class="col-sm-2"></div>
+          <div class="col-sm-10 form-inline">
+            <div class=" form-inline " style="float:left;">
+              <div class="form-group input-append text-left" style="margin-right:10px;">
+                <label class="form-control-label text-center margin">
+                  <p class="label">測点（自）</p>
+                </label>
+                <div class="form-inline">
+                  <input type="number" class="form-control input-sm" ng-model="shisetsu.data.sp" min="-1000000"
+                    max="1000000" style="width:7em; text-align: left" ng-disabled="!shisetsu.editable">
+                  <span class="infont">&nbsp;～</span>
+                </div>
+              </div>
+              <div class="form-group input-append text-left">
+                <label class="form-control-label text-center margin">
+                  <p class="label">測点（至）</p>
+                </label>
+                <div class="form-inline">
+                  <input type="number" class="form-control input-sm" ng-model="shisetsu.data.sp_to" min="-1000000"
+                    max="1000000" style="width:7em; text-align: left" ng-disabled="!shisetsu.editable">
+                  <span class="infont">&nbsp;m</span>
+                </div>
+              </div>
+            </div>
+            <div class="form-group input-append text-left" style="margin-left:16px;">
+              <label class="form-control-label text-center margin">
+                <p class="label">横断区分</p>
+              </label>
+              <div class="form-inline">
+                <select class="form-control input-sm btn-group-justified" ng-model="shisetsu.data.lr"
+                  ng-options="lrrow.id as lrrow.label for lrrow in shisetsu.mst_lr" style="width:7em; text-align: left"
+                  ng-disabled="!shisetsu.editable">
+                  <option value="">---</option>
+                </select>
+              </div>
+            </div>
+            <div class="form-group input-append text-left" style="margin-left:10px;">
+              <label class="form-control-label text-center margin">
+                <p class="label">上下区分</p>
+              </label>
+              <div class="form-inline">
+                <select class="form-control input-sm btn-group-justified" ng-model="shisetsu.data.ud"
+                  ng-options="udrow.id as udrow.label for udrow in shisetsu.mst_ud" style="width:7em; text-align: left"
+                  ng-disabled="!shisetsu.editable">
+                  <option value="">---</option>
+                </select>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="row" ng-show="!shisetsu.idPhase">
+          <div class="col-sm-2"></div>
+          <div class="col-sm-10 form-inline">
+            <div class=" form-inline " style="float:left;">
+              <div class="form-group input-append text-left">
+                <label class="form-control-label text-center margin">
+                  <p class="label">一般交通量/24h</p>
+                </label>
+                <div class="form-inline">
+                  <input type="number" class="form-control input-sm" ng-model="shisetsu.data.koutsuuryou_day"
+                    ng-pattern="/^\d{0,5}$/" style="width:7em; text-align: left" ng-disabled="!shisetsu.editable">
+                  <span class="infont">&nbsp;台</span>
+                </div>
+              </div>
+              <div class="form-group input-append text-left" style="margin-right:10px;">
+                <label class="form-control-label text-center margin">
+                  <p class="label">一般交通量/12h</p>
+                </label>
+                <div class="form-inline">
+                  <input type="number" class="form-control input-sm" ng-model="shisetsu.data.koutsuuryou_12"
+                    ng-pattern="/^\d{0,5}$/" style="width:7em; text-align: left" ng-disabled="!shisetsu.editable">
+                  <span class="infont">&nbsp;台</span>
+                </div>
+              </div>
+              <div class="form-group input-append text-left" style="margin-left:2px;">
+                <label class="form-control-label text-center margin">
+                  <p class="label">普通車交通量/12h</p>
+                </label>
+                <div class="form-inline">
+                  <input type="number" class="form-control input-sm" ng-model="shisetsu.data.koutsuuryou_hutuu"
+                    ng-pattern="/^\d{0,5}$/" style="width:7em; text-align: left" ng-disabled="!shisetsu.editable">
+                  <span class="infont">&nbsp;台</span>
+                </div>
+              </div>
+              <div class="form-group input-append text-left" style="margin-left:10px;">
+                <label class="form-control-label text-center margin">
+                  <p class="label">大型車交通量/12h</p>
+                </label>
+                <div class="form-inline">
+                  <input type="number" class="form-control input-sm" ng-model="shisetsu.data.koutsuuryou_oogata"
+                    ng-pattern="/^\d{0,5}$/" style="width:7em; text-align: left" ng-disabled="!shisetsu.editable">
+                  <span class="infont">&nbsp;台</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="row" ng-show="!shisetsu.idPhase">
+          <div class="col-sm-2"></div>
+          <div class="col-sm-10 form-inline">
+            <div class=" form-inline " style="float:left;">
+              <div class="form-group input-append text-left" style="margin-right:10px;">
+                <label class="form-control-label text-center margin">
+                  <p class="label">名称</p>
+                </label>
+                <div class="form-inline">
+                  <input type="text" class="form-control input-sm" ng-model="shisetsu.data.name"
+                    style="width:14em; text-align: left" ng-disabled="!shisetsu.editable">
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="row" ng-show="!shisetsu.idPhase">
+          <div class="col-sm-2"></div>
+          <div class="col-sm-10 form-inline">
+            <div class="form-group input-append text-left">
+              <label class="form-control-label text-center margin">
+                <p class="label">設置位置</p>
+              </label>
+              <div class="form-inline">
+                <div class="form-inline" style="margin-right:15px;">
+                  <button type="button" class="btn btn-sm btn-default btn-group-justified text-center"
+                    ng-click="shisetsu.openMap()" style="width:8em;">
+                    <span class="glyphicon glyphicon-flag"></span>&nbsp;地図表示
+                  </button>
+                </div>
+              </div>
+            </div>
+            <div class="form-group input-append text-left">
+              <label class="form-control-label text-center margin">
+                <p class="label">所在地</p>
+              </label>
+              <div class="form-inline">
+                <div class="form-group">
+                  <input type="text" ng-model="shisetsu.data.shityouson" class="form-control input-sm"
+                    placeholder="市区町村" style="width:11em; text-align: left" ng-disabled="!shisetsu.editable">
+                </div>
+                <div class="form-group">
+                  <input type="text" ng-model="shisetsu.data.azaban" class="form-control input-sm" placeholder="字番"
+                    style="width:17em; text-align: left" ng-disabled="!shisetsu.editable">
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="row" ng-show="!shisetsu.idPhase">
+          <div class="col-sm-2"></div>
+          <div class="col-sm-10 form-inline">
+            <div class=" form-inline " style="float:left;">
+              <div class="form-group input-append text-left" style="margin-right:15px;">
+                <label class="form-control-label text-center margin">
+                  <p class="label"> 緯度</p>
+                </label>
+                <div class="form-inline">
+                  <div class="form-group" style="margin-right:10px;">
+                    <input type="number" ng-model="shisetsu.data.lat_deg" class="form-control input-sm" min="35"
+                      max="55" style="width:5em; text-align: left;" ng-disabled="!shisetsu.editable">
+                    <span class="infont">&nbsp;度</span>
+                  </div>
+                  <div class="form-group" style="margin-right:10px;">
+                    <input type="number" ng-model="shisetsu.data.lat_min" class="form-control input-sm" min="0" max="59"
+                      style="width:5em; text-align: left" ng-disabled="!shisetsu.editable">
+                    <span class="infont">&nbsp;分</span>
+                  </div>
+                  <div class="form-group" style="margin-right:10px;">
+                    <input type="number" ng-model="shisetsu.data.lat_sec" class="form-control input-sm" min="0"
+                      max="59.99999" style="width:11em; text-align: left" step="0.001" ng-disabled="!shisetsu.editable">
+                    <span class="infont">&nbsp;秒</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="row" ng-show="!shisetsu.idPhase">
+          <div class="col-sm-2"></div>
+          <div class="col-sm-10 form-inline">
+            <div class=" form-inline " style="float:left;">
+              <div class="form-group input-append text-left">
+                <label class="form-control-label text-center margin">
+                  <p class="label"> 経度</p>
+                </label>
+                <div class="form-inline">
+                  <div class="form-group" style="margin-right:10px;">
+                    <input type="number" ng-model="shisetsu.data.lon_deg" class="form-control input-sm" min="130"
+                      max="150" style="width:5em; text-align: left;" ng-disabled="!shisetsu.editable">
+                    <span class="infont">&nbsp;度</span>
+                  </div>
+                  <div class="form-group" style="margin-right:10px;">
+                    <input type="number" ng-model="shisetsu.data.lon_min" class="form-control input-sm" min="0" max="59"
+                      style="width:5em; text-align: left" ng-disabled="!shisetsu.editable">
+                    <span class="infont">&nbsp;分</span>
+                  </div>
+                  <div class="form-group" style="margin-right:10px;">
+                    <input type="number" ng-model="shisetsu.data.lon_sec" class="form-control input-sm" min="0"
+                      max="59.99999" style="width:11em; text-align: left" step="0.001" ng-disabled="!shisetsu.editable">
+                    <span class="infont">&nbsp;秒</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="row" ng-show="!shisetsu.idPhase && shisetsu.editable">
+          <div class="col-sm-2"></div>
+          <div class="col-sm-10" style="margin:10px 0 15px -5px">
+            <p class="label">※設置位置・所在地・緯度・経度について、緯度・経度が未設定の場合は、
+              <br>&nbsp;&nbsp;&nbsp;&nbsp;全景写真1のExif情報を反映します。</p>
+            <br>
+          </div>
+        </div>
+
+        <!-- 附属物点検施設とそれ以外で項目が異なる(表示位置は同じ) -->
+        <!-- 附属物点検施設 -->
+        <div
+          ng-if="(1<= shisetsu.data.shisetsu_kbn && shisetsu.data.shisetsu_kbn <= 5) || shisetsu.data.shisetsu_kbn == 22 || shisetsu.data.shisetsu_kbn == 23">
+          <div class="row" ng-show="!shisetsu.idPhase">
+            <div class="col-sm-2"></div>
+            <div class="col-sm-10 form-inline">
+              <div class="form-group input-append text-left" style="margin-right:10px;">
+                <label class="form-control-label text-center margin">
+                  <p class="label">附属物点検形式</p>
+                </label>
+                <div class="form-inline row">
+                  <div class="col-sm-4">
+                    <select class="form-control input-sm btn-group-justified"
+                      ng-model="shisetsu.data.shisetsu_keishiki_cd"
+                      ng-options="skrow.shisetsu_keishiki_cd as skrow.shisetsu_keishiki_nm for skrow in shisetsu.shisetsu_keishiki_dat"
+                      style="width:12em; text-align: left" required ng-disabled="!shisetsu.editable">
+                      <option value="">---</option>
+                    </select>
+                  </div>
+                  <div class="row" ng-show="!shisetsu.idPhase && shisetsu.editable">
+                    <div class="col-sm-6">
+                      <p class="label">
+                        ※附属物点検対象外の施設は「附属物点検対象外」を選択してください。<br>&nbsp;&nbsp;※施設の形式を入力する場合は、施設台帳にて支柱形式などに入力してください。</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- 附属物点検施設以外 -->
+        <div ng-if="5 < shisetsu.data.shisetsu_kbn">
+          <div class="row" ng-show="!shisetsu.idPhase">
+            <div class="col-sm-2"></div>
+            <div class="col-sm-10 form-inline">
+
+              <div class="form-group input-append text-left" style="margin-right:10px;"
+                ng-show="shisetsu.keishiki_kubun.length>=1">
+                <label class="form-control-label text-center margin">
+                  <p class="label">{{shisetsu.keishiki_kubun1.syubetsu_title}}</p>
+                </label>
+                <div class="form-inline">
+                  <select class="form-control input-sm btn-group-justified" ng-model="shisetsu.data.keishiki_kubun_cd1"
+                    ng-options="kkr1.keishiki_kubun_cd as kkr1.keishiki_kubun for kkr1 in shisetsu.keishiki_kubun1.kk_row"
+                    style="width:12em; text-align: left" ng-disabled="!shisetsu.editable">
+                    <option value="">---</option>
+                  </select>
+                </div>
+              </div>
+              <div class="form-group input-append text-left" style="margin-right:10px;"
+                ng-show="shisetsu.keishiki_kubun.length>=2">
+                <label class="form-control-label text-center margin">
+                  <p class="label">{{shisetsu.keishiki_kubun2.syubetsu_title}}</p>
+                </label>
+                <div class="form-inline">
+                  <select class="form-control input-sm btn-group-justified" ng-model="shisetsu.data.keishiki_kubun_cd2"
+                    ng-options="kkr2.keishiki_kubun_cd as kkr2.keishiki_kubun for kkr2 in shisetsu.keishiki_kubun2.kk_row"
+                    style="width:12em; text-align: left" ng-disabled="!shisetsu.editable">
+                    <option value="">---</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="row" ng-show="!shisetsu.idPhase">
+          <div class="col-sm-2"></div>
+          <div class="col-sm-10 form-inline">
+            <div class="form-group input-append text-left" style="margin-right:10px;">
+              <label class="form-control-label text-center margin">
+                <p class="label">延長</p>
+              </label>
+              <div class="form-inline">
+                <input type="number" ng-model="shisetsu.data.encho" class="form-control input-sm" min="0" max="1000000"
+                  style="width:8em; text-align: left" ng-disabled="!shisetsu.editable"><span
+                  style="vertical-align:-10px;">&nbsp;m</span>
+              </div>
+            </div>
+            <div class="form-group input-append text-left">
+              <label class="form-control-label text-center margin">
+                <p class="label">幅員</p>
+              </label>
+              <div class="form-inline">
+                <input type="text" ng-model="shisetsu.data.fukuin" class="form-control input-sm"
+                  style="width:14em; text-align: left" ng-disabled="!shisetsu.editable"><span
+                  style="vertical-align:-10px;">&nbsp;m</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="row" ng-show="!shisetsu.idPhase">
+          <div class="col-sm-2"></div>
+          <div class="col-sm-10 form-inline">
+            <div class="form-group" style="width:8.6em;">
+              <p class="control-label label2">代替路の有無</p>
+              <div class="radio-inline">
+                <input type="radio" value="0" ng-model="shisetsu.data.substitute_road"
+                  ng-disabled="!shisetsu.editable">有
+              </div>
+              <div class="radio-inline">
+                <input type="radio" value="1" ng-model="shisetsu.data.substitute_road"
+                  ng-disabled="!shisetsu.editable">無
+              </div>
+            </div>
+            <div class="form-group input-append text-left" style=" margin-right:35px" ng-disabled="!shisetsu.editable">
+              <label class="form-control-label text-center margin">
+                <p class="label">緊急輸送道路</p>
+              </label>
+              <div class="form-inline">
+                <select class="form-control input-sm btn-group-justified" ng-model="shisetsu.data.emergency_road"
+                  ng-options="road.id as road.label for road in shisetsu.mst_emergency_road"
+                  style="text-align:left; width:8.6em;" ng-disabled="!shisetsu.editable">
+                  <option value="">---</option>
+                </select>
+              </div>
+            </div>
+            <div class="form-group" style="width:10em;">
+              <p class="control-label label2">自専道／一般道</p>
+              <div class="radio-inline">
+                <input type="radio" value="0" ng-model="shisetsu.data.motorway" ng-disabled="!shisetsu.editable">自専道
+              </div>
+              <div class="radio-inline">
+                <input type="radio" value="1" ng-model="shisetsu.data.motorway" ng-disabled="!shisetsu.editable">一般道
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="row" ng-show="!shisetsu.idPhase">
+          <div class="col-sm-2"></div>
+          <div class="col-sm-10 form-inline">
+            <div class="form-group input-append text-left">
+              <label class="form-control-label text-center margin">
+                <p class="label">占用物件</p>
+              </label>
+              <div class="form-inline">
+                <input type="text" ng-model="shisetsu.data.senyou" class="form-control input-sm"
+                  style="width:27em; text-align: left" ng-disabled="!shisetsu.editable">
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-sm-6">
+        <div class="row" ng-show="!shisetsu.idPhase" ng-repeat="index in [1,2]" style="max-width:520px">
+          <div class="col-sm-10" style="margin:10px">
+            <div flow-init="{target: 'api/index.php/PictureAjax/image_upload'}" flow-name="flow"
+              flow-files-submitted="shisetsu.imageUpload($flow,index);" data-drop="true" data-jqyoui-options
+              jqyoui-droppable="{onOver:'shisetsu.dragOver',onOut:'shisetsu.dragOut',onDrop:'shisetsu.dragDrop(shisetsu.data.zenkei[index].path,index)'}"
+              ng-model="shisetsu.data.zenkei[index].path">
+              <span style="font-size:12px">全景写真{{index}}</span>
+              <span ng-show="shisetsu.data.zenkei[index].path && shisetsu.editable"
+                ng-click="shisetsu.deleteImage(index);" class="btn btn-xs btn-danger" style="float:right">ファイル削除</span>
+              <span ng-show="shisetsu.editable" class="btn btn-xs btn-info" style="float:right"
+                ng-click="shisetsu.openGenbaSyashin()">現場写真</span>
+              <span ng-show="shisetsu.editable" class="btn btn-xs btn-default" flow-btn
+                style="float:right">ファイル選択</span>
+              <div class="drop" flow-drop ng-class="dropClass" flow-prevent-drop flow-drag-enter="dropClass='drag-over'"
+                flow-drag-leave="dropClass=''" flow-drop-enabled="shisetsu.editable">
+                <div ng-show="$flow.support && !shisetsu.data.zenkei[index].path">
+                  <p ng-show="shisetsu.editable">写真をドラッグしてください。</p>
+                </div>
+                <img ng-show="shisetsu.data.zenkei[index].path"
+                  ng-src="{{shisetsu.data.zenkei[index].path+'?'+shisetsu.picture.query_cd}}" style="width: 100%" />
+                <div class="progress progress-striped" ng-show="$flow.isUploading()">
+                  <div class="progress-bar" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"
+                    ng-style="{width: ($flow.progress() * 100) + '%'}" style="width: 100%;">
+                    <span class="sr-only ng-binding">1% Complete</span>
+                  </div>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-sm-4">
+                  <p class="label"> 撮影日</p>
+                </div>
+                <div class="col-sm-8">
+                  <p class="input-group input-group-sm">
+                    <input type="text" ng-model="shisetsu.data.zenkei[index].exif_dt" uib-datepicker-popup="yyyy-MM-dd"
+                      is-open="status1.opened" class="form-control input disabled-color" current-text="今日"
+                      clear-text="クリア" close-text="閉じる" datepicker-options="{showWeeks:false}" ng-required="false"
+                      disabled>
+                    <span class="input-group-btn">
+                      <button type="button" class="btn btn-default" ng-click="status1.opened = !status1.opened"
+                        ng-disabled="!shisetsu.data.zenkei[index].path"><i
+                          class="glyphicon glyphicon-calendar"></i></button>
+                    </span>
+                  </p>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-sm-4">
+                  <p class="label"> コメント</p>
+                </div>
+                <div class="col-sm-8">
+                  <input type="text" class="form-control input-sm" ng-model="shisetsu.data.zenkei[index].description"
+                    ng-disabled="!shisetsu.data.zenkei[index].path || !shisetsu.editable">
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+
+    <div class="row">&nbsp;</div>
+    <hr class="style3" ng-show="shisetsu.data.shisetsu_kbn==4 && !shisetsu.idPhase">
+    <div class="row" ng-show="shisetsu.data.shisetsu_kbn==4 && !shisetsu.idPhase">
+      <div class="col-sm-6">
+        <div class="row">
+          <div class="col-sm-4"></div>
+          <div class="col-sm-8" style="font-weight: bold;">
+            支柱&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            <button type="button " class="btn btn-xs btn-success " ng-click="shisetsu.ClickCreateIdx()"
+              ng-show="shisetsu.editable">新規追加</button>
+            <span ng-show="shisetsu.data.bousetsusaku.length > 1">
+              &nbsp;&nbsp;&nbsp;
+              <button type="button " class="btn btn-xs btn-success " ng-click="shisetsu.ClickPreviousFunction() "
+                ng-disabled="shisetsu.dispIdx==1 ">←</button>
+              {{shisetsu.dispIdx}}／{{shisetsu.data.bousetsusaku.length-1}}
+              <button type="button " class="btn btn-xs btn-success " ng-click="shisetsu.ClickNextFunction() "
+                ng-disabled="shisetsu.dispIdx==shisetsu.data.bousetsusaku.length-1">→</button>
+            </span>&nbsp;&nbsp;&nbsp;
+            <button type="button " class="btn btn-xs btn-danger " ng-click="shisetsu.ClickDeleteIdx()"
+              ng-show="shisetsu.data.bousetsusaku.length > 1 && shisetsu.data.chk_data_exist == 0 && shisetsu.editable">表示分削除</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="row" ng-show="!shisetsu.idPhase" style="margin-top:10px">
+      <!-- 防雪柵データはstruct_idx=0が本体、1以上がそれぞれの点検単位のデータとする -->
+      <div class="col-sm-2"></div>
+      <div class="col-sm-8" ng-show="shisetsu.data.shisetsu_kbn == 4">
+        <div ng-repeat="bs in shisetsu.data.bousetsusaku " ng-show="$index==shisetsu.dispIdx">
+          <div class="col-sm-5">
+            <div class="form-inline ">
+              <div class="form-group input-append text-left ">
+                <label class="form-control-label text-center margin ">
+                  <p class="label ">支柱番号</p>
+                </label>
+                <div class="form-inline">
+                  <div class="form-group">
+                    <input type="number" ng-model="bs.struct_no_s " class="form-control input-sm "
+                      style="width:10em; text-align: left "
+                      ng-disabled="(shisetsu.bousetsu_base_cnt>=$index && shisetsu.data.chk_data_exist == 1) || !shisetsu.editable">
+                    <p class="label">~</p>
+                    <input type="number" ng-model="bs.struct_no_e " class="form-control input-sm "
+                      style="width:10em; text-align: left"
+                      ng-disabled="(shisetsu.bousetsu_base_cnt>=$index && shisetsu.data.chk_data_exist == 1) || !shisetsu.editable">
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="form-inline ">
+              <div class="form-group input-append text-left ">
+                <label class="form-control-label text-center margin ">
+                  <p class="label ">測点</p>
+                </label>
+                <div class="form-inline ">
+                  <div class="form-group ">
+                    <input type="number" ng-model="bs.sp " class="form-control input-sm "
+                      style="width:10em; text-align: left " min="-1000000" max="1000000"
+                      ng-disabled="!shisetsu.editable">
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col-sm-5">
+            <div flow-init="{target: 'api/index.php/PictureAjax/image_upload'}" flow-name="flow"
+              flow-files-submitted="shisetsu.imageUpload($flow,1,bs.struct_idx);" data-drop="true" data-jqyoui-options
+              jqyoui-droppable="{onOver:'shisetsu.dragOver',onOut:'shisetsu.dragOut',onDrop:'shisetsu.dragDrop(bs.image_src,1,bs.struct_idx)'}"
+              ng-model="bs.image_src">
+              <span style="font-size:12px">各箇所全景</span>
+              <span ng-show="bs.image_src && shisetsu.editable" ng-click="shisetsu.deleteImage(0,bs.struct_idx);"
+                class="btn btn-xs btn-danger" style="float:right">ファイル削除</span>
+              <span ng-show="shisetsu.editable" class="btn btn-xs btn-info" style="float:right"
+                ng-click="shisetsu.openGenbaSyashin()">現場写真</span>
+              <span ng-show="shisetsu.editable" class="btn btn-xs btn-default" flow-btn
+                style="float:right">ファイル選択</span>
+              <div class="drop" flow-drop ng-class="dropClass" flow-prevent-drop flow-drag-enter="dropClass='drag-over'"
+                flow-drag-leave="dropClass=''" flow-drop-enabled="shisetsu.editable">
+                <div ng-show="$flow.support && !bs.image_src">
+                  <p ng-show="shisetsu.editable">写真をドラッグしてください。</p>
+                </div>
+                <img ng-show="bs.image_src" ng-src="{{bs.image_src}}" style="width: 100%;max-width:520px" />
+                <div class="progress progress-striped" ng-show="$flow.isUploading()">
+                  <div class="progress-bar" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"
+                    ng-style="{width: ($flow.progress() * 100) + '%'}" style="width: 100%;">
+                    <span class="sr-only ng-binding">1% Complete</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-sm-2"></div>
+    </div>
+    <div class="row " style="margin-bottom:50px; text-align: center;" ng-show="shisetsu.idPhase">
+      <div class="form-inline ">
+        <div class="form-group" style="text-align: left">
+          <label class="margin">
+            <p class="label">施設名</p>
+          </label>
+          <div>
+            <select class="form-control input-sm btn-group-justified" ng-model="shisetsu.data.shisetsu_kbn"
+              ng-options="row.shisetsu_kbn as row.shisetsu_kbn_nm for row in shisetsu.shisetsu_kbn_dat"
+              style="width:auto; text-align: left" ng-change="shisetsu.shisetsuChange()"
+              ng-disabled="shisetsu.idPhase==false">
+              <option value="">---</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-group input-append">
+          <div class="form-group" style="text-align: left">
+            <label class="form-control-label text-center margin">
+              <p class="label">施設管理番号</p>
+            </label>
+            <div class="form-inline">
+              <div class="form-group">
+                <input type="text" ng-model="shisetsu.data.shisetsu_cd" class="form-control input-sm ime_eisu"
+                  style="width:10em; text-align: left;" ng-disabled="shisetsu.idPhase==false">
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <div class="row" ng-show="shisetsu.idPhase" style="margin:15px 0 15px 0">
+    </div>
+    <div class="row " style="margin-top:15px;margin-bottom:10px; text-align: center;">
+      <div class="form-inline ">
+        <div class="form-group input-append ">
+          <!-- 戻るときはSESSIONにsrchがあるので引数はsrch_kbnは0でその他は何でもいい -->
+          <a type="button " class="btn btn-sm btn-danger btn-group-justified text-center " ng-click="shisetsu.back()"
+            style="width:12em; "><span class="glyphicon glyphicon-arrow-left "></span>　戻る
+          </a>
+        </div>
+        <span>&nbsp;&nbsp;&nbsp;&nbsp;</span>
+        <div class="form-group text-center " ng-hide="shisetsu.title=='' || !shisetsu.editable ">
+          <div
+            ng-show="shisetsu.ath_syozoku_cd <=2 || shisetsu.ath_syozoku_cd==10001 || (shisetsu.ath_syozoku_cd==3 && (shisetsu.ath_syucchoujo_cd==shisetsu.mng_syucchoujo_cd)) ">
+            <button type="button " class="btn btn-sm btn-info text-center " ng-click="shisetsu.save() "
+              style="width:12em; " ng-show="!shisetsu.idPhase " ng-disabled="shisetsuForm.$invalid ">
+              <span class="glyphicon glyphicon-save "></span>　保存</button>
+            <span class="label" style="color:red"
+              ng-show="!shisetsu.idPhase && shisetsu.editable && shisetsuForm.$invalid">&nbsp;赤枠項目が入力不正です</span>
+            <button type="button " class="btn btn-sm btn-success text-center " ng-click="shisetsu.saveId() "
+              style="width:12em; " ng-show="shisetsu.idPhase">
+              <span class="glyphicon glyphicon-save "></span>&nbsp;管理番号新規登録</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!--
+<div id="footerArea2 ">
+<div class="row " style="margin-top : 8px ">
+<div class="col-sm-2 " style="text-align:center; ">
+<a href="#/main " type="button " class="btn btn-xs btn-inverse btn-sm ">
+<span class="glyphicon glyphicon-arrow-left "></span>　TOPページへ戻る</a>
+</div>
+<div class="col-sm-8 " style="text-align:center; ">
+<button type="button " class="btn btn-xs btn-success btn-sm ">
+<span class="glyphicon glyphicon-list-alt "></span>　新規施設登録</button>
+</div>
+<div class="col-sm-2 ">
+<div class="col-sm-6 " style="text-align:center; ">
+<button type="button " class="btn btn-xs btn-info btn-sm ">
+<span class="glyphicon glyphicon-print "></span>　エクセル出力</button>
+</div>
+</div>
+</div>
+</div>
+-->
+  </div>
+</form>
+
+<div class="waitOverlay " ng-show="shisetsu.waitOverlay ">
+  <div style="width:100vw;height:100vh;font-size:60px;display: table-cell;text-align: center;vertical-align: middle; ">
+    <i class="fa fa-spinner fa-spin fa-3x fa-fw "></i>
+    <br>
+    <span>保存中です。しばらくお待ちください。</span>
+  </div>
+</div>

@@ -1,0 +1,1175 @@
+<div>
+  <!-- Navbar Start-->
+  <div class="navbar navbar-default navbar-fixed-top" style="border-bottom: 0px;">
+    <div class="container">
+      <a style="color:white;" class="navbar-brand" href="#"><img src="images/logo.png"
+          class="img-rounded">道路附属物管理システム</a>
+    </div>
+
+    <div id="top"></div>
+    <div class="row" style="padding-top: 0px;">
+      <!--            <div id="top"></div>-->
+      <div class="col-sm-12" style="position: relative;">
+        <!--div style="padding-left:160px"-->
+        <div class="h_main" style="position: absolute;"
+          ng-class="{'h_main-info' : !tenken.editable, 'h_main-danger' : tenken.editable}">【現在】：
+          <span ng-show="tenken.editable">編集可</span>
+          <span ng-hide="tenken.editable" style="color : red;">編集不可</span>
+        </div>
+        <div class="h_main" style="margin-left:-15px;"
+          ng-class="{'h_main-info' : !tenken.editable, 'h_main-danger' : tenken.editable}">
+          <!--span class="glyphicon glyphicon-list-alt" aria-hidden="true"></span-->点検票入力
+        </div>
+        <div ng-show="tenken.back.id == 1">
+          <span ng-if="!tenken.editable">
+            <button type="button" class="btn btn-xs btn-primary btn-danger"
+              style="position: absolute; top: 5px; right: 30px;" ng-click="tenken.ClickEditableFunction()"
+              ng-disabled="(tenken.currentInspection +1 != tenken.maxInspection) || (tenken.baseinfo.phase == 5 && (tenken.sochi_cnt==0 || tenken.sochi_end_cnt==tenken.sochi_cnt)) || (tenken.baseinfo.phase == 6 && (tenken.sochi_cnt==0 || tenken.sochi_end_cnt==tenken.sochi_cnt))">
+              <span class="glyphicon glyphicon-pencil"></span>&nbsp;編集モードへ</button>
+          </span>
+          <span ng-if="tenken.editable">
+            <button type="button" class="btn btn-xs btn-primary btn-info"
+              style="position: absolute; top: 5px; right: 30px;" ng-click="tenken.ClickEditableFunction()"
+              ng-disabled="(tenken.currentInspection +1 != tenken.maxInspection) || (tenken.baseinfo.phase == 5 && (tenken.sochi_cnt==0 || tenken.sochi_end_cnt==tenken.sochi_cnt)) || (tenken.baseinfo.phase == 6 && (tenken.sochi_cnt==0 || tenken.sochi_end_cnt==tenken.sochi_cnt))">
+              <span class="glyphicon glyphicon-file"></span>&nbsp;閲覧モードへ</button>
+          </span>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- End of Navber -->
+
+  <div class="row" style="margin-top : 88px;">
+    <div class="col-sm-12" style="text-align:right;" ng-show="!tenken.editable">
+      <div style=" margin-right:15px">
+        <button type="button" class="btn btn-xs btn-info" ng-click="tenken.ClickRegisterFunction()" ng-hide="true">
+          &nbsp;新しい点検票&nbsp;</button>
+        <a ng-click="tenken.OpenRireki()" type="button" class="btn btn-xs btn-info"
+          ng-disabled="tenken.maxInspection == 1">
+          &nbsp;過去の点検結果&nbsp;</a>
+        <button type="button" class="btn btn-xs btn-info" ng-click="tenken.clickPreviousFunctionConfirm()"
+          ng-disabled="(tenken.currentInspection == 0)">←</button>
+        {{tenken.currentInspection + 1}}／{{tenken.maxInspection}}
+        <button type="button" class="btn btn-xs btn-info" ng-click="tenken.clickNextFunction()"
+          ng-disabled="(tenken.currentInspection+1 == tenken.maxInspection)">→</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="row" style="margin-top : 12px">
+    <div class="col-sm-6"></div>
+    <div class="col-sm-6" style="text-align:right;">
+      <div style=" margin-right:15px">&nbsp;
+        <!--
+<a ng-click="tenken.location('/shisetsu_info')" type="button" class="btn btn-xs btn-success btn-sm" ng-disabled="((tenken.currentInspection +1 != tenken.maxInspection))">
+<span class="glyphicon glyphicon-file"></span>&nbsp;基本情報編集&nbsp;</a>
+-->
+      </div>
+    </div>
+  </div>
+
+  <div class="row ">
+    <div style="margin-top:-20px">
+      <div class="col-sm-9">
+        <h2> 基本情報 </h2>
+      </div>
+      <div class="col-sm-3">
+        <!--
+<div style="position: absolute; right: 30px;">
+<span ng-show="tenken.isBssk">
+{{tenken.struct_idx}} / {{tenken.struct_idx_num}}
+</span>
+</div>
+-->
+      </div>
+    </div>
+  </div>
+  <div class="container">
+    <div class="row">
+      <div class="col-sm-12">
+        <table class="type01 table-bordered" style="font-size:12px; margin-top:-10px;">
+          <tbody>
+            <tr class="active">
+              <th colspan="1">施設名<span
+                  ng-hide="tenken.baseinfo.shisetsu_keishiki_cd==null || tenken.baseinfo.shisetsu_keishiki_cd==0">（形式）</span>
+              </th>
+              <th>管理番号</th>
+              <th>路線名</th>
+              <th>所在地</th>
+              <th>測点</th>
+              <th>横断区分</th>
+              <th>設置位置</th>
+            </tr>
+            <tr>
+              <td colspan="">{{tenken.baseinfo.shisetsu_kbn_nm}}
+                <span
+                  ng-hide="tenken.baseinfo.shisetsu_keishiki_cd==null || tenken.baseinfo.shisetsu_keishiki_cd==0">（{{tenken.baseinfo.shisetsu_keishiki_nm}}）</span><span
+                  ng-show="tenken.isBssk">
+                  <br>{{tenken.struct_idx}} / {{tenken.struct_idx_num}}
+                </span></td>
+              <td>{{tenken.baseinfo.shisetsu_cd}}</td>
+              <td>{{tenken.baseinfo.rosen_nm}}</td>
+              <td>{{tenken.baseinfo.shityouson}}{{tenken.baseinfo.azaban}}</td>
+              <td>{{tenken.baseinfo.sp}}</td>
+              <td>{{tenken.baseinfo.lr}}</td>
+              <td>{{tenken.baseinfo.lat}}, {{tenken.baseinfo.lon}}</td>
+            </tr>
+            <tr class="active">
+              <th colspan="2">管理者</th>
+              <th>代替路の有無</th>
+              <th>緊急輸送道路</th>
+              <th>自専車一般道</th>
+              <th colspan="2">占用物件（名称）</th>
+            </tr>
+            <tr>
+              <td colspan="2">{{tenken.baseinfo.dogen_mei}}建設管理部 {{tenken.baseinfo.syucchoujo_mei}}</td>
+              <td>{{tenken.baseinfo.substitute_road_str}}</td>
+              <td>{{tenken.baseinfo.emergency_road_str}}</td>
+              <td>{{tenken.baseinfo.motorway_str}}</td>
+              <td colspan="2">{{tenken.baseinfo.senyou}}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <div class="row" style="margin:10px 0 0 -15px;">
+    <div class="col-sm-6">
+      <h2>点検実施状況 </h2>
+      <div class="step_bar_box">
+        <ol class="step_bar">
+          <li style="cursor:pointer;" ng-click="tenken.ShowDescription('tenken')"
+            ng-class="{'current' : tenken.baseinfo.phase==1}">点検{{tenken.getJudgePerPhase(1)}}
+          </li>
+          <li style="cursor:pointer;" ng-click="tenken.ShowDescription('screening')"
+            ng-class="{'current' : tenken.baseinfo.phase==2}">スクリーニング{{tenken.getJudgePerPhase(2)}}</li>
+          <li style="cursor:pointer;" ng-click="tenken.ShowDescription('investigate')"
+            ng-class="{'current' : tenken.baseinfo.phase==3}">詳細調査{{tenken.getJudgePerPhase(3)}}</li>
+          <li style="cursor:pointer;" ng-click="tenken.ShowDescription('tenken_complete')"
+            ng-class="{'current' : tenken.baseinfo.phase==5, 'current_forcing_end' : tenken.baseinfo.phase==6}">
+            点検完了{{tenken.getJudgePerPhase(5)}}</li>
+        </ol>
+      </div>
+    </div>
+    <div class="col-sm-6">
+      <h2>措置実施状況 </h2>
+      <div class="step_bar_box">
+        <ol class="step_bar">
+          <li style="cursor:pointer;" ng-click="tenken.ShowDescription('measure')"
+            ng-class="{'no_sochi_current' : tenken.sochi_cnt==0}">措置対象点検箇所なし</li>
+          <li style="cursor:pointer;" ng-click="tenken.ShowDescription('measure')"
+            ng-class="{'sochi_current' : tenken.sochi_cnt!=0 && tenken.sochi_cnt!=tenken.sochi_end_cnt}">措置<span
+              ng-hide="tenken.sochi_cnt==0">({{tenken.sochi_end_cnt}}/{{tenken.sochi_cnt}})</span></li>
+          <li style="cursor:pointer;" ng-click="tenken.ShowDescription('measure')"
+            ng-class="{'no_sochi_current' : tenken.sochi_cnt!=0 && tenken.sochi_cnt==tenken.sochi_end_cnt}">完了</li>
+        </ol>
+      </div>
+    </div>
+  </div>
+
+  <div class="row" style="margin:10px 0 0 -15px;" ng-show="!tenken.baseinfo.shisetsu_keishiki_cd">
+    <div class="col-sm-6">
+      <h2>形式の登録</h2>
+      <div>
+        <p style="margin:0 0 0 30px;font-size:90%;">当施設は形式が登録されていません。</p>
+        <p style="margin:0 0 0 30px;font-size:90%;">確定保存をするためには形式が必要です。</p>
+      </div>
+      <div class="col-sm-2">
+        <form name="userForm" style="margin-left:10px">
+          <div class="form-group row">
+            <label class="form-control-label text-center" style=" margin:10px 0 -15px 30px">
+              <p style="font-size:14px">形式</p>
+            </label>
+            <div>
+              <select class="form-control input-sm" ng-model="tenken.baseinfo.input_keishiki_cd"
+                ng-options="detail.shisetsu_keishiki_cd as detail.shisetsu_keishiki_nm for detail in tenken.keishikis.keishiki_info"
+                ng-disabled="!(tenken.baseinfo.phase==1 && tenken.editable)" ng-change="tenken.SelectedPatrolinList()"
+                style="margin-left:30px">
+                <option value="">---</option>
+              </select>
+
+            </div>
+          </div>
+        </form>
+      </div>
+
+      <div class="col-sm-6">&nbsp;</div>
+    </div>
+  </div>
+
+  <div id="y1"></div>
+  <div class="s_main_all" ng-click="isInputCollapsed = !isInputCollapsed">
+    <a style="color:white;"> <i class="fa"
+        ng-class="{'fa-plus' : isInputCollapsed , 'fa-minus' : !isInputCollapsed}"></i> 様式（その1）の入力 </a>
+  </div>
+  <div uib-collapse="isInputCollapsed">
+
+    <div class="container">
+      <div class="row ">
+        <div class="col-sm-2">
+          <form name="userForm" style="margin-left:10px">
+            <div class="form-group row" ng-class="{'has-error': userForm.input.$valid}">
+              <label class="form-control-label text-center" style=" margin:0 0 -50px 5px">
+                <p style="font-size:14px">点検実施年月日</p>
+              </label>
+              <div>
+                <p class="input-group">
+                  <input name="input" ng-model="tenken.baseinfo.chk_dt" uib-datepicker-popup="yyyy-MM-dd"
+                    is-open="status1.opened" class="form-control input-sm" placeholder="" required
+                    ng-disabled="!(tenken.baseinfo.phase==1 && tenken.editable)" current-text="今日" clear-text="クリア"
+                    close-text="閉じる" datepicker-options="{showWeeks:false}" disabled
+                    ng-class="{'editable':tenken.editable}">
+                  <span class="input-group-btn">
+                    <button type="button" class="btn btn-sm btn-default" ng-click="status1.opened = !status1.opened"
+                      style="height:35px" ng-disabled="!(tenken.baseinfo.phase==1 && tenken.editable)"><i
+                        class="glyphicon glyphicon-calendar"></i></button>
+                  </span>
+                </p>
+              </div>
+            </div>
+          </form>
+        </div>
+        <div class="col-sm-2">
+          <form name="userForm" style="margin-left:10px">
+            <div class="form-group row">
+              <label class="form-control-label text-center" style=" margin:0 0 -50px 5px">
+                <p style="font-size:14px">点検員</p>
+              </label>
+              <div>
+                <select class="form-control input-sm" ng-model="tenken.patrolin"
+                  ng-options="patrolin.simei_ryaku for patrolin in tenken.patrolins.patrolins"
+                  ng-disabled="!(tenken.baseinfo.phase==1 && tenken.editable)"
+                  ng-change="tenken.SelectedPatrolinList()"></select>
+              </div>
+            </div>
+          </form>
+        </div>
+        <div class="col-sm-2">
+          <form name="userForm" style="margin-left:10px">
+            <div class="form-group row">
+              <label class="form-control-label text-center" style=" margin:0 0 -50px 5px">
+                <p style="font-size:14px">&nbsp;</p>
+              </label>
+              <div>
+                <span ng-if="(tenken.baseinfo.phase==1 && tenken.editable)">
+                  <autocomplete ng-model="tenken.baseinfo.chk_person" attr-input-class="form-control input-sm"
+                    attr-ulclass="autocomplete-list" attr-placeholder="" click-activation="true"
+                    data="tenken.candidate.chk_person"></autocomplete>
+
+                </span>
+                <span ng-if="!(tenken.baseinfo.phase==1 && tenken.editable)">
+                  <input type="text" class="form-control input-sm" ng-model="tenken.baseinfo.chk_person"
+                    value="{{tenken.baseinfo.chk_person.simei}}" ng-disabled="true" />
+                </span>
+              </div>
+            </div>
+          </form>
+        </div>
+        <div class="col-sm-2">
+          <form name="userForm" style="margin-left:10px">
+            <div class="form-group row" ng-class="{'has-error': userForm.input.$valid}">
+              <label class="form-control-label text-center" style=" margin:0 0 -50px 5px">
+                <p style="font-size:14px">調査実施年月日</p>
+              </label>
+              <div class="form-inline">
+                <div style="margin-bottom: 8px;" class="form-group check_custom" data-toggle="tooltip"
+                  data-placement="bottom" title="詳細調査終了">
+                  <input type="checkbox" class="form-control" id="check_investigate" ng-model="tenken.check_investigate"
+                    ng-disabled="!(tenken.baseinfo.phase==3 && tenken.editable)">
+                  <label for="check_investigate" style="margin:0px">
+                  </label>
+                </div>
+                <p class="input-group" style="width:calc(100% - 35px)">
+                  <input name="input" ng-model="tenken.baseinfo.investigate_dt" uib-datepicker-popup=""
+                    is-open="status2.opened" class="form-control input-sm" required
+                    ng-disabled="!(tenken.baseinfo.phase==3 && tenken.editable)" current-text="今日" clear-text="クリア"
+                    close-text="閉じる" datepicker-options="{showWeeks:false}" disabled
+                    ng-class="{'editable':tenken.editable}" />
+                  <span class="input-group-btn">
+                    <button type="button" class="btn btn-sm btn-default" ng-click="status2.opened = !status2.opened"
+                      style="height:35px" ng-disabled="!(tenken.baseinfo.phase==3 && tenken.editable)"><i
+                        class="glyphicon glyphicon-calendar"></i></button>
+                  </span>
+                </p>
+              </div>
+            </div>
+          </form>
+        </div>
+        <div class="col-sm-2">
+          <form name="userForm" style="margin-left:10px">
+            <div class="form-group row">
+              <label class="form-control-label text-center" style=" margin:0 0 -50px 5px">
+                <p style="font-size:14px">調査員</p>
+              </label>
+              <div>
+                <select class="form-control input-sm" ng-model="tenken.investigator"
+                  ng-options="investigator.busyo_simei for investigator in tenken.investigators.investigator_info"
+                  ng-disabled="!(tenken.baseinfo.phase==3 && tenken.editable)"
+                  ng-change="tenken.SelectedInvestigatorList()"></select>
+              </div>
+            </div>
+          </form>
+        </div>
+        <div class="col-sm-2">
+          <form name="userForm" style="margin-left:10px">
+            <div class="form-group row">
+              <label class="form-control-label text-center" style=" margin:0 0 -50px 5px">
+                <p style="font-size:14px">&nbsp;</p>
+              </label>
+              <div class="form-inline">
+                <span ng-if="(tenken.baseinfo.phase==3 && tenken.editable)">
+                  <autocomplete ng-model="tenken.baseinfo.investigate_person" attr-input-class="form-control input-sm"
+                    attr-ulclass="autocomplete-list" attr-placeholder="" click-activation="true"
+                    data="tenken.candidate.investigate_person"></autocomplete>
+                </span>
+                <span ng-if="!(tenken.baseinfo.phase==3 && tenken.editable)">
+                  <input type="text" class="form-control input-sm" ng-model="tenken.baseinfo.investigate_person"
+                    value="{{tenken.baseinfo.investigate_person.simei}}" ng-disabled="true" />
+                </span>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <div class="row ">
+      <div class="col-sm-8" style="margin-top:-20px;">
+        <div class="row ">
+          <div class="col-sm-11" style="padding-right: 0px;">
+            <div class="col-sm-6">
+              <div>
+                <table class="type01 table-bordered">
+                  <thead>
+                    <tr>
+                      <th scope="cols" colspan="2" style="height: 30px; vertical-align: middle;">部材単位の健全性【点検時】</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <th>部材</th>
+                      <th>判別区分</th>
+                    </tr>
+                    <tr ng-repeat="buzai_dat in tenken.tenken_kasyo.buzai">
+                      <th>{{buzai_dat.buzai_nm}}</th>
+                      <td
+                        ng-class="{'bg-danger-c':buzai_dat.check_buzai_judge == 4,'bg-warning-c':buzai_dat.check_buzai_judge == 3}">
+                        <div ng-switch="buzai_dat.check_buzai_judge">
+                          <span ng-switch-when="0">－</span>
+                          <span ng-switch-when="1">Ⅰ</span>
+                          <span ng-switch-when="2">Ⅱ</span>
+                          <span ng-switch-when="3">Ⅲ</span>
+                          <span ng-switch-when="4">Ⅳ</span>
+                        </div>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+            <div class="col-sm-6">
+              <table class="type01 table-bordered">
+                <thead>
+                  <tr>
+                    <th scope="cols" colspan="2" style="height: 30px; vertical-align: middle;">現在の部材単位の健全性&nbsp;
+                      <!--                                    <span class="btn btn-xs btn-info" style="float:right; font-size:11px;" ng-click="tenken.openShisetsuJudge(tenken.baseinfo)" ng-disabled="(tenken.baseinfo.shisetsu_cd == null) || (tenken.baseinfo.shisetsu_ver == null) || (tenken.baseinfo.shisetsu_kbn == null) || (tenken.baseinfo.chk_mng_no == null) || (tenken.baseinfo.rireki_no == null)">確認</span>-->
+                      <!--                                        <a style="float:right; cursor:pointer; font-size:11px; align: right;" ng-click="tenken.openShisetsuJudge(tenken.baseinfo)" ng-hide="(tenken.baseinfo.shisetsu_cd == null) || (tenken.baseinfo.shisetsu_ver == null) || (tenken.baseinfo.shisetsu_kbn == null) || (tenken.baseinfo.chk_mng_no == null) || (tenken.baseinfo.rireki_no == null)">一覧</a>-->
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <th>部材</th>
+                    <th>判別区分</th>
+                  </tr>
+                  <tr ng-repeat="buzai_dat in tenken.tenken_kasyo.buzai">
+                    <th>{{buzai_dat.buzai_nm}}</th>
+                    <td
+                      ng-class="{'bg-danger-c':buzai_dat.measures_buzai_judge == 4,'bg-warning-c':buzai_dat.measures_buzai_judge == 3}">
+                      <div ng-switch="buzai_dat.measures_buzai_judge">
+                        <span ng-switch-when="0">－</span>
+                        <span ng-switch-when="1">Ⅰ</span>
+                        <span ng-switch-when="2">Ⅱ</span>
+                        <span ng-switch-when="3">Ⅲ</span>
+                        <span ng-switch-when="4">Ⅳ</span>
+                      </div>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+          <div class="col-sm-1">
+            <span class="btn btn-xs btn-info" style="font-size:11px; margin-top: 30px; margin-left: -20px;"
+              ng-click="tenken.openShisetsuJudge(tenken.baseinfo)" ng-disabled="(tenken.baseinfo.shisetsu_cd == null) || (tenken.baseinfo.shisetsu_ver == null) || (tenken.baseinfo.shisetsu_kbn == null) || (tenken.baseinfo.chk_mng_no == null) || (tenken.baseinfo.rireki_no == null) ||
+                        (tenken.is_new)">点検箇所毎の<br>健全性確認</span>
+          </div>
+        </div>
+        <div class="row ">
+          <div class="col-sm-11" style="padding-right: 0px;">
+            <div class="col-sm-6">
+              <div style="margin-top:10px">
+                <table class="type01_2 table-bordered">
+                  <thead>
+                    <th scope="cols" colspan="2">附属物毎の健全性【点検時】</th>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <th>判別区分</th>
+                    </tr>
+                    <tr>
+                      <td
+                        ng-class="{'bg-danger-c':tenken.baseinfo.check_shisetsu_judge == 4,'bg-warning-c':tenken.baseinfo.check_shisetsu_judge == 3}">
+                        <div ng-switch="tenken.baseinfo.check_shisetsu_judge">
+                          <span ng-switch-when="0">－</span>
+                          <span ng-switch-when="1">Ⅰ</span>
+                          <span ng-switch-when="2">Ⅱ</span>
+                          <span ng-switch-when="3">Ⅲ</span>
+                          <span ng-switch-when="4">Ⅳ</span>
+                        </div>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+            <div class="col-sm-6">
+              <div style="margin-top:10px">
+                <table class="type01_2 table-bordered">
+                  <thead>
+                    <th scope="cols" colspan="2">現在の附属物毎の健全性</th>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <th>判別区分</th>
+                    </tr>
+                    <tr>
+                      <td
+                        ng-class="{'bg-danger-c':tenken.baseinfo.measures_shisetsu_judge == 4,'bg-warning-c':tenken.baseinfo.measures_shisetsu_judge == 3}">
+                        <div ng-switch="tenken.baseinfo.measures_shisetsu_judge">
+                          <span ng-switch-when="0">－</span>
+                          <span ng-switch-when="1">Ⅰ</span>
+                          <span ng-switch-when="2">Ⅱ</span>
+                          <span ng-switch-when="3">Ⅲ</span>
+                          <span ng-switch-when="4">Ⅳ</span>
+                        </div>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+          <div class="col-sm-1"></div>
+        </div>
+      </div>
+
+      <div class="col-sm-4" flow-init="{target: 'api/index.php/PictureAjax/image_upload'}" flow-name="flow"
+        flow-files-submitted="tenken.imageUpload($flow);" data-drop="true" data-jqyoui-options
+        jqyoui-droppable="{onOver:'tenken.dragOver',onOut:'tenken.dragOut',onDrop:'tenken.dragDrop(null,tenken.zenkei_picture.image_src,0)'}"
+        ng-model="tenken.zenkei_picture.image_src">
+        <span style="font-size:12px">全景写真</span>
+        <span ng-show="tenken.zenkei_picture.image_src && tenken.editable" ng-click="tenken.deleteImage();"
+          class="btn btn-xs btn-danger" style="float:right; font-size:11px;">ファイル削除</span>
+        <span class="btn btn-xs btn-info" style="float:right; font-size:11px;" ng-click="tenken.openGenbaSyashin()"
+          ng-show="tenken.editable">現場写真</span>
+        <span class="btn btn-xs btn-default" flow-btn style="float:right; font-size:11px;"
+          ng-show="tenken.editable">ファイル選択</span>
+        <div class="drop" flow-drop ng-class="dropClass" flow-prevent-drop flow-drop-enabled="tenken.editable"
+          flow-drag-enter="dropClass='drag-over'" flow-drag-leave="dropClass=''">
+          <div ng-show="$flow.support && !tenken.zenkei_picture.image_src">
+            <p ng-show="tenken.editable">写真をドラッグしてください。</p>
+          </div>
+          <img ng-show="tenken.zenkei_picture.image_src" src="{{tenken.zenkei_picture.image_src}}"
+            style="width: 100%;max-width:520px" />
+          <div class="progress progress-striped" ng-show="$flow.isUploading()">
+            <div class="progress-bar" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"
+              ng-style="{width: ($flow.progress() * 100) + '%'}" style="width: 100%;">
+              <span class="sr-only ng-binding">1% Complete</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="row ">
+      <div class="col-sm-12" style="margin-top:10px;">
+        <div class="form-group row">
+          <label class="col-sm-2 form-control-label text-center">
+            <p style="font-size:14px">所見</p>
+          </label>
+          <div class="col-sm-8">
+            <span ng-if="(tenken.baseinfo.phase==1 && tenken.editable)">
+              <autocompletecstm attr-rows="1" ng-model="tenken.baseinfo.syoken" attr-input-class="form-control"
+                attr-ulclass="autocomplete-list" attr-placeholder="" click-activation="true"
+                data="tenken.candidate.syoken"></autocompletecstm>
+            </span>
+            <span ng-if="!(tenken.baseinfo.phase==1 && tenken.editable)">
+              <textarea rows="1" class="form-control" ng-model="tenken.baseinfo.syoken"
+                ng-disabled="true">{{tenken.baseinfo.syoken}}</textarea>
+            </span>
+            <span style="font-size: 12px;">
+              例：き裂や板厚減少を伴う腐食が認められるため、詳細調査を行う必要がある
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="y2_3"></div>
+  <div class="s_main_all" ng-click="isTenkenCollapsed = !isTenkenCollapsed">
+    <a style="color:white;"> <i class="fa"
+        ng-class="{'fa-plus' : isTenkenCollapsed , 'fa-minus' : !isTenkenCollapsed}"></i> 様式（その2、その3）の入力 </a>
+  </div>
+  <div uib-collapse="isTenkenCollapsed" style="margin:10px 0 0 30px;">
+    <!--       ボタンを配置する-->
+
+    <div class="btn-group" style="margin-bottom:10px">
+      <div ng-repeat="(buzaiIndex, title) in tenken.tenken_kasyo.buzai" ng-model="tenken.radioModel"
+        uib-btn-radio="'{{buzaiIndex}}'" class="btn btn-info btn-sm" ng-click="tenken.buzaiClick(buzaiIndex) ">
+        <span ng-class="{'danger':title.measures_buzai_judge ==4,'warning':title.measures_buzai_judge ==3}"
+          style="font-weight: bold; font-size: 16px ">{{title.buzai_nm}}</span>
+      </div>
+    </div>
+
+    <!-- ng-showで切り替え -->
+    <div ng-repeat="title in tenken.tenken_kasyo.buzai" ng-show="$index==tenken.btnIndex">
+
+      <uib-tabset class="tab-animation" active="active">
+        <uib-tab index="$index" ng-repeat="(buzaiDetailIndex, buzai_detail_row) in title.buzai_detail_row"
+          active="$first">
+          <uib-tab-heading>
+            <span class="title" style="font-size:16px;">{{buzai_detail_row.buzai_detail_nm}}</span>
+          </uib-tab-heading>
+
+          <ng-form name="kasyo_form">
+            <div class="row">
+              <a style="margin:20px 0 0 30px" class="btn btn-primary btn-sm"
+                ng-click="tenken.windowopen(buzai_detail_row.sample_url)" ng-show="!!buzai_detail_row.sample_url">健全性
+                参考写真</a>
+            </div>
+            <div class="row" ng-repeat="(tenkenKasyoIndex, tenken_kasyo_row) in buzai_detail_row.tenken_kasyo_row"
+              style="font-size:16px; margin-top:10px">
+              <div class="col-sm-12">
+                <input type="checkbox" ng-model="tenken_kasyo_row.taisyou_umu"
+                  ng-disabled="!(tenken.baseinfo.phase==1 && tenken.editable)"> <span class="detail">
+                  {{tenken_kasyo_row.tenken_kasyo_nm}}({{tenken_kasyo_row.sign}})</span></div>
+              <div class="col-sm-12" ng-show="tenken_kasyo_row.taisyou_umu">
+                <div class="col-sm-3">
+                  <div style="font-size: 12px;">
+                    点検対象箇所がない場合は、チェックを外してください
+                  </div>
+                  <div style="padding-bottom:20px;">
+                    <table class="type02 table-bordered table-hover text-center">
+                      <tr>
+                        <th>種類</th>
+                        <th>点検時</th>
+                        <th>措置後</th>
+                      </tr>
+                      <tr ng-repeat="sonsyou_naiyou_row in tenken_kasyo_row.sonsyou_naiyou_row">
+                        <th class="text-center">
+                          {{sonsyou_naiyou_row.sonsyou_naiyou_nm}}
+                        </th>
+                        <td>
+                          <uib-rating ng-model="sonsyou_naiyou_row.check_before" max="3"
+                            ng-class="{'danger':sonsyou_naiyou_row.check_before ==3,'warning':sonsyou_naiyou_row.check_before ==2,'green':sonsyou_naiyou_row.check_before<=1}"
+                            on-hover="hoveringOver(value)" on-leave="overStar = null" style="cursor:pointer;"
+                            readonly="!(((tenken.baseinfo.phase==1 && tenken_kasyo_row.check_policy != tenken.houshin.houshins[3].houshin_cd) || (tenken.baseinfo.phase==2 && tenken_kasyo_row.check_policy_str == tenken.houshin.houshins[1].houshin) || (tenken.baseinfo.phase==3 && tenken_kasyo_row.check_policy_str == tenken.houshin.houshins[2].houshin)) && tenken.editable)"
+                            titles="tenken.sonsyou_titles"></uib-rating>
+                          &nbsp;{{tenken.rating[sonsyou_naiyou_row.check_before]}}
+                        </td>
+                        <td>
+                          <uib-rating ng-model="sonsyou_naiyou_row.measures_after" max="3"
+                            ng-class="{'danger':sonsyou_naiyou_row.measures_after ==3,'warning':sonsyou_naiyou_row.measures_after ==2,'green':sonsyou_naiyou_row.measures_after<=1}"
+                            on-hover="hoveringOver(value)" on-leave="overStar = null" style="cursor:pointer;"
+                            readonly="!((tenken_kasyo_row.check_judge>=3 && tenken_kasyo_row.check_judge<=4) && tenken.editable)"
+                            titles="tenken.sonsyou_titles"></uib-rating>
+                          &nbsp;{{tenken.rating[sonsyou_naiyou_row.measures_after]}}
+                        </td>
+                      </tr>
+                      <tr style="border-top: 3px solid #4682b4;">
+                        <th>健全性の診断</th>
+                        <td>
+                          <uib-rating ng-model="tenken_kasyo_row.check_judge" max="4"
+                            ng-class="{'danger':tenken_kasyo_row.check_judge ==4,'warning':tenken_kasyo_row.check_judge ==3,'green':tenken_kasyo_row.check_judge==2,'blue':tenken_kasyo_row.check_judge==1}"
+                            on-hover="hoveringOver(value)" on-leave="overStar = null"
+                            ng-click="tenken.chg_tenkenkasyo_judge(tenken_kasyo_row)"
+                            readonly="!(((tenken.baseinfo.phase==1 && tenken_kasyo_row.check_policy != tenken.houshin.houshins[3].houshin_cd) || (tenken.baseinfo.phase==2 && tenken_kasyo_row.check_policy == tenken.houshin.houshins[1].houshin_cd) || (tenken.baseinfo.phase==3 && (tenken_kasyo_row.check_policy == tenken.houshin.houshins[2].houshin_cd || tenken_kasyo_row.check_policy == tenken.houshin.houshins[3].houshin_cd))) && tenken.editable)"
+                            style="cursor:pointer;" titles="tenken.judge_titles"></uib-rating>
+                          &nbsp;{{tenken.hoshi[tenken_kasyo_row.check_judge]}}
+                        </td>
+                        <td>
+                          <uib-rating ng-model="tenken_kasyo_row.measures_judge" max="4"
+                            ng-class="{'danger':tenken_kasyo_row.measures_judge ==4,'warning':tenken_kasyo_row.measures_judge ==3,'green':tenken_kasyo_row.measures_judge==2,'blue':tenken_kasyo_row.measures_judge==1}"
+                            on-hover="hoveringOver(value)" on-leave="overStar = null"
+                            readonly="!((tenken_kasyo_row.check_judge>=3 && tenken_kasyo_row.check_judge<=4) && tenken.editable)"
+                            style="cursor:pointer;" titles="tenken.judge_titles"></uib-rating>
+                          &nbsp;{{tenken.hoshi[tenken_kasyo_row.measures_judge]}}
+                        </td>
+                      </tr>
+                    </table>
+                  </div>
+                  <div style="font-size: 12px; margin-top:-15px;">
+                    未調査（点検ができなかった場合）は★をクリックして未にしてください
+                  </div>
+                  <div style="margin:-5px 0 0 20px;">
+                    <div class="checkbox">
+                      <input type="checkbox" ng-model="tenken_kasyo_row.screening_flg"
+                        ng-checked="tenken_kasyo_row.screening_flg" ng-click="tenken.ChgScreening(tenken_kasyo_row)"
+                        ng-disabled="!((tenken.baseinfo.phase==2 && tenken_kasyo_row.check_policy != 3) && tenken_kasyo_row.screening_taisyou==1 && !tenken_kasyo_row.end_check && tenken.editable)"><span>スクリーニング</span>
+                    </div>
+                    <div class="checkbox"
+                      ng-show="((tenken.baseinfo.phase==2 && tenken_kasyo_row.check_policy != 3 && tenken_kasyo_row.check_judge == 3) && tenken_kasyo_row.screening_taisyou==1 && tenken_kasyo_row.screening_flg==1 && tenken.editable)">
+                      <input type="checkbox"
+                        ng-checked="tenken_kasyo_row.screening_flg && tenken_kasyo_row.check_policy == tenken.houshin.houshins[0].houshin_cd || tenken_kasyo_row.screening_flg && tenken_kasyo_row.check_policy == tenken.houshin.houshins[4].houshin_cd"
+                        ng-model="tenken_kasyo_row.end_check"
+                        ng-click="tenken.EndCheck(tenken_kasyo_row)"><span>詳細調査は行わない</span>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-sm-3">
+                  <div class="form-group form-group-sm" style="margin:0 0 5px 0">
+                    <label class=" form-control-label" style=" margin:0 0 -50px 5px">
+                      <p style="font-size:12px">損傷の種類</p>
+                    </label>
+                    <select class="form-control" ng-model="tenken_kasyo_row.sonsyou_naiyou_cd"
+                      ng-options="row.sonsyou_naiyou_cd as row.sonsyou_naiyou_nm for row in tenken_kasyo_row.sonsyou_naiyou_row"
+                      required
+                      ng-disabled="!(tenken.baseinfo.phase==1 && tenken.editable && tenken_kasyo_row.check_policy != tenken.houshin.houshins[3].houshin_cd)">
+                      <option value="">--- なし ---</option>
+                    </select>
+                  </div>
+                  <div class="form-group form-group-sm" style="margin:0 0 5px 0">
+                    <label class=" form-control-label" style=" margin:0 0 -50px 5px">
+                      <p style="font-size:12px">調査（方針）</p>
+                    </label>
+                    <input ng-disabled="true" ng-model="tenken_kasyo_row.check_policy_str" type="text"
+                      class="form-control">
+                  </div>
+                  <div class="form-group form-group-sm" style="margin:0 0 5px 0">
+                    <label class=" form-control-label" style=" margin:0 0 -50px 5px">
+                      <p style="font-size:12px">措置（方針）</p>
+                    </label>
+                    <input type="text" class="form-control" ng-model="tenken_kasyo_row.measures_policy"
+                      value="{{tenken_kasyo_row.measures_policy}}"
+                      ng-disabled="!((tenken_kasyo_row.check_judge>=3 && tenken_kasyo_row.check_judge<=4) && tenken.editable)">
+                    <div style="font-size: 12px;">
+                      解説：灯具の取付部部材において、き裂が確認できたため部材を交換
+                    </div>
+
+                    <!--
+<div ng-disabled="!((tenken_kasyo_row.check_judge>=3 && tenken_kasyo_row.check_judge<=4) && tenken.editable)">
+<autocomplete ng-model="tenken_kasyo_row.measures_policy" attr-input-class="form-control" attr-placeholder="{{tenken_kasyo_row.measures_policy_past}}" click-activation="true" data="tenken_kasyo_row.measures_policy_past"></autocomplete>
+</div>
+-->
+
+                  </div>
+                  <div class="form-group form-group-sm" style="margin:0 0 5px 0">
+                    <label class=" form-control-label" style=" margin:0 0 -50px 5px">
+                      <p style="font-size:12px">措置年月日</p>
+                    </label>
+                    <p class="input-group">
+                      <input name="input" ng-model="tenken_kasyo_row.measures_dt" uib-datepicker-popup=""
+                        is-open="status3.opened" class="form-control" required
+                        ng-disabled="!((tenken_kasyo_row.check_judge>=3 && tenken_kasyo_row.check_judge<=4) && tenken.editable)"
+                        current-text="今日" clear-text="クリア" close-text="閉じる" datepicker-options="{showWeeks:false}"
+                        disabled ng-class="{'editable':tenken.editable}">
+                      <span class="input-group-btn">
+                        <button type="button" class="btn btn-default" ng-click="status3.opened = !status3.opened"
+                          style="height:35px"
+                          ng-disabled="!((tenken_kasyo_row.check_judge>=3 && tenken_kasyo_row.check_judge<=4) && tenken.editable)"><i
+                            class="glyphicon glyphicon-calendar"></i></button>
+                      </span>
+                    </p>
+                  </div>
+                </div>
+
+                <div class="col-sm-3" flow-init="{target: 'api/index.php/PictureAjax/image_upload'}"
+                  flow-name="flow[$detailIndex]" flow-files-submitted="tenken.imageUpload($flow,tenken_kasyo_row,0);"
+                  data-drop="true" data-jqyoui-options
+                  jqyoui-droppable="{onOver:'tenken.dragOver',onOut:'tenken.dragOut',onDrop:'tenken.dragDrop(tenken_kasyo_row,tenken_kasyo_row.picture.src0,0)'}"
+                  ng-model="tenken_kasyo_row.picture.src0">
+                  <span style="font-size:12px">点検時</span>
+                  <span ng-show="(tenken_kasyo_row.picture.src0) && (tenken.baseinfo.phase==1 && tenken.editable)"
+                    ng-click="tenken.deleteImage(tenken_kasyo_row,0);" class="btn btn-xs btn-danger"
+                    style="float:right; font-size:11px;">ファイル削除</span>
+                  <span class="btn btn-xs btn-info" style="float:right; font-size:11px;"
+                    ng-click="tenken.openGenbaSyashin()"
+                    ng-show="(tenken.baseinfo.phase==1 && tenken.editable)">現場写真</span>
+                  <span class="btn btn-xs btn-default" flow-btn style="float:right; font-size:11px;"
+                    ng-show="(tenken.baseinfo.phase==1 && tenken.editable)">ファイル選択</span>
+                  <div class="drop" flow-drop ng-class="dropClass" flow-prevent-drop flow-drop-enabled="tenken.editable"
+                    flow-drag-enter="dropClass='drag-over'" flow-drag-leave="dropClass=''">
+                    <div ng-show="$flow.support && !tenken_kasyo_row.picture.src0">
+                      <p ng-show="tenken.editable">写真をドラッグしてください。</p>
+                    </div>
+                    <!--                                        <img flow-img="flow[$detailIndex].files[0]" style="width: 100%;max-width:520px" />-->
+                    <img ng-show="tenken_kasyo_row.picture.src0" src="{{tenken_kasyo_row.picture.src0}}"
+                      style="width: 100%;max-width:520px" />
+                    <div class="progress progress-striped" ng-show="$flow.isUploading()">
+                      <div class="progress-bar" role="progressbar" aria-valuenow="100" aria-valuemin="0"
+                        aria-valuemax="100" ng-style="{width: ($flow.progress() * 100) + '%'}" style="width: 100%;">
+                        <span class="sr-only ng-binding">1% Complete</span>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="form-group form-group-sm" style="margin:5px 0 5px 0">
+                    <label class=" form-control-label" style=" margin:0 0 -50px 5px">
+                      <p style="font-size:12px">備考</p>
+                    </label>
+                    <span ng-if="(tenken.baseinfo.phase==1 && tenken.editable)">
+                      <autocomplete ng-model="tenken_kasyo_row.check_bikou" attr-input-class="form-control"
+                        attr-ulclass="autocomplete-list" attr-placeholder="" click-activation="true"
+                        data="tenken_kasyo_row.check_bikou_past"></autocomplete>
+                    </span>
+                    <span ng-if="!(tenken.baseinfo.phase==1 && tenken.editable)">
+                      <input type="text" class="form-control" ng-model="tenken_kasyo_row.check_bikou"
+                        value="{{tenken_kasyo_row.check_bikou}}" ng-disabled="true" />
+                    </span>
+                  </div>
+                  <div style="font-size: 12px;">
+                    例：き裂が生じているがその深さは不明
+                  </div>
+                </div>
+
+                <div class="col-sm-3" flow-init="{target: 'api/index.php/PictureAjax/image_upload'}"
+                  flow-name="flow[$detailIndex]" flow-files-submitted="tenken.imageUpload($flow,tenken_kasyo_row,1);"
+                  data-drop="true" data-jqyoui-options
+                  jqyoui-droppable="{onOver:'tenken.dragOver',onOut:'tenken.dragOut',onDrop:'tenken.dragDrop(tenken_kasyo_row,tenken_kasyo_row.picture.src1,1)'}"
+                  ng-model="tenken_kasyo_row.picture.src1">
+                  <span style="font-size:12px">措置後</span>
+                  <span
+                    ng-show="(tenken_kasyo_row.picture.src1) && ((tenken_kasyo_row.check_judge>=3 && tenken_kasyo_row.check_judge<=4) && tenken.editable)"
+                    ng-click="tenken.deleteImage(tenken_kasyo_row,1);" class="btn btn-xs btn-danger"
+                    style="float:right; font-size:11px;">ファイル削除</span>
+                  <span class="btn btn-xs btn-info" style="float:right; font-size:11px;"
+                    ng-click="tenken.openGenbaSyashin()"
+                    ng-show="((tenken_kasyo_row.check_judge>=3 && tenken_kasyo_row.check_judge<=4) && tenken.editable)">現場写真</span>
+                  <span class="btn btn-xs btn-default" flow-btn style="float:right; font-size:11px;"
+                    ng-show="((tenken_kasyo_row.check_judge>=3 && tenken_kasyo_row.check_judge<=4) && tenken.editable)">ファイル選択</span>
+                  <div class="drop" flow-drop ng-class="dropClass" flow-prevent-drop
+                    flow-drop-enabled="((tenken_kasyo_row.check_judge>=3 && tenken_kasyo_row.check_judge<=4) && tenken.editable)"
+                    flow-drag-enter="dropClass='drag-over'" flow-drag-leave="dropClass=''">
+                    <div ng-show="$flow.support && !tenken_kasyo_row.picture.src1">
+                      <p
+                        ng-show="((tenken_kasyo_row.check_judge>=3 && tenken_kasyo_row.check_judge<=4) && tenken.editable)">
+                        写真をドラッグしてください。</p>
+                    </div>
+                    <!--                                        <img flow-img="flow[$detailIndex].files[0]" style="width: 100%;max-width:520px" />-->
+                    <img ng-show="tenken_kasyo_row.picture.src1" src="{{tenken_kasyo_row.picture.src1}}"
+                      style="width: 100%;max-width:520px" />
+                    <div class="progress progress-striped" ng-show="$flow.isUploading()">
+                      <div class="progress-bar" role="progressbar" aria-valuenow="100" aria-valuemin="0"
+                        aria-valuemax="100" ng-style="{width: ($flow.progress() * 100) + '%'}" style="width: 100%;">
+                        <span class="sr-only ng-binding">% Complete</span>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="form-group form-group-sm" style="margin:5px 0 5px 0">
+                    <label class=" form-control-label" style=" margin:0 0 -50px 5px">
+                      <p style="font-size:12px">備考</p>
+                    </label>
+                    <span
+                      ng-if="((tenken_kasyo_row.check_judge>=3 && tenken_kasyo_row.check_judge<=4) && tenken.editable)">
+                      <autocomplete ng-model="tenken_kasyo_row.measures_bikou" attr-input-class="form-control"
+                        attr-ulclass="autocomplete-list" attr-placeholder="" click-activation="true"
+                        data="tenken_kasyo_row.measures_bikou_past"></autocomplete>
+                    </span>
+                    <span
+                      ng-if="!((tenken_kasyo_row.check_judge>=3 && tenken_kasyo_row.check_judge<=4) && tenken.editable)">
+                      <input type="text" class="form-control" ng-model="tenken_kasyo_row.measures_bikou"
+                        value="{{tenken_kasyo_row.measures_bikou}}" ng-disabled="true" />
+                    </span>
+                  </div>
+                  <div style="font-size: 12px;">
+                    例：ボルトの脱落が確認されたため、点検と同時に再設置・締め付けを実施
+                  </div>
+                </div>
+              </div>
+              <div class="col-sm-12" ng-hide="tenken_kasyo_row.taisyou_umu">
+                <div class="col-sm-11 col-sm-1-oft">点検対象ではありません</div>
+              </div>
+
+            </div>
+
+
+          </ng-form>
+        </uib-tab>
+
+        <uib-tab>
+          <uib-tab-heading>
+            <span class="title" style="font-size:16px;">判定に至るまでの考え方</span>
+          </uib-tab-heading>
+          <br />
+          <div class="row ">
+            <div class="col-sm-12">
+              <div class="form-group row">
+                <label class="col-sm-3 form-control-label">
+                  <p style="font-size:14px;">　1. 外観上から判断できる要因</p>
+                </label>
+                <div class="col-sm-9">
+                  <span ng-if="tenken.editable">
+                    <autocompletecstm attr-rows="1" ng-model="title.hantei1" attr-input-class="form-control"
+                      attr-ulclass="autocomplete-list" attr-placeholder="" click-activation="true"
+                      data="title.hantei1_past"></autocompletecstm>
+                  </span>
+                  <span ng-if="!tenken.editable">
+                    <textarea rows="1" class="form-control" ng-model="title.hantei1"
+                      ng-disabled="true">{{title.hantei1}}</textarea>
+                  </span>
+                  <span style="font-size: 12px;">
+                    例：除雪車等の接触に伴うき裂
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="row ">
+            <div class="col-sm-12">
+              <div class="form-group row">
+                <label class="col-sm-3 form-control-label">
+                  <p style="font-size:14px;">　2.（前回点検からの）進行性</p>
+                </label>
+                <div class="col-sm-9">
+                  <span ng-if="tenken.editable">
+                    <autocompletecstm attr-rows="1" ng-model="title.hantei2" attr-input-class="form-control"
+                      attr-ulclass="autocomplete-list" attr-placeholder="" click-activation="true"
+                      data="title.hantei2_past"></autocompletecstm>
+                  </span>
+                  <span ng-if="!tenken.editable">
+                    <textarea rows="1" class="form-control" ng-model="title.hantei2"
+                      ng-disabled="true">{{title.hantei2}}</textarea>
+                  </span>
+                  <span style="font-size: 12px;">
+                    例：前回の点検結果から変化なし
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="row ">
+            <div class="col-sm-12">
+              <div class="form-group row">
+                <label class="col-sm-3 form-control-label">
+                  <p style="font-size:14px;">　3. 耐久性・耐荷力へ与える影響</p>
+                </label>
+                <div class="col-sm-9">
+                  <span ng-if="tenken.editable">
+                    <autocompletecstm attr-rows="1" ng-model="title.hantei3" attr-input-class="form-control"
+                      attr-ulclass="autocomplete-list" attr-placeholder="" click-activation="true"
+                      data="title.hantei3_past"></autocompletecstm>
+                  </span>
+                  <span ng-if="!tenken.editable">
+                    <textarea rows="1" class="form-control" ng-model="title.hantei3"
+                      ng-disabled="true">{{title.hantei3}}</textarea>
+                  </span>
+                  <span style="font-size: 12px;">
+                    例：き裂の深さが大きい場合は、施設倒壊の恐れあり
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="row ">
+            <div class="col-sm-12">
+              <div class="form-group row">
+                <label class="col-sm-3 form-control-label">
+                  <p style="font-size:14px;">　4. 想定される補修方法等</p>
+                </label>
+                <div class="col-sm-9">
+                  <span ng-if="tenken.editable">
+                    <autocompletecstm attr-rows="1" ng-model="title.hantei4" attr-input-class="form-control"
+                      attr-ulclass="autocomplete-list" attr-placeholder="" click-activation="true"
+                      data="title.hantei4_past"></autocompletecstm>
+                  </span>
+                  <span ng-if="!tenken.editable">
+                    <textarea rows="1" class="form-control" ng-model="title.hantei4"
+                      ng-disabled="true">{{title.hantei4}}</textarea>
+                  </span>
+                  <span style="font-size: 12px;">
+                    例：全体的な腐食が発生しているため錆落としを行い塗り替えの実施
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </uib-tab>
+      </uib-tabset>
+
+    </div>
+  </div>
+
+  <div id="y4"></div>
+  <div class="s_main_all" ng-click="isTokuteiCollapsed = !isTokuteiCollapsed">
+    <a style="color:white;"> <i class="fa"
+        ng-class="{'fa-plus' : isTokuteiCollapsed , 'fa-minus' : !isTokuteiCollapsed}"></i> 様式（その4）の入力 </a>
+  </div>
+
+  <div uib-collapse="isTokuteiCollapsed" style="margin:10px 0 0 0;">
+
+    <div class="form-group row">
+      <label class="col-sm-3 form-control-label">
+        <p style="font-size:14px;">　表面処理</p>
+      </label>
+      <div class="col-sm-3">
+        <select class="form-control" ng-model="tenken.baseinfo.surface"
+          ng-options="detail.value as detail.label for detail in [{label:'亜鉛メッキ', value:'1'},{label:'亜鉛メッキ＋塗装', value:'2'},{label:'さび止め＋塗装', value:'3'}]"
+          ng-disabled="!(tenken.baseinfo.phase==1 && tenken.editable)"></select>
+      </div>
+    </div>
+
+    <div class="row ">
+      <div class="col-sm-12">
+        <div class="form-group row">
+          <label class="col-sm-3 form-control-label">
+            <p style="font-size:14px;">　点検ができなかった部位</p>
+          </label>
+          <div class="col-sm-9">
+            <span ng-if="(tenken.baseinfo.phase==1 && tenken.editable)">
+              <autocompletecstm attr-rows="1" ng-model="tenken.baseinfo.part_notable_chk"
+                attr-input-class="form-control" attr-ulclass="autocomplete-list" attr-placeholder=""
+                click-activation="true" data="tenken.candidate.part_notable_chk"></autocompletecstm>
+            </span>
+            <span ng-if="!(tenken.baseinfo.phase==1 && tenken.editable)">
+              <textarea rows="1" class="form-control" ng-model="tenken.baseinfo.part_notable_chk"
+                ng-disabled="true">{{tenken.baseinfo.part_notable_chk}}</textarea>
+            </span>
+            <span style="font-size: 12px;">
+              例：近接目視により全て実施
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="row ">
+      <div class="col-sm-12">
+        <div class="form-group row">
+          <label class="col-sm-3 form-control-label">
+            <p style="font-size:14px;">　点検ができなかった理由</p>
+          </label>
+          <div class="col-sm-9">
+            <span ng-if="(tenken.baseinfo.phase==1 && tenken.editable)">
+              <autocompletecstm attr-rows="1" ng-model="tenken.baseinfo.reason_notable_chk"
+                attr-input-class="form-control" attr-ulclass="autocomplete-list" attr-placeholder=""
+                click-activation="true" data="tenken.candidate.reason_notable_chk"></autocompletecstm>
+            </span>
+            <span ng-if="!(tenken.baseinfo.phase==1 && tenken.editable)">
+              <textarea rows="1" class="form-control" ng-model="tenken.baseinfo.reason_notable_chk"
+                ng-disabled="true">{{tenken.baseinfo.reason_notable_chk}}</textarea>
+            </span>
+            <span style="font-size: 12px;">
+              例：異常気象（大雨）が発生したため
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="row ">
+      <div class="col-sm-12">
+        <div class="form-group row">
+          <label class="col-sm-3 form-control-label">
+            <p style="font-size:14px;">　その他の特記事項</p>
+          </label>
+          <div class="col-sm-9">
+            <span ng-if="(tenken.baseinfo.phase==1 && tenken.editable)">
+              <autocompletecstm attr-rows="1" ng-model="tenken.baseinfo.special_report" attr-input-class="form-control"
+                attr-ulclass="autocomplete-list" attr-placeholder="" click-activation="true"
+                data="tenken.candidate.special_report"></autocompletecstm>
+            </span>
+            <span ng-if="!(tenken.baseinfo.phase==1 && tenken.editable)">
+              <textarea rows="1" class="form-control" ng-model="tenken.baseinfo.special_report"
+                ng-disabled="true">{{tenken.baseinfo.special_report}}</textarea>
+            </span>
+            <span style="font-size: 12px;">
+              例：支柱本体にき裂の発生〈e〉が認められるが、その深さが不明であるため、詳細調査として深傷試験を行う必要がある
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="y5"></div>
+  <div class="s_main_all" ng-click="isSankouPhotoCollapsed = !isSankouPhotoCollapsed">
+    <a style="color:white;"> <i class="fa"
+        ng-class="{'fa-plus' : isSankouPhotoCollapsed , 'fa-minus' : !isSankouPhotoCollapsed}"></i> 参考写真 </a>
+  </div>
+  <div uib-collapse="isSankouPhotoCollapsed" style="margin:10px 0 0 0;">
+
+    <div class="row ">
+      <div class="col-sm-12">
+        <md-checkbox ng-model="tenken.all_check" ng-change="tenken.changeAllCheck();" ng-show="tenken.editable"
+          ng-true-value="1" ng-false-value="0">すべての写真に撮影日時を表示する</md-checkbox>
+      </div>
+
+      <div class="col-sm-4" ng-repeat="photo in tenken.sankou_photos">
+        <label>参考{{$index+1}}</label>
+        <span ng-show="tenken.editable" class="btn btn-xs btn-danger" style="float:right"
+          ng-click="tenken.sankou_photos.splice($index, 1);">削除</span>
+        <div class="drop">
+          <img ng-show="photo.path" class="photo_box" ng-src="{{photo.path + '?' + reload_code}}" />
+        </div>
+        <div class="form-group form-group-sm" style="margin:5px 0 5px 0">
+          <label>撮影日時</label>
+          <input type="text" ng-model="photo.exif_dt" class="form-control input-sm"
+            style="text-align: left; color:dimgray;" date-time-picker data-format="YYYY/MM/DD HH:mm"
+            ng-disabled="!tenken.editable">
+        </div>
+        <div class="text-right form-inline">
+          <md-checkbox ng-model="photo.exif_out" ng-disabled="!tenken.editable" ng-true-value="1" ng-false-value="0">
+            撮影日時を写真に表示する</md-checkbox>
+        </div>
+        <div class="form-group form-group-sm" style="margin:5px 0 5px 0">
+          <label>コメント</label>
+          <input type="text" ng-model="photo.description" class="form-control input-sm"
+            style="text-align: left; color:dimgray;" ng-disabled="!tenken.editable">
+        </div>
+        <br>
+      </div>
+
+      <div class="col-sm-4" ng-show="tenken.editable" flow-init="{target: 'api/index.php/UploadController/upload'}"
+        flow-name="flowSankou" flow-files-submitted="$flow.upload()"
+        flow-file-success="tenken.fileUploadSuccessSankou( $file, $message, $flow )">
+        <label>参考写真追加</label>
+        <span class="btn btn-xs btn-info" style="float:right" ng-click="tenken.openGenbaSyashinSankou()">現場写真</span>
+        <span flow-btn class="btn btn-xs btn-default" style="float:right">ファイル選択</span>
+        <div class="drop" flow-drop ng-class="dropClass" flow-prevent-drop flow-drop-enabled="true"
+          flow-drag-enter="dropClass='drag-over'" flow-drag-leave="dropClass=''">
+          <div>
+            <p>写真をドラッグしてください。</p>
+          </div>
+
+          <div class="progress progress-striped" ng-show="$flow.isUploading()">
+            <div class="progress-bar" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"
+              ng-style="{width: ($flow.progress() * 100) + '%'}" style="width: 100%;">
+              <span class="sr-only ng-binding">% Complete</span>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+
+    </div>
+  </div>
+
+  <div id="footerdamy">
+  </div>
+  <div id="footerdamy">
+  </div>
+
+  <div id="footerArea">
+    <div class="row" style="margin-top : 8px">
+      <div class="col-sm-3" style="text-align:center;" ng-if="!tenken.gdh_url">
+        <a type="button" class="btn btn-xs btn-inverse btn-sm" ng-click="tenken.backUrl(tenken.back.url)">
+          <span class="glyphicon glyphicon-arrow-left"></span>&nbsp;{{tenken.back.title}}へ</a>
+      </div>
+      <div class="col-sm-3" style="text-align:center;" ng-if="tenken.gdh_url">
+        <a ng-click="tenken.locationGdh()" class="btn btn-xs btn-inverse btn-sm">
+          <span class="glyphicon glyphicon-arrow-left"></span>&nbsp;案内標識データベース検索ページに戻る</a>
+      </div>
+      <div class="col-sm-6" style="text-align:center;">
+        <div class="btn-group" role="group">
+          <a type="button" class="btn btn-xs btn-success btn-sm" ng-click="tenken.anchorScroll('top')">
+            <span class="glyphicon glyphicon-chevron-up"></span>　TOP</a>
+          <a type="button" class="btn btn-xs btn-success btn-sm" ng-click="tenken.anchorScroll('y1')">
+            <span class="glyphicon glyphicon-chevron-up"></span>　様式（その1）</a>
+          <a type="button" class="btn btn-xs btn-success btn-sm" ng-click="tenken.anchorScroll('y2_3')">
+            <span class="glyphicon glyphicon-chevron-up"></span>　様式（その2、その3）</a>
+          <a type="button" class="btn btn-xs btn-success btn-sm" ng-click="tenken.anchorScroll('y4')">
+            <span class="glyphicon glyphicon-chevron-up"></span>　様式（その4）</a>
+        </div>
+      </div>
+      <div class="col-sm-3">
+
+        <div class="row">
+
+          <div ng-switch="tenken.editable">
+            <div ng-switch-when="true">
+              <div class="col-sm-6" style="text-align:center;">
+                <button type="button" class="btn btn-xs btn-info btn-sm" ng-click="tenken.ClickTmpSaveFunction()">
+                  <span class="glyphicon glyphicon-hand-right"></span>&nbsp;一時保存</button>
+              </div>
+              <div class="col-sm-6" style="text-align:center;">
+                <button type="button" class="btn btn-xs btn-info btn-sm" ng-click="tenken.ClickFixedSaveFunction()">
+                  <span class="glyphicon glyphicon-thumbs-up"></span>&nbsp;確定保存</button>
+              </div>
+            </div>
+            <div ng-switch-when="false">
+              <div class="col-sm-8">
+                <a ng-click="tenken.DeleteTenkenData()" type="button" class="btn btn-xs btn-danger btn-sm"
+                  ng-show="tenken.deletable && tenken.baseinfo.phase>1 && tenken.baseinfo.chk_times >0">
+                  &nbsp;点検票削除&nbsp;</a>
+                <a ng-click="tenken.TenkenRemand()" type="button" class="btn btn-xs btn-danger btn-sm"
+                  ng-show="tenken.remandable && tenken.baseinfo.phase>1 && tenken.baseinfo.chk_times >0">
+                  &nbsp;差戻し&nbsp;</a>
+              </div>
+              <div class="col-sm-3">
+                <form name="excel_form" method="POST" action="api/index.php/OutputExcel/out_chkData">
+                  <input type="hidden" name="sno" ng-value="tenken.sno">
+                  <input type="hidden" name="chk_mng_no" ng-value="tenken.baseinfo.chk_mng_no">
+                  <input type="hidden" name="struct_idx" ng-value="tenken.baseinfo.struct_idx">
+                  <input type="hidden" name="excel_ver" ng-value="0">
+                  <button type="subumit" class="btn btn-xs btn-info btn-sm" ng-disabled="tenken.editable">
+                    <span class="glyphicon glyphicon-print"></span>&nbsp;点検票の出力</button>
+                  &nbsp;&nbsp;
+                  <span ng-hide="true">
+                    <input type="checkbox" ng-model="tenken.excel_ver" ng-click="tenken.excel_ver_click()"><span
+                      style="color:black;">Excel2013へ出力</span>
+                  </span>
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 保存中オーバーレイ -->
+  <div class="waitOverlay " ng-show="tenken.waitOverlay">
+    <div
+      style="width:100vw;height:100vh;font-size:60px;display: table-cell;text-align: center;vertical-align: middle; ">
+      <i class="fa fa-spinner fa-spin fa-3x fa-fw "></i>
+      <br>
+      <span>保存中です。<br />しばらくお待ちください。</span>
+    </div>
+  </div>
+
+  <!-- 読込み中オーバーレイ -->
+  <div class="waitOverlay " ng-show="tenken.waitLoadOverlay">
+    <div
+      style="width:100vw;height:100vh;font-size:60px;display: table-cell;text-align: center;vertical-align: middle; ">
+      <i class="fa fa-spinner fa-spin fa-3x fa-fw "></i>
+      <br>
+      <span>読込み中です。<br />しばらくお待ちください。</span>
+    </div>
+  </div>
+
+  <!-- 削除中オーバーレイ -->
+  <div class="waitOverlay " ng-show="tenken.waitDeleteOverlay">
+    <div
+      style="width:100vw;height:100vh;font-size:60px;display: table-cell;text-align: center;vertical-align: middle; ">
+      <i class="fa fa-spinner fa-spin fa-3x fa-fw "></i>
+      <br>
+      <span>削除中です。<br />しばらくお待ちください。</span>
+    </div>
+  </div>
+
+  <!-- 差戻しオーバーレイ -->
+  <div class="waitOverlay " ng-show="tenken.waitRemandOverlay">
+    <div
+      style="width:100vw;height:100vh;font-size:60px;display: table-cell;text-align: center;vertical-align: middle; ">
+      <i class="fa fa-spinner fa-spin fa-3x fa-fw "></i>
+      <br>
+      <span>差戻し中です。<br />しばらくお待ちください。</span>
+    </div>
+  </div>
+</div>

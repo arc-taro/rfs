@@ -1,0 +1,164 @@
+<div class="modal-header">
+  <div class="modal-title">防雪柵の一覧 <a ng-click="close()" style="float:right; cursor: pointer;"><i class="fa fa-times"></i></a></div>
+</div>
+<div class="modal-body">
+  <div class="container">
+    <div style="margin:0px 20px 0 20px;max-width:100%;">
+      <div id="sync-table3" style="overflow:hidden;height:300px;width:auto;max-width:35%;overflow-x: scroll;float:left;">
+        <table class="table table-bordered table-hover table-srch_list" style="font-size:12px;">
+          <tbody>
+            <tr>
+              <th colspan="2">施設名</th>
+              <th colspan="2">形式</th>
+              <th colspan="2">管理番号</th>
+              <th colspan="2">支柱
+                <br>インデックス</th>
+              <th colspan="2">支柱
+                <br>開始番号</th>
+              <th colspan="2">支柱
+                <br>終了番号</th>
+            </tr>
+            <tr style="border-bottom: 3px solid #4682b4;">
+
+              <!-- CSS調整用のダミー要素 -->
+              <th class="sort_btn" ng-hide="true"></th>
+
+              <th ng-repeat="sort_id in bssk_children.sort_identifiers_left" class="sort_btn" ng-click="bssk_children.SetSortOrder(sort_id)" ng-style="bssk_children.sort_style[sort_id]">
+                <span ng-if="$even">▲</span>
+                <span ng-if="$odd">▼</span></th>
+            </tr>
+            <!--                    <tr ng-repeat="data in bssk_children.data | filter:{searchChecked:true}">-->
+            <tr ng-repeat="data in bssk_children.data | orderBy : bssk_children.sort_order ">
+              <td colspan="2">{{data.shisetsu_kbn_nm}}</td>
+              <td colspan="2">{{data.shisetsu_keishiki_nm}}</td>
+              <td colspan="2">{{data.shisetsu_cd}}</td>
+              <td colspan="2">{{data.struct_idx}}</td>
+              <td colspan="2">{{data.struct_no_s}}</td>
+              <td colspan="2">{{data.struct_no_e}}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div id="sync-table4" style="height:300px;width:auto;overflow-x: scroll;">
+        <table class="table table-bordered table-hover table-srch_list" style="font-size:12px;">
+          <tbody>
+            <tr>
+              <!--
+              <th colspan="2">基本情報編集</th>
+-->
+              <th colspan="2">点検
+                <br>調査票</th>
+              <th colspan="2">点検実施状況
+              </th>
+              <th colspan="2">健全性
+                <br>（点検時）</th>
+              <th colspan="2">所見</th>
+              <th colspan="2">健全性
+                <br>（措置後）</th>
+              <th colspan="2">施設の
+                <br/>健全性</th>
+              <th colspan="2">路線
+                <br>コード</th>
+              <th colspan="2">路線名</th>
+              <th colspan="2">測点
+                <br>（m）</th>
+              <th colspan="2">所在地</th>
+              <th colspan="2">設置年度</th>
+              <th colspan="2">点検実施
+                <br>年月日</th>
+              <th colspan="2">調査実施
+                <br>年月日</th>
+              <th colspan="2">再判定
+                <br>年月日</th>
+              <th colspan="2">点検会社</th>
+              <th colspan="2">点検員</th>
+              <th colspan="2">調査会社</th>
+              <th colspan="2">調査員</th>
+              <th colspan="2">代替路
+                <br>の有無</th>
+              <th colspan="2">緊急輸
+                <br>送道路</th>
+              <th colspan="2">自専道 or
+                <br>一般道</th>
+              <th colspan="2">占用物件
+                <br>（名称）</th>
+              <th colspan="2">道路
+                <br>幅員</th>
+              <th colspan="2">建管</th>
+              <th colspan="2">出張所</th>
+            </tr>
+            <tr style="border-bottom: 3px solid #4682b4;">
+
+              <!-- CSS調整用のダミー要素 -->
+              <th class="sort_btn" ng-hide="true"></th>
+
+              <th ng-repeat="sort_id in bssk_children.sort_identifiers_right" class="sort_btn" ng-click="bssk_children.SetSortOrder(sort_id)" ng-style="bssk_children.sort_style[sort_id]">
+                <span ng-if="$even">▲</span>
+                <span ng-if="$odd">▼</span></th>
+            </tr>
+            <tr ng-repeat="data in bssk_children.data | orderBy : bssk_children.sort_order ">
+              <!--
+              <td colspan="2">
+                <a style="cursor:pointer;" ng-click="bssk_children.editBaseInfo(data)">基本情報編集</a>
+              </td>
+-->
+              <td colspan="2">
+                <a style="cursor:pointer;" ng-click="bssk_children.location('/tenken/'+data.sno+'/'+data.struct_idx+'/'+data.chk_mng_no)" ng-hide="(data.sno == null) || (data.struct_idx == null) || (data.chk_mng_no == null)">開く</a>
+              </td>
+              <td colspan="2">{{data.phase_str_large}}</td>
+              <td colspan="2" class="td-font-color" ng-class="{'bg-danger-c':data.check_shisetsu_judge == 4,'bg-warning-c':data.check_shisetsu_judge == 3,'bg-green-c':data.check_shisetsu_judge == 2,'bg-blue-c':data.check_shisetsu_judge == 1,'bg-mijisshi-c':data.check_shisetsu_judge == 0}">{{data.chk_shisetsu_judge_nm}}</td>
+              <td colspan="2">{{data.syoken}}</td>
+              <td colspan="2" class="td-font-color" ng-class="{'bg-danger-c':data.measures_shisetsu_judge == 4,'bg-warning-c':data.measures_shisetsu_judge == 3,'bg-green-c':data.measures_shisetsu_judge == 2,'bg-blue-c':data.measures_shisetsu_judge == 1,'bg-mijisshi-c':data.measures_shisetsu_judge == 0}">{{data.measures_shisetsu_judge_nm}}</td>
+              <td colspan="2">
+                <span class="btn btn-xs btn-info" style="float:right" ng-click="bssk_children.openShisetsuJudge(data)" ng-disabled="(data.shisetsu_cd == null) || (data.shisetsu_ver == null) || (data.shisetsu_kbn == null) || (data.chk_mng_no == null) || (data.rireki_no == null)">確認</span>
+              </td>
+              <td colspan="2">{{data.rosen_cd}}</td>
+              <td colspan="2">{{data.rosen_nm}}</td>
+              <td colspan="2">{{data.sp}}</td>
+              <td colspan="2">{{data.syozaichi}}</td>
+              <td colspan="2">{{data.secchi}}</td>
+              <td colspan="2">{{data.chk_dt}}</td>
+              <td colspan="2">{{data.investigate_dt}}</td>
+              <td colspan="2">{{data.re_measures_dt}}</td>
+              <td colspan="2">{{data.chk_company}}</td>
+              <td colspan="2">{{data.chk_person}}</td>
+              <td colspan="2">{{data.investigate_company}}</td>
+              <td colspan="2">{{data.investigate_person}}</td>
+              <td colspan="2">{{data.substitute_road_str}}</td>
+              <td colspan="2">{{data.emergency_road_str}}</td>
+              <td colspan="2">{{data.motorway_str}}</td>
+              <td colspan="2">{{data.senyou}}</td>
+              <td colspan="2">{{data.fukuin}}</td>
+              <td colspan="2">{{data.dogen_mei}}</td>
+              <td colspan="2">{{data.syucchoujo_mei}}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+<!--
+<div class="modal-footer">
+    <div class="row" style="margin-top : 8px">
+        <div class="col-sm-4" style="text-align:left;">
+            <button type="button" class="btn btn-xs btn-info btn-sm">
+                <span class="glyphicon glyphicon-print"></span>　検索した点検調査票のエクセル出力</button>
+        </div>
+        <div class="col-sm-3" style="text-align:left;">
+            <button type="button" class="btn btn-xs btn-info btn-sm">
+                <span class="glyphicon glyphicon-print"></span>　リストをエクセル出力</button>
+        </div>
+        <div class="col-sm-3" style="text-align:left;color:black;">
+            <input type="checkbox" ng-model="main.excel_ver" ng-click="main.excel_ver_click()">　Excel2013へ出力
+        </div>
+        <div class="col-sm-2" style="text-align:left;color:black;">
+            <button class="btn btn-primary" type="button" ng-click="close()">閉じる</button>
+        </div>
+    </div>
+</div>
+-->
+
+<div class="modal-footer">
+  <button class="btn btn-primary" type="button" ng-click="close()">閉じる</button>
+</div>

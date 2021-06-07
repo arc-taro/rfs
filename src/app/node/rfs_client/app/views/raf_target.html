@@ -1,0 +1,303 @@
+<div>
+  <!-- Navbar Start-->
+  <div class="navbar navbar-default navbar-fixed-top zidx5009">
+    <div class="container">
+      <a style="color:white;" class="navbar-brand" href="#"><img src="images/logo.png" class="img-rounded">道路附属物管理システム</a>
+    </div>
+  </div>
+  <!-- End of Navber -->
+  <div class="row" style="padding-top: 42px;">
+    <div class="col-sm-12" style="padding-left:151px">
+      <div class="s_main" ng-click="raftarget.jyoukenkensaku = !raftarget.jyoukenkensaku">
+        <a style="color:white;"> <i class="fa" ng-class="{'fa-plus' : raftarget.jyoukenkensaku , 'fa-minus' : !raftarget.jyoukenkensaku}"></i> 施設検索 </a>
+      </div>
+      <div uib-collapse="raftarget.jyoukenkensaku">
+        <div style="display:table;">
+          <div class="left_sts_i" style="display:table-cell;">
+            <p class="label4"><i class="fa fa-flag" aria-hidden="true"></i>
+              <br>施設の情報</p>
+          </div>
+          <div class="row" style="display:table-cell;">
+            <div class=" col-sm-12 form-inline" style="float:left;">
+              <div class="form-group input-append text-left" style="margin-right:10px;">
+                <label class="form-control-label text-center margin">
+                  <p class="label">施設管理番号</p>
+                </label>
+                <div class="form-inline">
+                  <div class="form-group">
+                    <input type="text" ng-model="raftarget.srch.shisetsu_cd" class="form-control input-sm input_h" style="width:19.4em; text-align: left">
+                  </div>
+                </div>
+              </div>
+              <div class="form-group input-append text-left zidx1000" style="margin-right:10px;">
+                <label class="form-control-label margin">
+                  <p class="label">施設名選択</p>
+                </label>
+                <div>
+                  <div ng-dropdown-multiselect="" options="raftarget.shisetsu_kbn_dat" selected-model="raftarget.srch.shisetsu_kbn_dat_model" translation-texts="raftarget.translationTexts" extra-settings="raftarget.extraSettings" style="height:26px; width:8em; text-align: left" class="btn-group-justified"></div>
+                </div>
+              </div>
+              <div class="form-group input-append text-left">
+                <label class="form-control-label text-center margin">
+                  <p class="label">設置年度</p>
+                </label>
+                &nbsp;&nbsp;
+                <input style="position:relative; top:2px;" type="checkbox" ng-model="raftarget.srch.include_secchi_null">
+                <p class="label">設置年度不明を対象に含める</p>
+                <div class="form-inline">
+                  <div class="form-group">
+                    <select class="form-control input-sm btn-group-justified select_h" ng-model="raftarget.srch.secchi_nendo_from" ng-options="nendo.year as nendo.gengou for nendo in raftarget.secchi_nendo" style="width:8em; text-align: left">
+                      <option value="">---</option>
+                    </select>
+                    <span>~</span>
+                    <select class="form-control input-sm btn-group-justified select_h" ng-model="raftarget.srch.secchi_nendo_to" ng-options="nendo.year as nendo.gengou for nendo in raftarget.secchi_nendo" style="width:8em; text-align: left">
+                      <option value="">---</option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div style="display:table;">
+          <div class="left_sts_i" style="display:table-cell;">
+            <p class="label4"><i class="fa fa-map" aria-hidden="true"></i>
+              <br>施設の位置情報</p>
+          </div>
+          <div class="row" style="display:table-cell;">
+            <div class="col-sm-12 form-inline">
+              <div class="form-group input-append text-left zidx1000" style="margin-right:9px;">
+                <label class="form-control-label text-center margin">
+                  <p class="label">路線選択</p>
+                </label>
+                <div class="form-inline">
+                  <div ng-dropdown-multiselect="" options="raftarget.filterRosen" selected-model="raftarget.srch.rosen_dat_model" translation-texts="raftarget.translationTexts" extra-settings="raftarget.extraSettings" style="width:8em; text-align: left" class="btn-group-justified"></div>
+                </div>
+              </div>
+              <div class="form-group input-append text-left" style="margin-right:10px;">
+                <label class="form-control-label text-center margin">
+                  <p class="label">測点入力（ｍ）※路線選択が一つの場合のみ</p>
+                </label>
+                <div class="form-inline">
+                  <div class="form-group">
+                    <input type="number" ng-model="raftarget.srch.sp_from" class="form-control input-sm input_h" ng-disabled="raftarget.srch.rosen_dat_model.length!=1" style="width:9.2em; text-align: left">
+                    <span>~</span>
+                    <input type="number" ng-model="raftarget.srch.sp_to" class="form-control input-sm input_h" ng-disabled="raftarget.srch.rosen_dat_model.length!=1" style="width:9em; text-align: left">
+                  </div>
+                </div>
+              </div>
+              <div class="form-group input-append text-left">
+                <label class="form-control-label text-center margin">
+                  <p class="label">所在地</p>
+                </label>
+                <div class="form-inline">
+                  <div class="form-group">
+                    <input type="text" ng-model="raftarget.srch.shityouson" class="form-control input-sm input_h" placeholder="市区町村" style="width:8em; text-align: left">
+                  </div>
+                  <div class="form-group">
+                    <input type="text" ng-model="raftarget.srch.azaban" class="form-control input-sm input_h" placeholder="字番" style="width:9em; text-align: left">
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div style="display:table;">
+          <div class="left_sts_i" style="display:table-cell;">
+            <p class="label4"><i class="fa fa-camera" aria-hidden="true"></i>
+              <br>点検に関する情報</p>
+          </div>
+
+
+          <div class="row" style="display:table-cell;">
+            <div class="col-sm-12 form-inline">
+              <input style="position:relative; top:2px;" type="checkbox" ng-model="raftarget.srch.zennen_check">
+              <p class="label">前年度点検対象施設検索</p>
+            </div>
+            <div class="col-sm-12 form-inline" ng-show="!raftarget.srch.zennen_check">
+              <div class="row" style="margin:10px">
+                <select class="form-control input-sm" ng-model="raftarget.srch.not_chk_year" ng-options="year.value as year.label for year in raftarget.select_not_year">
+                </select>
+              </div>
+              <div class="row" style="margin:10px">
+                ※大型スノーポールは、H25～H27の点検実施施設は、現在未実施扱いとなっています。
+              </div>
+            </div>
+
+            <div class="col-sm-12 form-inline" ng-show="raftarget.srch.zennen_check">
+              <div class="form-group input-append text-left zidx1000" style="margin:10px;">
+                <label class="form-control-label margin">
+                  <p class="label">点検の実施状況</p>
+                </label>
+                <div>
+                  <div ng-dropdown-multiselect="" options="raftarget.phase_dat" selected-model="raftarget.srch.phase_dat_model" translation-texts="raftarget.translationTexts" extra-settings="raftarget.extraSettings" style="width:8em; text-align: left" class="btn-group-justified"></div>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-sm-12 form-inline" style="margin-bottom: 15px;">
+              <div class="form-group input-append">
+                <button type="button" class="btn btn-xs btn-danger btn-group-justified text-center" ng-click="raftarget.all_reset()" style="width:8em; margin-right:9px">
+                  <span class="glyphicon glyphicon-retweet"></span>　リセット</button>
+              </div>
+              <div class="form-group input-append text-center">
+                <button type="button" class="btn btn-xs btn-info btn-group-justified text-center" ng-click="raftarget.srchShisetsu()" style="width:8em;">
+                  <span class="glyphicon glyphicon-search"></span>　検索</button>
+              </div>&nbsp;
+            </div>
+
+
+          </div>
+
+        </div>
+      </div>
+
+      <div class="s_main" ng-click="raftarget.naiyoukensaku = !raftarget.naiyoukensaku" style="margin-bottom: 10px;">
+        <a style="color:white;"> <i class="fa" ng-class="{'fa-plus' : raftarget.naiyoukensaku , 'fa-minus' : !raftarget.naiyoukensaku}"></i> 検索内容 </a>
+      </div>
+
+      <div uib-collapse="raftarget.naiyoukensaku">
+        <div class="row" style="margin-left:10px;width:99%;">
+
+          <h5><span class="glyphicon glyphicon-exclamation-sign"></span> 点検施設の登録を解除する場合はチェックを外してから「登録」をクリックしてください。<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;※点検票のある施設は解除できません。</h5>
+          <div class="row">
+            <div class="col-sm-6" style="margin:0 0 10px 20px">
+              <input style="position:relative; top:2px;" type="checkbox" ng-disabled="raftarget.srch_cnt==0" ng-model="raftarget.all_checkbox" ng-click="raftarget.allCheckBoxClick()">
+              <p class="label">全ての施設の点検施設登録にチェックを入れる</p>
+            </div>
+            <div class="col-sm-6" style="text-align:right; margin:0 0 10px -20px">
+              <div class="form-inline">
+                <p class="label">登録施設／施設数</p>
+                <text class="form-control input-sm input_h disabled-color" ng-disabled="true" style="width:9.2em; text-align: center"> {{raftarget.rgst_num}}／{{raftarget.srch_cnt}}</text>
+
+                <p class="label">チェック施設数</p>
+                <input type="text" class="form-control input-sm input_h disabled-color" ng-disabled="true" style="width:5em; text-align: center" value="{{raftarget.chk_num}}">
+              </div>
+            </div>
+          </div>
+
+          <div style="max-width:100%;">
+            <div>
+              <table class="table table-bordered table-hover list raf_e" style="font-size:12px;">
+                <tbody>
+                  <tr>
+                    <th>点検施設
+                      <br>登録</th>
+                    <th colspan="2">施設名</th>
+                    <th colspan="2">形式</th>
+                    <th colspan="2">点検登録日</th>
+                    <th colspan="2">管理番号</th>
+                    <th colspan="2">支柱
+                      <br>インデックス</th>
+                    <th colspan="2">路線コード</th>
+                    <th colspan="2">路線名</th>
+                    <th colspan="2">測点</th>
+                    <th colspan="2">設置年度</th>
+                    <th colspan="2">横断
+                      <br>区分</th>
+                    <th colspan="2">所在地</th>
+                    <th colspan="2">点検状況</th>
+                  </tr>
+                  <tr style="border-bottom: 3px solid #4682b4;">
+                    <th class="sort_chk"> &nbsp; </th>
+                    <th ng-repeat="sort_id in raftarget.sort_identifiers" class="sort_btn" ng-click="raftarget.SetSortOrder(sort_id)" ng-style="raftarget.sort_style[sort_id]">
+                      <span ng-if="$even">▲</span>
+                      <span ng-if="$odd">▼</span></th>
+                  </tr>
+                  <tr ng-repeat="data in raftarget.data | orderBy : raftarget.sort_order | offset : (raftarget.current_page-1)*raftarget.items_per_page | limitTo: raftarget.items_per_page">
+                    <td>
+                      <input type="checkbox" ng-checked="data.input_target==1" ng-model="data.tmp_chk" ng-click="raftarget.chkboxTarget(data);" ng-disabled="(data.shisetsu_kbn == 4 && (data.exist_chk == 1 && data.comp_flg != 1)) || (1 <= data.phase && data.phase <= 4)">
+                    </td>
+                    <td colspan="2">{{data.shisetsu_kbn_nm}}</td>
+                    <td colspan="2">{{data.shisetsu_keishiki_nm}}</td>
+                    <td colspan="2">{{data.target_dt_ymd}}
+                      <br><span ng-show="data.nendo_wareki !=null">({{data.nendo_wareki}})</span></td>
+                    <td colspan="2">{{data.shisetsu_cd}}</td>
+                    <td colspan="2">
+                      <span ng-show="data.struct_idx!=0">{{data.struct_idx}}</span>
+                      <span ng-show="data.struct_idx==0">-</span>
+                    </td>
+                    <td colspan="2">{{data.rosen_cd}}</td>
+                    <td colspan="2">{{data.rosen_nm}}</td>
+                    <td colspan="2">{{data.sp}}</td>
+                    <td colspan="2">{{data.secchi}}
+                      <br><span ng-show="data.secchi_yyyy !=null">({{data.secchi_yyyy}})</span></td>
+                    <td colspan="2">{{data.lr_str}}</td>
+                    <td colspan="2">{{data.address}}</td>
+                    <td colspan="2">{{data.phase_str}}</td>
+                  </tr>
+                </tbody>
+              </table>
+
+              <div class="row" style="text-align:center" ng-show="raftarget.max_page!=0">
+                <ul class="pagination pagination-sm" style="cursor:pointer">
+                  <li ng-class="raftarget.prev_disabled" ng-if="raftarget.current_page!=1">
+                    <span ng-click="raftarget.prevPage()" aria-label="前のページへ">«</span>
+                  </li>
+                  <li ng-class="raftarget.prev_disabled" ng-if="raftarget.current_page==1"><span aria-hidden="true">«</span></li>
+                  <li ng-repeat="n in raftarget.range" ng-click="raftarget.setPage(n)">
+                    <span ng-class="{ 'page_sel_col':raftarget.current_page==n}">{{n}}</span>
+                  </li>
+                  <li ng-class="raftarget.next_disabled" ng-if="raftarget.current_page!=raftarget.max_page">
+                    <span ng-click="raftarget.nextPage()" aria-label="次のページへ">»</span>
+                  </li>
+                  <li ng-class="raftarget.next_disabled" ng-if="raftarget.current_page==raftarget.max_page"><span aria-hidden="true">»</span></li>
+                </ul>
+              </div>
+
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div id="footerdamy"></div>
+    </div>
+    <div style="top:42px;left:0px;z-index:1000; width:151px;" class="sidebar-nav affix container-fluid background3" role="complementary">
+      <div class="form-group row" style="margin:10px 0 10px 0;">
+        <label class=" form-control-label margin">
+          <p class="label3">建設管理部</p>
+        </label>
+
+        <select class="form-control input-sm" ng-model="raftarget.dogen" ng-options="row as row.dogen_mei for row in raftarget.dogen_syucchoujo_dat.dogen_info" ng-change="raftarget.chgDogen()" required>
+          <!-- 建管は必須にする
+<option value="">---</option>
+-->
+        </select>
+      </div>
+      <div class="form-group row" style="margin:0 0 20px 0;">
+        <label class=" form-control-label margin">
+          <p class="label3">管理区域（出張所）</p>
+        </label>
+        <select ng-show="raftarget.ath_syozoku_cd==1 || raftarget.ath_syozoku_cd==2 || raftarget.ath_syozoku_cd==10001" class="form-control input-sm" ng-model="raftarget.syucchoujo" ng-options="row as row.syucchoujo_mei for row in raftarget.dogen.syucchoujo_row.syucchoujo_info" ng-change="raftarget.chgSyucchoujo()" required>
+          <option value="">全て</option>
+        </select>
+        <select ng-show="raftarget.ath_syozoku_cd==3 || raftarget.ath_syozoku_cd==4" class="form-control input-sm" ng-model="raftarget.syucchoujo" ng-options="row as row.syucchoujo_mei for row in raftarget.dogen.syucchoujo_row.syucchoujo_info" ng-change="raftarget.chgSyucchoujo()" required>
+        </select>
+      </div>
+    </div>
+  </div>
+  <div id="footerArea2">
+    <div class="row" style="margin-top : 8px">
+      <div class="col-sm-3" style="text-align:center;">
+        <a ng-href="#/raf_top" type="button" class="btn btn-xs btn-inverse btn-sm">
+          <span class="glyphicon glyphicon-arrow-left"></span>&nbsp;道路附属物点検のTOPに戻る</a>
+      </div>
+      <div class="col-sm-6" style="text-align:center;">
+        <a type="button" class="btn btn-xs btn-info btn-sm" style="width:8em" ng-show="raftarget.data.length>0 && (raftarget.ath_syozoku_cd == 3 && (raftarget.ath_syucchoujo_cd==raftarget.mng_syucchoujo_cd) || raftarget.ath_syozoku_cd <= 2 || raftarget.ath_syozoku_cd == 10001)" ng-click="raftarget.RgstChkShisetsu()">
+          <span class="glyphicon glyphicon-save"></span>&nbsp;登録</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- 読込み中オーバーレイ -->
+  <div class="waitOverlay" ng-show="raftarget.waitLoadOverlay">
+    <div style="width:100vw;height:100vh;font-size:60px;display: table-cell;text-align: center;vertical-align: middle;">
+      <i class="fa fa-spinner fa-spin fa-3x fa-fw"></i>
+      <br>
+      <span>読込み中です。<br />しばらくお待ちください。</span>
+    </div>
+  </div>
+
+</div>

@@ -1,0 +1,33 @@
+<div class="modal-header">
+  <div class="modal-title">現場写真 <a ng-click="modal.close()" style="float:right"><i class="fa fa-times"></i></a></div>
+</div>
+<div class="modal-body">
+  <div class="container">
+    <div class="row">
+      <span>現場写真</span>
+      <select ng-model="modal.album_title" ng-change="modal.title_change()" ng-options="title.title_cd as title.title for title in modal.title_list"></select>
+    </div>
+
+    <div class="row">
+      <div class="row">
+        <div class="col-xs-3" ng-repeat="photo in modal.photo_list" style="padding:10px">
+          <div style="position:relative">
+            <img src="{{photo.src}}" style="width: 100%;" />
+            <div class="sel_genbasyasin" ng-class="{on:photo.sel,off:!photo.sel}" ng-click="modal.select(photo);" ng-switch="photo.sel">
+              <i ng-switch-when="true" class="fa fa-check-square-o" aria-hidden="true"></i>
+              <i ng-switch-default class="fa fa-square-o" aria-hidden="true"></i>
+            </div>
+          </div>
+          <span style="overflow:hidden">
+            {{photo.description}}
+          </span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+<div class="modal-footer">
+  <button class="btn btn-danger" type="button" ng-click="modal.close()">キャンセル</button>
+  <button class="btn btn-primary" type="button" ng-click="modal.save()">取り込み</button>
+</div>

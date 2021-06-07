@@ -1,0 +1,707 @@
+<uib-tab index="1">
+  <uib-tab-heading>
+    <span style="font-size:16px;">コントローラ</span>
+  </uib-tab-heading>
+  <div class="container">
+    <div style="padding:15px">
+      <h6>コントローラ</h6>
+      <hr class="style4">
+
+      <div class="row" style="overflow-x: scroll;margin-top:10px">
+        <table class="table table-bordered table-hover">
+          <thead>
+            <tr>
+              <th rowspan="2" class="text-center">
+                操作
+              </th>
+              <th rowspan="2" class="text-center">
+                コントローラID
+              </th>
+              <th rowspan="2" class="text-center">
+                メーカー名<br>
+                (コントローラ)
+              </th>
+              <th rowspan="2" class="text-center">
+                メーカー名 <br>
+                (遠隔制御系)
+              </th>
+              <th rowspan="2" class="text-center">
+                製品名
+              </th>
+              <th colspan="6" class="text-center">
+                センサ数
+              </th>
+              <th rowspan="2" class="text-center">
+                <div class="vertical-text" style="height:6em">
+                  要素数
+                </div>
+              </th>
+              <th rowspan="2" class="text-center">
+                <div class="vertical-text" style="height:6em">
+                  要素数変更年
+                </div>
+              </th>
+              <th rowspan="2" class="text-center">
+                <div class="vertical-text" style="height:6em">
+                  遠隔監視有無
+                </div>
+              </th>
+              <th rowspan="2" class="text-center">
+                <div class="vertical-text" style="height:6em">
+                  遠隔監視導入
+                </div>
+              </th>
+              <th rowspan="2" class="text-center">
+                <div class="vertical-text" style="height:6em">
+                  分電盤数
+                </div>
+              </th>
+              <th rowspan="2" class="text-center">
+                <div class="vertical-text" style="height:6em">
+                  キュービクル
+                </div>
+              </th>
+              <th colspan="3" class="text-center">
+                管理温度℃
+              </th>
+              <th rowspan="2" class="text-center">
+                備考
+              </th>
+            </tr>
+            <tr>
+              <th>
+                <div class="vertical-text" style="height:4em">
+                  降雪
+                </div>
+              </th>
+              <th>
+                <div class="vertical-text" style="height:4em">
+                  外気温
+                </div>
+              </th>
+              <th>
+                <div class="vertical-text" style="height:4em">
+                  路温
+                </div>
+              </th>
+              <th>
+                <div class="vertical-text" style="height:4em">
+                  水分
+                </div>
+              </th>
+              <th>
+                <div class="vertical-text" style="height:4em">
+                  日照
+                </div>
+              </th>
+              <th>
+                <div class="vertical-text" style="height:4em">
+                  その他
+                </div>
+              </th>
+              <th>
+                <div class="vertical-text" style="height:4em">
+                  融雪運転
+                </div>
+              </th>
+              <th>
+                <div class="vertical-text" style="height:4em">
+                  凍防運転
+                </div>
+              </th>
+              <th>
+                <div class="vertical-text" style="height:4em">
+                  予熱運転
+                </div>
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="input-table">
+                <button type="button" class="btn btn-info btn-sm"><i class="fa fa-plus"></i>追加</button>
+              </td>
+              <td class="input-table">
+                <!-- コントローラID -->
+                <input type="text" class="form-control input-sm" style="min-width:10em" next-focus>
+              </td>
+              <td class="input-table">
+                <!-- メーカー名-->
+                <input type="text" class="form-control input-sm" style="min-width:10em" next-focus>
+              </td>
+          </td>
+          <td class="input-table">
+            <!-- メーカー名-->
+            <input type="text" class="form-control input-sm" style="min-width:10em" next-focus>
+          </td>
+          <td class="input-table">
+            <!-- 製品名-->
+            <input type="text" class="form-control input-sm" style="min-width:10em" next-focus>
+          </td>
+          <td class="input-table">
+            <!-- 降雪  -->
+            <input type="number" class="form-control input-sm" style="min-width:3em;" next-focus>
+          </td>
+          <td class="input-table">
+            <!-- 外気温  -->
+            <input type="number" class="form-control input-sm" style="min-width:3em;" next-focus>
+          </td>
+          <td class="input-table">
+            <!-- 路温  -->
+            <input type="number" class="form-control input-sm" style="min-width:3em;" next-focus>
+          </td>
+          <td class="input-table">
+            <!-- 水分  -->
+            <input type="number" class="form-control input-sm" style="min-width:3em;" next-focus>
+          </td>
+          <td class="input-table">
+            <!-- 日照  -->
+            <input type="number" class="form-control input-sm" style="min-width:3em;" next-focus>
+          </td>
+          <td class="input-table">
+            <!-- その他  -->
+            <input type="number" class="form-control input-sm" style="min-width:3em;" next-focus>
+          </td>
+          <td class="input-table">
+            <!-- 要素数  -->
+            <input type="number" class="form-control input-sm" style="min-width:3em;" next-focus>
+          </td>
+          <td class="input-table">
+            <!-- 要素数変更年  -->
+            <input type="text" class="form-control input-sm" style="min-width:3em;" next-focus>
+          </td>
+          <td class="input-table">
+            <!-- 遠隔監視有無  -->
+            <input type="text" class="form-control input-sm" style="min-width:3em;" next-focus>
+          </td>
+          <td class="input-table">
+            <!-- 遠隔監視導入  -->
+            <input type="text" class="form-control input-sm" style="min-width:3em;" next-focus>
+          </td>
+          <td class="input-table">
+            <!-- 分電盤数  -->
+            <input type="number" class="form-control input-sm" style="min-width:3em;" next-focus>
+          </td>
+          <td class="input-table">
+            <!-- キュービクル  -->
+            <input type="number" class="form-control input-sm" style="min-width:3em;" next-focus>
+          </td>
+          <td class="input-table">
+            <!--  融雪運転  -->
+            <input type="text" class="form-control input-sm" style="min-width:3em;" next-focus>
+          </td>
+          <td class="input-table">
+            <!-- 凍防運転  -->
+            <input type="text" class="form-control input-sm" style="min-width:3em;" next-focus>
+          </td>
+          <td class="input-table">
+            <!-- 予熱運転  -->
+            <input type="text" class="form-control input-sm" style="min-width:3em;" next-focus>
+          </td>
+          <td class="input-table">
+            <!-- 備考  -->
+            <input type="text" class="form-control input-sm" style="min-width:10em" next-focus>
+          </td>
+          </tr>
+        <tr>
+          <td class="input-table">
+            <button type="button" class="btn btn-danger btn-sm"><i class="fa fa-minus"></i>削除</button>
+          </td>
+          <td class="input-table">
+            1201-1
+          </td>
+          <td class="input-table">
+            ○○電気
+          </td>
+          <td class="input-table">
+            ㈱電制
+          </td>
+          <td class="input-table">
+            FRC-J FRC-PC2
+          </td>
+          <td class="input-table">
+            1
+          </td>
+          <td class="input-table">
+            1
+          </td>
+          <td class="input-table">
+            4
+          </td>
+          <td class="input-table">
+            4
+          </td>
+          <td class="input-table">
+          </td>
+          <td class="input-table">
+          </td>
+          <td class="input-table">
+          </td>
+          <td class="input-table">
+          </td>
+          <td class="input-table">
+          </td>
+          <td class="input-table">
+          </td>
+          <td class="input-table">
+          </td>
+          <td class="input-table">
+          </td>
+          <td class="input-table">
+          </td>
+          <td class="input-table">
+          </td>
+          <td class="input-table">
+          </td>
+          <td class="input-table">
+          </td>
+        </tr>
+
+        </tbody>
+      </table>
+  </div>
+  </div>
+</div>
+</uib-tab>
+<uib-tab index="2">
+  <uib-tab-heading>
+    <span style="font-size:16px;">設置履歴</span>
+  </uib-tab-heading>
+  <div class="container">
+    <div style="padding:15px">
+      <h6>設置履歴</h6>
+      <hr class="style4">
+
+      <div class="row" style="overflow-x: scroll;margin-top:10px">
+        <table class="table table-bordered table-hover">
+          <thead>
+            <tr>
+              <th rowspan="2" class="text-center">
+                操作
+              </th>
+              <th rowspan="2" class="text-center">
+                事業種別
+              </th>
+              <th rowspan="2" class="text-center">
+                事業名
+              </th>
+              <th colspan="2" class="text-center">
+                年度
+              </th>
+              <th rowspan="2" class="text-center">
+                施設中心<br>
+                延長
+              </th>
+              <th rowspan="2" class="text-center">
+                施設延べ<br>
+                延長
+              </th>
+              <th rowspan="2" class="text-center">
+                面積
+              </th>
+              <th colspan="4" class="text-center" style="border-bottom:0px">
+                工事費(千円)
+              </th>
+              <th rowspan="2" class="text-center">
+                備考<br>
+                ※増設・再配置・新設を明記
+              </th>
+            </tr>
+            <tr>
+              <th>
+                着工
+              </th>
+              <th>
+                完成
+              </th>
+              <th style="border-top:0px">
+              </th>
+              <th>
+                熱源工事
+              </th>
+              <th>
+                配管工事
+              </th>
+              <th>
+                舗装工事
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="input-table">
+                <button type="button" class="btn btn-info btn-sm"><i class="fa fa-plus"></i>追加</button>
+              </td>
+              <td class="input-table">
+                <!-- 事業種別  -->
+                <input type="text" class="form-control input-sm" style="min-width:10em"  next-focus>
+              </td>
+              <td class="input-table">
+                <!-- 事業名  -->
+                <input type="text" class="form-control input-sm" style="min-width:10em" next-focus>
+              </td>
+              <td class="input-table">
+                <!-- 年度 着工 -->
+                <select class="form-control input-sm" ng-model="test_dt" ng-options="nendo as nendo.gengou for nendo in famedit.secchi_nendo" style="min-width:8em;" ng-disabled="!famedit.editable" next-focus>
+                  <option value="">---</option>
+                </select>
+              </td>
+              <td class="input-table">
+                <!-- 年度 完成 -->
+                <select class="form-control input-sm" ng-model="test_dt" ng-options="nendo as nendo.gengou for nendo in famedit.secchi_nendo" style="min-width:8em;" ng-disabled="!famedit.editable" next-focus>
+                  <option value="">---</option>
+                </select>
+              </td>
+              <td class="input-table">
+                <!-- 施設中心  -->
+                <input type="number" class="form-control input-sm" style="min-width:6em;max-width:8em" next-focus>
+              </td>
+              <td class="input-table">
+                <!-- 施設延べ  -->
+                <input type="number" class="form-control input-sm" style="min-width:6em;max-width:8em" next-focus>
+              </td>
+              <td class="input-table">
+                <!-- 面積  -->
+                <input type="number" min="0" class="form-control input-sm" style="min-width:6em;max-width:8em" next-focus>
+              </td>
+              <td class="input-table">
+                <!-- 工事費(千円)  -->
+                <input type="number" min="0" class="form-control input-sm" style="min-width:6em;max-width:8em;background-color:#fff" disabled>
+              </td>
+              <td class="input-table">
+                <!-- 熱源工事  -->
+                <input type="number" min="0" class="form-control input-sm" style="min-width:6em;max-width:8em" next-focus>
+              </td>
+              <td class="input-table">
+                <!-- 配管工事  -->
+                <input type="number" min="0" class="form-control input-sm" style="min-width:6em;max-width:8em" next-focus>
+              </td>
+              <td class="input-table">
+                <!-- 舗装工事  -->
+                <input type="number" min="0" class="form-control input-sm" style="min-width:6em;max-width:8em" next-focus>
+              </td>
+              <td class="input-table">
+                <!-- 備考  -->
+                <input type="text" class="form-control input-sm" style="min-width:13em" next-focus>
+              </td>
+            </tr>
+            <tr>
+              <td class="input-table">
+                <button type="button" class="btn btn-danger btn-sm"><i class="fa fa-minus"></i>削除</button>
+              </td>
+              <td class="input-table">
+                1201-1
+              </td>
+              <td class="input-table">
+                ○○電気
+              </td>
+              <td class="input-table">
+              </td>
+              <td class="input-table">
+              </td>
+              <td class="input-table">
+                1
+              </td>
+              <td class="input-table">
+                1
+              </td>
+              <td class="input-table">
+                4
+              </td>
+              <td class="input-table">
+                4
+              </td>
+              <td class="input-table">
+              </td>
+              <td class="input-table">
+              </td>
+              <td class="input-table">
+              </td>
+              <td class="input-table">
+              </td>
+            </tr>
+
+          </tbody>
+        </table>
+      </div>
+
+    </div>
+  </div>
+</uib-tab>
+<uib-tab index="3">
+  <uib-tab-heading>
+    <span style="font-size:16px;">維持管理履歴</span>
+  </uib-tab-heading>
+  <div class="container">
+    <div style="padding:15px">
+      <h6>維持管理履歴</h6>
+      <hr class="style4">
+      <div class="row" style="overflow-x: scroll;margin-top:10px">
+        <table class="table table-bordered table-hover">
+          <thead>
+            <tr>
+              <th rowspan="2" class="text-center">
+                操作
+              </th>
+              <th rowspan="2" class="text-center">
+                年度
+              </th>
+              <th rowspan="2" class="text-center">
+                面積<br>
+                (㎡)
+              </th>
+              <th rowspan="2" class="text-center">
+                保守点検費<br>
+                (円)
+              </th>
+              <th rowspan="2" class="text-center">
+                修理費<br>
+                (円)
+              </th>
+              <th rowspan="2" class="text-center">
+                回線使用料<br>
+                (円)
+              </th>
+              <th rowspan="2" class="text-center">
+                年間<br>
+                稼働<br>
+                日数<br>
+              </th>
+              <th colspan="6" class="text-center" style="border-bottom:0px">
+                料金(円)
+              </th>
+              <th rowspan="2" class="text-center">
+                保守点検・<br>
+                修理内容など
+              </th>
+            </tr>
+            <tr>
+              <th style="border-top:0px">
+              </th>
+              <th>
+                電気料金
+              </th>
+              <th>
+                ガス料金
+              </th>
+              <th>
+                灯油料金
+              </th>
+              <th>
+                重油料金
+              </th>
+              <th>
+                その他
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="input-table">
+                <button type="button" class="btn btn-info btn-sm"><i class="fa fa-plus"></i>追加</button>
+              </td>
+              <td class="input-table">
+                <!-- 年度  -->
+                <select class="form-control input-sm" ng-model="test_dt" ng-options="nendo as nendo.gengou for nendo in famedit.secchi_nendo" style="min-width:8em;" ng-disabled="!famedit.editable">
+                  <option value="">---</option>
+                </select>
+              </td>
+              <td class="input-table">
+                <!-- 面積  -->
+                <input type="number" min="0" class="form-control input-sm" style="min-width:6em">
+              </td>
+              <td class="input-table">
+                <!-- 保守点検費  -->
+                <input type="number" min="0" class="form-control input-sm" style="min-width:6em">
+              </td>
+              <td class="input-table">
+                <!-- 修理費  -->
+                <input type="number" min="0" class="form-control input-sm" style="min-width:6em">
+              </td>
+              <td class="input-table">
+                <!-- 回線使用料  -->
+                <input type="number" min="0" class="form-control input-sm" style="min-width:6em">
+              </td>
+              <td class="input-table">
+                <!-- 年間稼働日数  -->
+                <input type="number" min="0" class="form-control input-sm" style="min-width:6em">
+              </td>
+              <td class="input-table">
+                <!-- 料金  -->
+                <input type="number" min="0" class="form-control input-sm" style="min-width:6em;background-color:#fff" disabled>
+              </td>
+              <td class="input-table">
+                <!-- 電気料金  -->
+                <input type="number" min="0" class="form-control input-sm" style="min-width:6em">
+              </td>
+              <td class="input-table">
+                <!-- ガス料金  -->
+                <input type="number" min="0" class="form-control input-sm" style="min-width:6em">
+              </td>
+              <td class="input-table">
+                <!-- 灯油料金  -->
+                <input type="number" min="0" class="form-control input-sm" style="min-width:6em">
+              </td>
+              <td class="input-table">
+                <!-- 重油料金  -->
+                <input type="number" min="0" class="form-control input-sm" style="min-width:6em">
+              </td>
+              <td class="input-table">
+                <!-- その他  -->
+                <input type="number" min="0" class="form-control input-sm" style="min-width:6em">
+              </td>
+              <td class="input-table">
+                <!-- 保守点検・  -->
+                <input type="text" class="form-control input-sm" style="min-width:13em">
+              </td>
+            </tr>
+            <tr>
+              <td class="input-table">
+                <button type="button" class="btn btn-danger btn-sm"><i class="fa fa-minus"></i>削除</button>
+              </td>
+              <td class="input-table">
+                H14
+              </td>
+              <td class="input-table">
+                4799.2
+              </td>
+              <td class="input-table">
+              </td>
+              <td class="input-table">
+              </td>
+              <td class="input-table">
+                1
+              </td>
+              <td class="input-table">
+                1
+              </td>
+              <td class="input-table">
+                4
+              </td>
+              <td class="input-table">
+                4
+              </td>
+              <td class="input-table">
+              </td>
+              <td class="input-table">
+              </td>
+              <td class="input-table">
+              </td>
+              <td class="input-table">
+              </td>
+              <td class="input-table">
+              </td>
+            </tr>
+
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</uib-tab>
+<uib-tab index="4">
+  <uib-tab-heading>
+    <span style="font-size:16px;">通電状況</span>
+  </uib-tab-heading>
+  <div class="container">
+    <div style="padding:15px">
+      <h6>通電状況</h6>
+      <hr class="style4">
+      <div class="row" style="margin-top:10px;">
+        <div class="col-sm-12">
+          <table class="table table-bordered table-hover">
+            <thead>
+              <tr>
+                <th class="text-center">
+                  契約電力<br>(kw)
+                </th>
+                <th class="text-center">
+                  契約電力<br>/優面積
+                </th>
+                <th class="text-center">
+                  使用料<br>(kw)
+                </th>
+                <th class="text-center">
+                  使用料<br>/面積
+                </th>
+                <th class="text-center">
+                  請求金額
+                </th>
+                <th class="text-center">
+                  請求金額<br>/面積
+                </th>
+                <th class="text-center">
+                  面積
+                </th>
+                <th class="text-center">
+                  うち優先面積
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <hr class="style4">
+      <div class="row" style="overflow-x: scroll;margin-top:10px">
+        <div class="col-sm-12">
+          <table class="table table-bordered table-hover">
+            <thead>
+              <tr>
+                <th row-span="2">
+                  操作
+                </th>
+                <th row-span="2">
+                  年度
+                </th>
+              </tr>
+              <tr>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><button type="button" class="btn btn-info btn-sm"><i class="fa fa-plus"></i>追加</button></td>
+                <td>
+                  <!--  年度-->
+                  <select class="form-control input-sm" ng-model="test_dt" ng-options="nendo as nendo.gengou for nendo in famedit.secchi_nendo" style="min-width:8em;" ng-disabled="!famedit.editable">
+                    <option value="">---</option>
+                  </select>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <h6>枝ID面積</h6>
+      <div class="row">
+        <div class="col-sm-3" ng-repeat="index in [1,2,3,4]">
+          <div class="form-group form-group-margin">
+            <label class="form-control-label text-center margin">
+              <p class="label">枝ID{{index}}面積</p>
+            </label>
+            <input type="text" class="form-control input-sm" disabled>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</uib-tab>
+<uib-tab index="5">
+  <uib-tab-heading>
+    <span style="font-size:16px;">電気回線・電気</span>
+  </uib-tab-heading>
+  <div class="container">
+    <div ng-include="famedit.tuushinkaisen_denki"></div>
+  </div>
+</uib-tab>

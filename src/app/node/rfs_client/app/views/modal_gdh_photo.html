@@ -1,0 +1,20 @@
+<div class="modal-header">
+  <div class="modal-title">
+    <div class="row">
+      <div class="col-sm-10">
+        <h3>案内標識写真 </h3>
+      </div>
+      <div class="col-sm-2 text-right">
+        <a ng-click="modalGdhPhoto.close()" style="float:right;font-size:200%"><i class="fa fa-times"></i></a>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="modal-body">
+  <div>
+    <img ng-src="{{modalGdhPhoto.result.path}}" class="gdh_pic_max_large">
+  </div>
+</div>
+<div class="modal-footer">
+  <button class="btn btn-primary" type="button" ng-click="modalGdhPhoto.close()">閉じる</button>
+</div>

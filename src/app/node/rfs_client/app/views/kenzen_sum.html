@@ -1,0 +1,174 @@
+<div>
+  <!-- Navbar Start-->
+  <div class="navbar navbar-default navbar-fixed-top zidx5009">
+    <div class="container">
+      <a style="color:white;" class="navbar-brand" href="#">
+        <img src="images/logo.png" class="img-rounded">道路附属物管理システム</a>
+    </div>
+  </div>
+
+  <div>
+
+    <div class="row" style="padding-left:170px; padding-top: 48px;">
+      <div class="col-sm-9">
+        <div class="form-group input-append text-left">
+          <label class="form-control-label text-center margin">
+            <p class="label">施設</p>
+          </label>
+          <div class="form-inline">
+            <div class="form-group">
+              <select class="form-control input-sm" ng-model="kenzen_sum.data.shisetsu_kbn"
+                ng-options="shisetsu_kbn.shisetsu_kbn as shisetsu_kbn.shisetsu_kbn_nm for shisetsu_kbn in kenzen_sum.mst.shisetsu_kbn"
+                style="width:15em; text-align: left">
+                <option value="">---</option>
+              </select>
+
+              <div class="form-group input-append text-center" style="margin-left:15px;">
+                <button type="button" class="btn btn-sm btn-info btn-group-justified text-center" style="width:8em;"
+                  ng-click="kenzen_sum.updateShisetsuKbn()">
+                  <span class="glyphicon glyphicon-th-list"></span>　表示</button>
+              </div>
+
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="row" style="padding-left:170px; padding-top: 20px;">
+    <div class="col-sm-12">
+      <table class="table table-bordered">
+        <thead>
+          <tr>
+            <th rowspan="3">
+              出張所
+            </th>
+            <th rowspan="3">
+              路線番号:路線名
+            </th>
+            <th rowspan="3">
+              全施<br>設数
+            </th>
+            <th colspan="{{ kenzen_sum.data.buzai_list.length * 4}}" class="text-center">
+              現在の附属物健全性
+            </th>
+            <th colspan="{{ kenzen_sum.data.buzai_list.length}}" class="text-center">
+              措置必要数
+            </th>
+          </tr>
+          <tr>
+            <th ng-repeat="buzai in kenzen_sum.data.buzai_list" colspan="4" class="text-center">
+              {{buzai.buzai_nm}}
+            </th>
+            <th ng-repeat="buzai in kenzen_sum.data.buzai_list" class="text-center">
+              {{buzai.buzai_nm}}
+            </th>
+          </tr>
+          <tr>
+            <th ng-repeat-start="buzai in kenzen_sum.data.buzai_list" class="text-center" style="max-width:24px">
+              Ⅰ
+            </th>
+            <th class="text-center" style="max-width:24px">
+              Ⅱ
+            </th>
+            <th class="text-center text-warning" style="max-width:24px">
+              Ⅲ
+            </th>
+            <th ng-repeat-end class="text-center text-danger" style="max-width:24px">
+              Ⅳ
+            </th>
+            <th ng-repeat="buzai in kenzen_sum.data.buzai_list" class="text-center text-danger" style="max-width:50px">
+              Ⅲ + Ⅳ
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr ng-repeat="shisetsu in kenzen_sum.data.shisetsu_list">
+            <td>
+              {{shisetsu.syucchoujo_mei}}
+            </td>
+            <td>
+              {{shisetsu.rosen_cd}}:{{shisetsu.rosen_nm}}
+            </td>
+            <td>
+              {{shisetsu.cnt}}
+            </td>
+            <td ng-repeat-start="buzai in kenzen_sum.data.buzai_list" class="text-center">
+              {{kenzen_sum.sum_jugde(shisetsu.syucchoujo_cd,shisetsu.rosen_cd,shisetsu.shisetsu_kbn,buzai.buzai_cd,1)}}
+            </td>
+            <td class="text-center">
+              {{kenzen_sum.sum_jugde(shisetsu.syucchoujo_cd,shisetsu.rosen_cd,shisetsu.shisetsu_kbn,buzai.buzai_cd,2)}}
+            </td>
+            <td class="text-center"
+              ng-class="{'bg-NG-ore':kenzen_sum.sum_jugde(shisetsu.syucchoujo_cd,shisetsu.rosen_cd,shisetsu.shisetsu_kbn,buzai.buzai_cd,3)}">
+              {{kenzen_sum.sum_jugde(shisetsu.syucchoujo_cd,shisetsu.rosen_cd,shisetsu.shisetsu_kbn,buzai.buzai_cd,3)}}
+            </td>
+            <td ng-repeat-end class="text-center"
+              ng-class="{'bg-NG-red':kenzen_sum.sum_jugde(shisetsu.syucchoujo_cd,shisetsu.rosen_cd,shisetsu.shisetsu_kbn,buzai.buzai_cd,4)}">
+              {{kenzen_sum.sum_jugde(shisetsu.syucchoujo_cd,shisetsu.rosen_cd,shisetsu.shisetsu_kbn,buzai.buzai_cd,4)}}
+            </td>
+            <td ng-repeat="buzai in kenzen_sum.data.buzai_list" class="text-center"
+              ng-class="{'bg-NG-red':kenzen_sum.sum_jugde(shisetsu.syucchoujo_cd,shisetsu.rosen_cd,shisetsu.shisetsu_kbn,buzai.buzai_cd,5)}">
+              {{kenzen_sum.sum_jugde(shisetsu.syucchoujo_cd,shisetsu.rosen_cd,shisetsu.shisetsu_kbn,buzai.buzai_cd,5)}}
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div style="top:42px;left:0px;z-index:1000; width:151px;" class="sidebar-nav affix container-fluid background"
+    role="complementary">
+    <div class="form-group row" style="margin:10px 0 10px 0;">
+      <label class=" form-control-label margin">
+        <p class="label3">建設管理部</p>
+      </label>
+      <select class="form-control input-sm" ng-model="kenzen_sum.dogen"
+        ng-options="row as row.dogen_mei for row in kenzen_sum.dogen_syucchoujo_dat.dogen_info"
+        ng-change="kenzen_sum.chgDogen()" required>
+      </select>
+    </div>
+    <div class="form-group row" style="margin:0 0 20px 0;">
+      <label class=" form-control-label margin">
+        <p class="label3">管理区域（出張所）</p>
+      </label>
+      <select
+        ng-show="kenzen_sum.session.ath.syozoku_cd==1 || kenzen_sum.session.ath.syozoku_cd==2 || kenzen_sum.session.ath.syozoku_cd==10001"
+        class="form-control input-sm" ng-model="kenzen_sum.syucchoujo"
+        ng-options="row as row.syucchoujo_mei for row in kenzen_sum.dogen.syucchoujo_row.syucchoujo_info"
+        ng-change="kenzen_sum.chgSyucchoujo()" required>
+        <option value="">全て</option>
+      </select>
+      <select ng-show="kenzen_sum.session.ath.syozoku_cd==3 || kenzen_sum.session.ath.syozoku_cd==4"
+        class="form-control input-sm" ng-model="kenzen_sum.syucchoujo"
+        ng-options="row as row.syucchoujo_mei for row in kenzen_sum.dogen.syucchoujo_row.syucchoujo_info"
+        ng-change="kenzen_sum.chgSyucchoujo()" required>
+      </select>
+    </div>
+  </div>
+</div>
+
+<div id="footerdamy">
+</div>
+
+<div id="footerArea2">
+  <div class="row" style="margin-top : 8px ">
+    <div class="col-sm-3" style="padding-left:20px">
+      <a ng-click="kenzen_sum.location('/raf_top')" type="button" class="btn btn-xs btn-inverse btn-sm">
+        <span class="glyphicon glyphicon-arrow-left"></span>&nbsp;戻る</a>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- 読込み中オーバーレイ -->
+<div class="waitOverlay " ng-show="kenzen_sum.waitLoadOverlay ">
+  <div style="width:100vw;height:100vh;font-size:60px;display: table-cell;text-align: center;vertical-align: middle; ">
+    <i class="fa fa-spinner fa-spin fa-3x fa-fw "></i>
+    <br>
+    <span>検索中です。
+      <br />しばらくお待ちください。</span>
+  </div>
+</div>

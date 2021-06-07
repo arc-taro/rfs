@@ -1,0 +1,52 @@
+<div id="gdh">
+  <div ng-repeat="dbData in famedit.gdh_db_data">
+    <div class="row" ng-show="dbData.gdh_idx == null">
+      案内標識対策整備状況が登録されていません。
+    </div>
+    <div class="row" ng-hide="dbData.gdh_idx == null">
+      <div class="col-sm-2" style="vertical-align: middle; text-align: center">
+        <img ng-if="dbData.detail[0].path!=null" ng-src="{{dbData.detail[0].path}}" class="gdh_pic_small"
+          ng-click="famedit.openModalGdhPhoto(dbData.detail[0].path);">
+        <a class="btn btn-xs btn-success" style="margin-top:60px"
+          ng-if="dbData.detail[0].path==null && dbData.detail[0].outside_url!=null"
+          ng-href="{{dbData.detail[0].outside_url}}" target="_blank">ストリートビューを<br>表示する</a>
+      </div>
+      <div class="col-sm-7">
+        <table class="type01 table-bordered">
+          <tr>
+            <th>対象</th>
+            <th>対策</th>
+            <th>予定年度</th>
+            <th>対策工法</th>
+          </tr>
+          <tr ng-repeat="detail in dbData.detail">
+            <td>{{detail.taisaku_kbn}}</td>
+            <td>{{detail.taisaku_status}}</td>
+            <!-- <td>{{detail.yotei_nendo_yyyy}}</td> -->
+            <td>{{detail.wareki_ryaku}}</td>
+            <td>{{detail.taisaku_kouhou}}</td>
+          </tr>
+          <tr>
+            <td>道央道を表示{{detail}}</td>
+            <td>{{dbData.detail[0].gaitou_higaitou}}</td>
+            <td colspan="2"></td>
+          </tr>
+        </table>
+        <br>
+        <button type="button" class="btn btn-sm btn-info" style="cursor:pointer;"
+          ng-click="famedit.locationGdhMain(dbData.gdh_idx);" ng-show="dbData.gdh_idx != null && dbData.gdh_idx != ''">
+          <span class="glyphicon glyphicon-edit"></span>　編集する</button>
+        <br>
+      </div>
+      <div class="col-sm-3">
+        <div ng-show="dbData.gdh_idx != null">
+          <button class="btn btn-sm btn-danger" ng-click="famedit.deleteGdhData(dbData.gdh_idx)"
+            ng-show="famedit.editable && ((famedit.ath_syozoku_cd == 3 && famedit.ath_syucchoujo_cd==famedit.mng_syucchoujo_cd) || famedit.ath_syozoku_cd == 1)"><i
+              class="fa fa-trash">削除</i></button>
+        </div>
+      </div>
+      <br>
+    </div>
+    <br>
+  </div>
+</div>

@@ -1,0 +1,15 @@
+<div class="modal-header">
+  <div class="modal-title">地図 <a ng-click="map.close()" style="float:right; cursor:pointer;"><i class="fa fa-times"></i></a></div>
+</div>
+<div class="modal-body">
+  <div class="container">
+    <div id="modal_map" style="width:100%;height:500px">
+
+    </div>
+  </div>
+</div>
+<div class="modal-footer" ng-switch="map.data.editable">
+  <button ng-switch-when="true" class="btn btn-danger" type="button" ng-click="map.close()">キャンセル</button>
+  <button ng-switch-when="true" class="btn btn-primary" type="button" ng-click="map.save()">確定</button>
+  <button ng-switch-when="false" class="btn btn-primary" type="button" ng-click="map.close()">戻る</button>
+</div>

@@ -1,0 +1,28 @@
+<uib-tabset active="active">
+  <uib-tab index="0">
+    <uib-tab-heading>
+      <span style="font-size:16px;">施設情報</span>
+    </uib-tab-heading>
+    <div class="container">
+      <div class=" col-sm-12 form-inline " style="float:left;margin-top:10px;">
+        <div class="form-group text-left" style="margin-right:10px;">
+          <label class="form-control-label text-center margin">
+            <p class="label">運営区分</p>
+          </label>
+          <div class="form-inline">
+            <select class="form-control input-sm btn-group-justified" ng-model="famedit.daichou.unei_kbn_cd" ng-options="unei_kbn_row.unei_kbn_cd as unei_kbn_row.unei_kbn for unei_kbn_row in famedit.unei_kbn_arr" style="width:8em; text-align: left" ng-disabled="!famedit.editable">
+              <option value="">---</option>
+            </select>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </uib-tab>
+  <uib-tab index="1">
+    <uib-tab-heading>
+      <span style="font-size:16px;">通信回線・電気</span>
+    </uib-tab-heading>
+    <div ng-include="famedit.tuushinkaisen_denki"></div>
+  </uib-tab>
+</uib-tabset>

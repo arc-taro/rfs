@@ -1,0 +1,48 @@
+<!-- Navbar Start-->
+<div class="navbar navbar-default navbar-fixed-top">
+  <div class="container">
+    <a style="color:white;" class="navbar-brand" href="#"><img src="images/logo.png" class="img-rounded">道路附属物管理システム</a>
+  </div>
+</div>
+<!-- End of Navber -->
+<div class="row" style="padding-top: 42px;">
+  <!--div style="padding-left:160px"-->
+  <div class="h_main2" style="margin-left:-15px;">
+    点検施設対象設定
+  </div>
+</div>
+<div class="row">&nbsp;</div>
+<!-- まず建管出張所選択 -->
+<div class="row">
+  <div class="col-sm-3">
+    <p>建設管理部</p>
+    <select class="form-control input-sm" ng-model="target.dogen" ng-options="row as row.dogen_mei for row in target.dogen_syucchoujo_dat.dogen_info" ng-change="target.chgDogen()" required>
+    </select>
+  </div>
+  <div class="col-sm-3">
+    <p>管理区域（出張所）</p>
+    <select class="form-control input-sm" ng-model="target.syucchoujo" ng-options="row as row.syucchoujo_mei for row in target.dogen.syucchoujo_row.syucchoujo_info" ng-change="target.chgSyucchoujo()" required>
+    </select>
+  </div>
+</div>
+<div class="row">&nbsp;</div>
+<div class="row">
+  <div class="col-sm-3">
+    <p>施設区分</p>
+    <select class="form-control input-sm" ng-model="target.shisetsu_kbn" ng-options="row as row.shisetsu_kbn_nm for row in target.shisetsu_and_keishiki_dat.shisetsu_and_keishiki_info" ng-change="target.chgShisetsuKbn()" required>
+      <option value="">選択しない</option>
+    </select>
+  </div>
+  <div class="col-sm-3">
+    <p>形式</p>
+    <select class="form-control input-sm" ng-model="target.keishiki" ng-options="row as row.shisetsu_keishiki_nm for row in target.shisetsu_kbn.keishiki_row.keishiki_info" required>
+      <option value="">選択しない</option>
+    </select>
+  </div>
+  <div class="col-sm-3">
+    <p>路線</p>
+    <select class="form-control input-sm" ng-model="target.rosen" ng-options="row as row.name for row in target.filterrosen" required>
+      <option value="">選択しない</option>
+    </select>
+  </div>
+</div>

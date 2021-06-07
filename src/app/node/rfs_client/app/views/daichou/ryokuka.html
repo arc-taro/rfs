@@ -1,0 +1,120 @@
+<uib-tabset active="active">
+  <uib-tab index="0">
+    <uib-tab-heading>
+      <span style="font-size:16px;">施設情報</span>
+    </uib-tab-heading>
+    <div class="container">
+
+      <div class=" col-sm-12 form-inline " style="float:left;">
+        <div class="form-group input-append text-left" style="margin:0 10px 0 15px;">
+          <label class="form-control-label text-center margin">
+            <p class="label">番号</p>
+          </label>
+          <div class="form-inline">
+            <input type="number" class="form-control input-sm" ng-model="famedit.daichou.bangou" style="width:7em; text-align: left" min="0" max="1000" ng-disabled="!famedit.editable">
+          </div>
+        </div>
+        <div class="form-group input-append text-left" style="margin:0 10px 0 15px;">
+          <label class="form-control-label text-center margin">
+            <p class="label">区分C</p>
+          </label>
+          <div class="form-inline">
+            <select class="form-control input-sm btn-group-justified" ng-model="famedit.daichou.kbn_c_cd" ng-options="kbn_c_row.kbn_c_cd as kbn_c_row.kbn_c for kbn_c_row in famedit.kbn_c_arr" style="width:20em; text-align: left" ng-disabled="!famedit.editable">
+              <option value="">---</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-group input-append text-left" style="margin:0 10px 0 15px;">
+          <label class="form-control-label text-center margin">
+            <p class="label">位置C</p>
+          </label>
+          <div class="form-inline">
+            <select class="form-control input-sm btn-group-justified" ng-model="famedit.daichou.ichi_c_cd" ng-options="ichi_c_row.ichi_c_cd as ichi_c_row.ichi_c for ichi_c_row in famedit.ichi_c_arr" style="width:20em; text-align: left" ng-disabled="!famedit.editable">
+              <option value="">---</option>
+            </select>
+          </div>
+        </div>
+      </div>
+      <div class=" col-sm-12 form-inline " style="float:left;">
+        <div class="form-group input-append text-left" style="margin:0 10px 0 15px;">
+          <label class="form-control-label text-center margin">
+            <p class="label">駐車公園等</p>
+          </label>
+          <div class="form-inline">
+            <input type="text" class="form-control input-sm" ng-model="famedit.daichou.tyuusya_kouen_tou" style="width:20em; text-align: left" ng-disabled="!famedit.editable">
+          </div>
+        </div>
+        <div class="form-group input-append text-left" style="margin:0 10px 0 15px;">
+          <label class="form-control-label text-center margin">
+            <p class="label">空桝面積</p>
+          </label>
+          <div class="form-inline">
+            <input type="number" class="form-control input-sm" ng-model="famedit.daichou.akimasu_menseki" style="width:10em; text-align: left" min="0" max="10000000" ng-disabled="!famedit.editable">
+            <span class="infont">&nbsp;㎡</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="row" style="margin-left:0px;max-width:1260px">
+        <div class=" col-sm-6">
+          <table class="fam02 table-bordered" style="margin:15px 10px 0 15px;">
+            <thead>
+              <tr>
+                <th colspan="2">高木　樹種名称</th>
+                <th style="width:200px">本数</th>
+              </tr>
+            </thead>
+            <tbody>
+
+              <tr ng-repeat="row in [1,2,3,4,5,6,7,8,9,10]">
+                <td>{{$index+1}}</td>
+                <td>
+                  <select class="input-sm form-control" ng-model="famedit.daichou.kouboku_jumoku_cd[row]" ng-options="row_b.jumoku_cd as row_b.jumoku_nm for row_b in famedit.tree_b_arr" ng-disabled="!famedit.editable">
+                    <option value="">---</option>
+                  </select>
+                </td>
+                <td>
+                  <input type="number" class="input-sm form-control" ng-model="famedit.daichou.kouboku_num[row]" min="0" max="1000000" ng-disabled="!famedit.editable">
+                </td>
+              </tr>
+              <tr>
+                <td colspan="2">　合　計　</td>
+                <td>
+                  <span type="number" class="input-sm form-control" style="text-align:left" disabled>{{famedit.daichou.kouboku_num[1]+famedit.daichou.kouboku_num[2]+famedit.daichou.kouboku_num[3]+famedit.daichou.kouboku_num[4]+famedit.daichou.kouboku_num[5]+famedit.daichou.kouboku_num[6]+famedit.daichou.kouboku_num[7]+famedit.daichou.kouboku_num[8]+famedit.daichou.kouboku_num[9]+famedit.daichou.kouboku_num[10]}}</span></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class=" col-sm-6">
+          <table class="fam02 table-bordered" style="margin:15px 10px 0 15px;">
+            <thead>
+              <tr>
+                <th colspan="2">中低木　樹種名称</th>
+                <th style="width:200px">本数</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr ng-repeat="row in [1,2,3,4,5,6,7,8,9,10]">
+                <td>{{$index+1}}</td>
+                <td>
+                  <select class="input-sm form-control" ng-model="famedit.daichou.tyuuteiboku_jumoku_cd[row]" ng-options="row_s.jumoku_cd as row_s.jumoku_nm for row_s in famedit.tree_s_arr" ng-disabled="!famedit.editable">
+                    <option value="">---</option>
+                  </select>
+                </td>
+                <td>
+                  <input type="number" class="input-sm form-control" ng-model="famedit.daichou.tyuuteiboku_num[row]" min="0" max="1000000" ng-disabled="!famedit.editable">
+                </td>
+              </tr>
+              <tr>
+                <td colspan="2">　合　計　</td>
+                <td>
+                  <span type="number" class="input-sm form-control" style="text-align:left" disabled>{{famedit.daichou.tyuuteiboku_num[1]+famedit.daichou.tyuuteiboku_num[2]+famedit.daichou.tyuuteiboku_num[3]+famedit.daichou.tyuuteiboku_num[4]+famedit.daichou.tyuuteiboku_num[5]+famedit.daichou.tyuuteiboku_num[6]+famedit.daichou.tyuuteiboku_num[7]+famedit.daichou.tyuuteiboku_num[8]+famedit.daichou.tyuuteiboku_num[9]+famedit.daichou.tyuuteiboku_num[10]}}</span></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </uib-tab>
+</uib-tabset>

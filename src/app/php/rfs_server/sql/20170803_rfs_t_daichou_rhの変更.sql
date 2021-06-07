@@ -1,0 +1,1 @@
+ALTER TABLE rfs_t_daichou_rh RENAME COLUMN dennryoku_keiyaku_syubetsu_cd TO denryoku_keiyaku_syubetsu_cd;

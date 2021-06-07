@@ -1,0 +1,885 @@
+<div>
+  <!-- Navbar Start-->
+  <div class="navbar navbar-default navbar-fixed-top zidx5009">
+    <div class="container">
+      <a style="color:white;" class="navbar-brand" href="#">
+        <img src="images/logo.png" class="img-rounded">道路附属物管理システム</a>
+    </div>
+  </div>
+  <!-- End of Navber -->
+  <div class="row" style="padding-top: 42px;">
+    <div class="col-sm-12" style="padding-left:151px">
+      <!--div style="padding-left:160px"-->
+      <div class="h_main" style="">
+        定期点検施設の詳細検索
+      </div>
+      <div class="s_main" ng-click="main.jyoukenkensaku = !main.jyoukenkensaku">
+        <a style="color:white;">
+          <i class="fa" ng-class="{'fa-plus' : main.jyoukenkensaku , 'fa-minus' : !main.jyoukenkensaku}"></i> 条件を指定して検索
+        </a>
+      </div>
+      <div uib-collapse="main.jyoukenkensaku">
+        <div style="display:table;">
+          <div class="left_sts_i" style="display:table-cell;">
+            <p class="label4">
+              <i class="fa fa-flag" aria-hidden="true"></i>
+              <br>施設の情報</p>
+          </div>
+          <div class="row" style="display:table-cell;">
+            <div class=" col-sm-12 form-inline " style="float:left;">
+              <div class="form-group input-append text-left" style="margin-right:10px;">
+                <label class="form-control-label text-center margin">
+                  <p class="label">施設管理番号</p>
+                </label>
+                <div class="form-inline">
+                  <div class="form-group">
+                    <input type="text" ng-model="main.srch.shisetsu_cd" class="form-control input-sm input_h"
+                      style="width:19.4em; text-align: left">
+                  </div>
+                </div>
+              </div>
+              <div class="form-group input-append text-left zidx1000" style="margin-right:10px;">
+                <label class="form-control-label margin">
+                  <p class="label">施設名選択</p>
+                </label>
+                <div>
+                  <div ng-dropdown-multiselect="" options="main.shisetsu_kbn_dat.shisetsu_kbn_info"
+                    selected-model="main.srch.shisetsu_kbn_dat_model" translation-texts="main.translationTexts"
+                    extra-settings="main.extraSettings" style="height:26px; width:8em; text-align: left"
+                    class="btn-group-justified"></div>
+                </div>
+              </div>
+              <div class="form-group input-append text-left">
+                <label class="form-control-label text-center margin">
+                  <p class="label">設置年度</p>
+                </label>
+                &nbsp;&nbsp;
+                <input style="position:relative; top:2px;" type="checkbox" ng-model="main.srch.include_secchi_null">
+                <p class="label">設置年度不明を対象に含める</p>
+                <div class="form-inline">
+                  <div class="form-group">
+                    <select class="form-control input-sm btn-group-justified select_h"
+                      ng-model="main.srch.setti_nendo_front_sel"
+                      ng-options="nendo.year as nendo.gengou for nendo in main.setti_nendo"
+                      style="width:8em; text-align: left">
+                      <option value="">---</option>
+                    </select>
+                    <span>~</span>
+                    <select class="form-control input-sm btn-group-justified select_h"
+                      ng-model="main.srch.setti_nendo_back_sel"
+                      ng-options="nendo.year as nendo.gengou for nendo in main.setti_nendo"
+                      style="width:8em; text-align: left">
+                      <option value="">---</option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div style="display:table;">
+          <div class="left_sts_i" style="display:table-cell;">
+            <p class="label4">
+              <i class="fa fa-map" aria-hidden="true"></i>
+              <br>施設の位置情報</p>
+          </div>
+          <div class="row" style="display:table-cell;">
+            <div class="col-sm-12 form-inline">
+              <div class="form-group input-append text-left zidx1000" style="margin-right:9px;">
+                <label class="form-control-label text-center margin">
+                  <p class="label">路線選択</p>
+                </label>
+                <div class="form-inline">
+                  <div ng-dropdown-multiselect="" options="main.filterRosen" selected-model="main.srch.rosen_dat_model"
+                    translation-texts="main.translationTexts" extra-settings="main.extraSettings"
+                    style="width:8em; text-align: left" class="btn-group-justified"></div>
+                </div>
+              </div>
+              <div class="form-group input-append text-left" style="margin-right:10px;">
+                <label class="form-control-label text-center margin">
+                  <p class="label">測点入力（ｍ）※路線選択が一つの場合のみ</p>
+                </label>
+                <div class="form-inline">
+                  <div class="form-group">
+                    <input type="number" ng-model="main.srch.sp_start" class="form-control input-sm input_h"
+                      ng-disabled="main.srch.rosen_dat_model.length!=1" style="width:9.2em; text-align: left">
+                    <span>~</span>
+                    <input type="number" ng-model="main.srch.sp_end" class="form-control input-sm input_h"
+                      ng-disabled="main.srch.rosen_dat_model.length!=1" style="width:9em; text-align: left">
+                  </div>
+                </div>
+              </div>
+              <div class="form-group input-append text-left">
+                <label class="form-control-label text-center margin">
+                  <p class="label">所在地</p>
+                </label>
+                <div class="form-inline">
+                  <div class="form-group">
+                    <input type="text" ng-model="main.srch.sicyouson" class="form-control input-sm input_h"
+                      placeholder="市区町村" style="width:8em; text-align: left">
+                  </div>
+                  <div class="form-group">
+                    <input type="text" ng-model="main.srch.azaban" class="form-control input-sm input_h"
+                      placeholder="字番" style="width:9em; text-align: left">
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div style="display:table;">
+          <div class="left_sts_i" style="display:table-cell;">
+            <p class="label4">
+              <i class="fa fa-camera" aria-hidden="true"></i>
+              <br>点検に関する情報</p>
+          </div>
+          <div class="row" style="display:table-cell;">
+            <div class="col-sm-12 form-inline">
+              <div class="form-group input-append text-left zidx1000" style="margin-right:9px;">
+                <label class="form-control-label margin">
+                  <p class="label">点検の実施状況</p>
+                </label>
+                <div>
+                  <div ng-dropdown-multiselect="" options="main.phase_dat.phase_info"
+                    selected-model="main.srch.phase_dat_model" translation-texts="main.translationTexts"
+                    extra-settings="main.extraSettings" style="width:8em; text-align: left" class="btn-group-justified">
+                  </div>
+                </div>
+              </div>
+              <div class="form-group input-append text-left zidx1000" style="margin-right:9px;">
+                <label class="form-control-label margin">
+                  <p class="label">健全性（点検時）</p>
+                </label>
+                <div>
+                  <div ng-dropdown-multiselect="" options="main.chk_judge_dat.judge_info"
+                    selected-model="main.srch.chk_judge_dat_model" translation-texts="main.translationTexts"
+                    extra-settings="main.extraSettings" style="width:8em; text-align: left" class="btn-group-justified">
+                  </div>
+                </div>
+              </div>
+              <div class="form-group input-append text-left zidx1000" style="margin-right:9px;">
+                <label class="form-control-label text-center margin">
+                  <p class="label">健全性（措置後）</p>
+                </label>
+                <div>
+                  <div ng-dropdown-multiselect="" options="main.measures_judge_dat.judge_info"
+                    selected-model="main.srch.measures_judge_dat_model" translation-texts="main.translationTexts"
+                    extra-settings="main.extraSettings" style="width:8em; text-align: left" class="btn-group-justified">
+                  </div>
+                </div>
+              </div>
+              <div class="form-group input-append text-left">
+                <label class="form-control-label text-center margin">
+                  <p class="label">点検年度</p>
+                </label>
+                <div class="form-inline">
+                  <div class="form-group">
+                    <select class="form-control input-sm btn-group-justified select_h"
+                      ng-model="main.srch.target_nendo_from"
+                      ng-options="nendo.year as nendo.gengou for nendo in main.setti_nendo"
+                      style="width:8em; text-align: left">
+                      <option value="">---</option>
+                    </select>
+                    <span>~</span>
+                    <select class="form-control input-sm btn-group-justified select_h"
+                      ng-model="main.srch.target_nendo_to"
+                      ng-options="nendo.year as nendo.gengou for nendo in main.setti_nendo"
+                      style="width:8em; text-align: left">
+                      <option value="">---</option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-sm-12 form-inline">
+              <div class="form-group input-append text-left" style="margin-right:14px;">
+                <label class=" form-control-label margin">
+                  <p class="label">点検実施年月日</p>
+                </label>
+
+                <div class="form-inline">
+                  <div class="input-group">
+                    <input name="input" ng-model="main.srch.chk_dt_front" uib-datepicker-popup=""
+                      is-open="status1.opened" class="form-control input-sm input_h" current-text="今日" clear-text="クリア"
+                      close-text="閉じる" datepicker-options="{showWeeks:false}" style="width:9.2em; text-align: left; "
+                      disabled ng-class="{'editable':main.editable}">
+                    <span class="input-group-btn">
+                      <button type="button" class="btn btn-default" ng-click="status1.opened = !status1.opened"
+                        style="height:26px; padding-top:4px">
+                        <i class="glyphicon glyphicon-calendar"></i>
+                      </button>
+                    </span>
+                  </div>
+                  <span>~</span>
+                  <div class="input-group">
+                    <input name="input" ng-model="main.srch.chk_dt_back" uib-datepicker-popup=""
+                      is-open="status2.opened" class="form-control input-sm input_h" current-text="今日" clear-text="クリア"
+                      close-text="閉じる" datepicker-options="{showWeeks:false}" style="width:9.2em; text-align: left; "
+                      disabled ng-class="{'editable':main.editable}">
+                    <span class="input-group-btn">
+                      <button type="button" class="btn btn-default" ng-click="status2.opened = !status2.opened"
+                        style="height:26px; padding-top:4px">
+                        <i class="glyphicon glyphicon-calendar"></i>
+                      </button>
+                    </span>
+                  </div>
+                </div>
+              </div>
+              <div class="form-group input-append text-left zidx1000" style="margin-right:14px;">
+                <label class="form-control-label text-center margin">
+                  <p class="label">点検会社</p>
+                </label>
+                <div ng-show="main.syozoku_cd==1 || main.syozoku_cd==2 || main.syozoku_cd==10001">
+                  <div ng-dropdown-multiselect="" options="main.gyousya_dat.gyousya_info"
+                    selected-model="main.srch.patrolin_gyousya_dat_model" translation-texts="main.translationTexts"
+                    extra-settings="main.extraSettings" style="width:8em; text-align: left" class="btn-group-justified">
+                  </div>
+                </div>
+                <div ng-show="main.syozoku_cd==3 || main.syozoku_cd==4">
+                  <div ng-dropdown-multiselect="" options="main.gyousya_dat.gyousya_info"
+                    selected-model="main.srch.patrolin_gyousya_dat_model" translation-texts="main.translationTexts"
+                    extra-settings="main.extraSettings" events="main.externalEvents_patrol_gyousya"
+                    style="width:8em; text-align: left" class="btn-group-justified"></div>
+                </div>
+              </div>
+              <div class="form-group input-append text-left zidx1000"
+                ng-show="main.syozoku_cd==3 || main.syozoku_cd==4">
+                <label class="form-control-label text-center margin">
+                  <p class="label">点検員</p>
+                </label>
+                <div>
+                  <div ng-dropdown-multiselect="" options="main.patrolin_dat"
+                    selected-model="main.srch.patrolin_dat_model" translation-texts="main.translationTexts"
+                    extra-settings="main.extraSettings" style="width:8em; text-align: left" class="btn-group-justified">
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-sm-12 form-inline" style="margin-bottom: 15px;">
+              <div class="form-group input-append text-left" style="margin-right:14px;">
+                <label class=" form-control-label margin">
+                  <p class="label">調査実施年月日</p>
+                </label>
+
+                <div class="form-inline">
+                  <div class="input-group">
+                    <input name="input" ng-model="main.srch.measures_dt_front" uib-datepicker-popup=""
+                      is-open="status3.opened" class="form-control input-sm input_h" current-text="今日" clear-text="クリア"
+                      close-text="閉じる" datepicker-options="{showWeeks:false}" style="width:9.2em; text-align: left; "
+                      disabled ng-class="{'editable':main.editable}">
+                    <span class="input-group-btn">
+                      <button type="button" class="btn btn-default" ng-click="status3.opened = !status3.opened"
+                        style="height:26px; padding-top:4px">
+                        <i class="glyphicon glyphicon-calendar"></i>
+                      </button>
+                    </span>
+                  </div>
+                  <span>~</span>
+                  <div class="input-group">
+                    <input name="input" ng-model="main.srch.measures_dt_back" uib-datepicker-popup=""
+                      is-open="status4.opened" class="form-control input-sm input_h" current-text="今日" clear-text="クリア"
+                      close-text="閉じる" datepicker-options="{showWeeks:false}" style="width:9.2em; text-align: left; "
+                      disabled ng-class="{'editable':main.editable}">
+                    <span class="input-group-btn">
+                      <button type="button" class="btn btn-default" ng-click="status4.opened = !status4.opened"
+                        style="height:26px; padding-top:4px">
+                        <i class="glyphicon glyphicon-calendar"></i>
+                      </button>
+                    </span>
+                  </div>
+                </div>
+              </div>
+              <div class="form-group input-append text-left zidx1000" style="margin-right:14px;">
+                <label class="form-control-label text-center margin">
+                  <p class="label">調査会社</p>
+                </label>
+                <div>
+                  <div ng-dropdown-multiselect="" options="main.investigator_gyousya_dat.investigator_gyousya_info"
+                    selected-model="main.srch.investigator_gyousya_dat_model" translation-texts="main.translationTexts"
+                    extra-settings="main.extraSettings" events="main.externalEvents_investigator_gyousya"
+                    style="width:8em; text-align: left" class="btn-group-justified"
+                    ng-disabled="main.investigator_gyousya_dat==null"></div>
+
+                </div>
+              </div>
+              <div class="form-group input-append text-left zidx1000" style="margin-right:20px;">
+                <label class="form-control-label text-center margin">
+                  <p class="label">調査員</p>
+                </label>
+                <div>
+                  <div ng-dropdown-multiselect="" options="main.investigator_dat"
+                    selected-model="main.srch.investigator_dat_model" translation-texts="main.translationTexts"
+                    extra-settings="main.extraSettings" style="width:8em; text-align: left" class="btn-group-justified"
+                    ng-disabled="main.mst_investigator_dat==null"></div>
+                </div>
+              </div>
+              <div class="form-group input-append" style="margin-top:26px;  margin-right:5px;">
+                <button type="button" class="btn btn-xs btn-danger btn-group-justified text-center"
+                  ng-click="main.all_reset()" style="width:8em;">
+                  <span class="glyphicon glyphicon-retweet"></span>　リセット</button>
+              </div>
+              <div class="form-group input-append text-center" style="margin-top:26px;">
+                <button type="button" class="btn btn-xs btn-info btn-group-justified text-center"
+                  ng-click="main.searchShisetsu()" style="width:8em;">
+                  <span class="glyphicon glyphicon-search"></span>　検索</button>
+                <!--                 <button type="button" class="btn btn-xs btn-info btn-group-justified text-center" ng-click="main.searchShisetsuNum()" style="width:8em;">
+                    <span class="glyphicon glyphicon-search"></span>　検索</button>
+ -->
+              </div>&nbsp;
+
+              <!--
+              <div class="form-group input-append text-center" style="margin-top:26px;">
+                <button type="button" class="btn btn-xs btn-danger btn-group-justified text-center" ng-click="main.createStockTenkenData()" style="width:20em;">
+                  <span class="glyphicon glyphicon-retweet"></span>　ストック点検作成</button>
+              </div>
+-->
+              <!--
+                            <div class="form-group input-append" style="margin-top:26px;  margin-right:5px;">
+                                <button type="button" class="btn btn-xs btn-success btn-group-justified text-center" ng-click="main.sort()" style="width:8em;">
+                                    <span class="glyphicon glyphicon-sort"></span>　ソート</button>
+                            </div>
+-->
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="s_main" ng-click="main.naiyoukensaku = !main.naiyoukensaku" style="margin-bottom: 10px;">
+        <a style="color:white;">
+          <i class="fa" ng-class="{'fa-plus' : main.naiyoukensaku , 'fa-minus' : !main.naiyoukensaku}"></i> 検索条件内容 </a>
+      </div>
+      <div uib-collapse="main.naiyoukensaku">
+
+        <div class="container">
+          <div class="row">
+            <div class="col-sm-12">
+              <table class="type01 table-bordered" style="font-size:12px">
+                <tbody>
+                  <tr class="active">
+                    <th>施設管理番号</th>
+                    <th colspan="2">施設名</th>
+                    <th>設置年</th>
+                    <th>路線</th>
+                    <th>測点</th>
+                  </tr>
+                  <tr>
+                    <td>{{main.srch.shisetsu_cd}}</td>
+                    <td colspan="2">
+                      <span ng-repeat="shisetsu_kbn_lbl in main.srch.shisetsu_kbn_dat_model">
+                        <span ng-hide="$index==0">、</span>{{shisetsu_kbn_lbl.label}}</span>
+                    </td>
+                    <td>
+                      <span ng-hide="main.srch.setti_nendo_front_sel == null || main.srch.setti_nendo_front_sel == ''"
+                        ng-repeat="setti in main.setti_nendo|filter:{'year':main.srch.setti_nendo_front_sel}">{{setti.gengou}}</span>
+                      <span ng-hide="main.srch.setti_nendo_back_sel == null || main.srch.setti_nendo_back_sel == ''"
+                        ng-repeat="setti in main.setti_nendo|filter:{'year':main.srch.setti_nendo_back_sel}">～&nbsp;{{setti.gengou}}</span>
+                    </td>
+                    <td>
+                      <span ng-repeat="rosen_lbl in main.srch.rosen_dat_model">
+                        <span ng-hide="$index==0">、</span>{{rosen_lbl.label}}</span>
+                    </td>
+                    <td>
+                      <span
+                        ng-hide="main.srch.sp_start == null || main.srch.sp_start == ''">{{main.srch.sp_start}}</span>
+                      <span
+                        ng-hide="main.srch.sp_end == null || main.srch.sp_end == ''">～&nbsp;{{main.srch.sp_end}}</span>
+                    </td>
+                  </tr>
+                  <tr class="active">
+                    <th>市町村</th>
+                    <th>字番</th>
+                    <th>点検の実施状況</th>
+                    <th>健全性（点検時）</th>
+                    <th>健全性（措置後）</th>
+                    <th>点検年度</th>
+                  </tr>
+                  <tr>
+                    <td>{{main.srch.sicyouson}}</td>
+                    <td>{{main.srch.azaban}}</td>
+                    <td>
+                      <span ng-repeat="phase_lbl in main.srch.phase_dat_model">
+                        <span ng-hide="$index==0">、</span>{{phase_lbl.label}}</span>
+                    </td>
+                    <td>
+                      <span ng-repeat="chk_judge_lbl in main.srch.chk_judge_dat_model">
+                        <span ng-hide="$index==0">、</span>{{chk_judge_lbl.label}}</span>
+                    </td>
+                    <td>
+                      <span ng-repeat="measures_judge_lbl in main.srch.measures_judge_dat_model">
+                        <span ng-hide="$index==0">、</span>{{measures_judge_lbl.label}}</span>
+                    </td>
+                    <td>
+                      <span ng-hide="main.srch.target_nendo_from == null || main.srch.target_nendo_from == ''"
+                        ng-repeat="setti in main.setti_nendo|filter:{'year':main.srch.target_nendo_from}">{{setti.gengou}}</span>
+                      <span ng-hide="main.srch.target_nendo_to == null || main.srch.target_nendo_to == ''"
+                        ng-repeat="setti in main.setti_nendo|filter:{'year':main.srch.target_nendo_to}">～&nbsp;{{setti.gengou}}</span>
+                    </td>
+                  </tr>
+                  <tr class="active">
+                    <th>点検実施年月日</th>
+                    <th>点検会社</th>
+                    <th>点検員</th>
+                    <th>調査実施年月日</th>
+                    <th>調査会社</th>
+                    <th>調査員</th>
+                  </tr>
+                  <tr>
+                    <td>
+                      <span ng-hide="main.srch.chk_dt_front == null || main.srch.chk_dt_front == ''">{{main.srch.chk_dt_front|
+                        date : 'yyyy-MM-dd'}}</span>
+                      <span ng-hide="main.srch.chk_dt_back == null || main.srch.chk_dt_back == ''">～&nbsp;{{main.srch.chk_dt_back|
+                        date : 'yyyy-MM-dd'}}</span>
+                    </td>
+                    <td>
+                      <span ng-repeat="gyousya_lbl in main.srch.patrolin_gyousya_dat_model">
+                        <span ng-hide="$index==0">、</span>{{gyousya_lbl.label}}</span>
+                    </td>
+                    <td>
+                      <span ng-repeat="patrolin_lbl in main.srch.patrolin_dat_model">
+                        <span ng-hide="$index==0">、</span>{{patrolin_lbl.label}}</span>
+                    </td>
+                    <td>
+                      <span ng-hide="main.srch.measures_dt_front == null || main.srch.measures_dt_front == ''">{{main.srch.measures_dt_front|
+                        date : 'yyyy-MM-dd'}}</span>
+                      <span ng-hide="main.srch.measures_dt_back == null || main.srch.measures_dt_back == ''">～&nbsp;{{main.srch.measures_dt_back|
+                        date : 'yyyy-MM-dd'}}</span>
+                    </td>
+                    <td>
+                      <span ng-repeat="investigator_gyousya_lbl in main.srch.investigator_gyousya_dat_model">
+                        <span ng-hide="$index==0">、</span>{{investigator_gyousya_lbl.label}}</span>
+                    </td>
+                    <td>
+                      <span ng-repeat="investigator_lbl in main.srch.investigator_dat_model">
+                        <span ng-hide="$index==0">、</span>{{investigator_lbl.label}}</span>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="row" style="margin-left:10px;width:99%;">
+        <uib-tabset class="tab-animation">
+          <!--                    <uib-tab index="1" select="main.displayMap()" deselect="main.DeselectTab(1)" active="true">-->
+          <uib-tab index="1" select="main.displayMap()" deselect="main.DeselectTab(1)" active="main.default_tab.map">
+            <uib-tab-heading>
+              <i class="fa fa-map-o"></i> Map表示
+            </uib-tab-heading>
+            <div>
+              <div id="map" style="width:100%;height:800px;"> </div>
+              <div
+                style="z-index:1000;position: relative;top: -800px;text-align: right; margin-left: auto; width: 300px;">
+                <i style="font-size:25px; vertical-align:top;" class="fa"
+                  ng-class="{'fa-caret-square-o-right':!hanrei,'fa-caret-square-o-left':(hanrei)}" aria-hidden="true"
+                  ng-click="hanrei = !hanrei;"></i>
+                <image ng-hide="hanrei" src="images/hanrei.png"></image>
+              </div>
+            </div>
+            <!--
+            <div class="row" ng-show="main.displayIndex!=-1">
+              <div class="col-sm-6">
+                <table class="type02 table-bordered">
+                  <tbody>
+                    <tr ng-repeat="list in list.naiyou">
+                      <th class="text-center">
+                        {{list.name}}
+                        <tr>
+                          <th>施設 </th>
+                          <td>{{main.data[main.displayIndex].kind}}</td>
+                        </tr>
+                        <tr>
+                          <th>施設</th>
+                          <td>{{main.data[main.displayIndex].kind}}</td>
+                        </tr>
+                        <tr>
+                          <th>施設</th>
+                          <td>{{main.data[main.displayIndex].kind}}</td>
+                        </tr>
+                        <tr>
+                          <th>施設名</th>
+                          <td>{{main.data[main.displayIndex].name}}</td>
+                        </tr>
+                        <tr>
+                          <th>緯度</th>
+                          <td>{{main.data[main.displayIndex].lat}}</td>
+                        </tr>
+                        <tr>
+                          <th>経度</th>
+                          <td>{{main.data[main.displayIndex].lon}}</td>
+                        </tr>
+                      </th>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+              <div class="col-sm-6">
+                <span></span>
+                <img width="200px">
+                <!--                 <img src="{{main.data[main.displayIndex].img}}" width="200px">
+              </div>
+            </div>
+ -->
+          </uib-tab>
+          <uib-tab index="2" deselect="main.DeselectTab(2)" active="main.default_tab.list">
+            <uib-tab-heading>
+              <i class="fa fa-list"></i> List表示
+            </uib-tab-heading>
+            <div style="max-width:100%;">
+              <div id="sync-table1"
+                style="overflow:hidden;height: calc(100vh - 470px);width:auto;max-width:35%;overflow-x: scroll;float:left;">
+                <table class="table table-bordered table-hover table-srch_list" style="font-size:12px;">
+                  <tbody>
+                    <tr>
+                      <th>Excel
+                        <br>出力</th>
+                      <th colspan="2">施設名</th>
+                      <th colspan="2">形式</th>
+                      <th colspan="2">点検年度</th>
+                      <th colspan="2">管理番号</th>
+                    </tr>
+                    <tr style="border-bottom: 3px solid #4682b4;">
+                      <th class="sort_chk">
+                        <input type="checkbox" ng-model="main.excel_all_chk_flg" ng-checked="main.excel_all_chk_flg"
+                          ng-click="main.SetExcelChkStatus()">
+                      </th>
+                      <th ng-repeat="sort_id in main.sort_identifiers_left" class="sort_btn"
+                        ng-click="main.SetSortOrder(sort_id)" ng-style="main.sort_style[sort_id]">
+                        <span ng-if="$even">▲</span>
+                        <span ng-if="$odd">▼</span>
+                      </th>
+                    </tr>
+                    <tr
+                      ng-repeat="data in main.data | orderBy : main.sort_order | offset :  (main.current_page-1)*main.items_per_page |  limitTo: main.items_per_page">
+                      <td>
+                        <input type="checkbox" ng-model="data.chkexcel" ng-checked="data.chkexcel"
+                          ng-click="main.IsExcelAllChedked()">
+                      </td>
+                      <td colspan="2">{{data.shisetsu_kbn_nm}}</td>
+                      <td colspan="2" ng-class="{'bg-danger-c' : data.shisetsu_keishiki_cd == null}">
+                        {{data.shisetsu_keishiki_nm}}</td>
+                      <td colspan="2">{{data.target_nendo}}</td>
+                      <td colspan="2">{{data.shisetsu_cd}}</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+              <div id="sync-table2" style="height: calc(100vh - 470px);width:auto;overflow-x: scroll;">
+                <table class="table table-bordered table-hover table-srch_list" style="font-size:12px;">
+                  <tbody>
+                    <tr>
+                      <!--
+                      <th colspan="2">基本情報編集</th>
+-->
+                      <th colspan="2">点検
+                        <br>調査票</th>
+                      <th colspan="2">点検実施状況
+                      </th>
+                      <th colspan="2">健全性
+                        <br>（点検時）</th>
+                      <th colspan="2">所見</th>
+                      <th colspan="2">健全性
+                        <br>（措置後）</th>
+                      <th colspan="2">施設の健全性</th>
+                      <th colspan="2">路線
+                        <br>コード</th>
+                      <th colspan="2">路線名</th>
+                      <th colspan="2">測点
+                        <br>（m）</th>
+                      <th colspan="2">横断区分</th>
+                      <th colspan="2">所在地</th>
+                      <th colspan="2">設置年度</th>
+                      <th colspan="2">点検実施
+                        <br>年月日</th>
+                      <th colspan="2">調査実施
+                        <br>年月日</th>
+                      <th colspan="2">再判定
+                        <br>年月日</th>
+                      <th colspan="2">点検会社</th>
+                      <th colspan="2">点検員</th>
+                      <th colspan="2">調査会社</th>
+                      <th colspan="2">調査員</th>
+                      <th colspan="2">代替路
+                        <br>の有無</th>
+                      <th colspan="2">緊急輸
+                        <br>送道路</th>
+                      <th colspan="2">自専道 or
+                        <br>一般道</th>
+                      <th colspan="2">占用物件
+                        <br>（名称）</th>
+                      <th colspan="2">道路
+                        <br>幅員</th>
+                      <th colspan="2">建管</th>
+                      <th colspan="2">出張所</th>
+                    </tr>
+                    <tr style="border-bottom: 3px solid #4682b4;">
+
+                      <!-- CSS調整用のダミー要素 -->
+                      <th class="sort_btn" ng-hide="true"></th>
+
+                      <th ng-repeat="sort_id in main.sort_identifiers_right" class="sort_btn"
+                        ng-click="main.SetSortOrder(sort_id)" ng-style="main.sort_style[sort_id]">
+                        <span ng-if="$even">▲</span>
+                        <span ng-if="$odd">▼</span>
+                      </th>
+                    </tr>
+                    <tr
+                      ng-repeat="data in main.data | orderBy : main.sort_order | offset :  (main.current_page-1)*main.items_per_page |  limitTo: main.items_per_page">
+                      <!--
+                      <td colspan="2">
+                        <a style="cursor:pointer;" ng-click="main.editBaseInfo(1, data)">基本情報編集</a>
+                      </td>
+-->
+                      <td colspan="2">
+                        <span ng-show="data.shisetsu_kbn_nm == '防雪柵'">
+                          <span class="btn btn-xs btn-info" style="float:right"
+                            ng-click="main.openBsskChildren(data.sno, data.struct_idx)"
+                            ng-disabled="data.sno == null || data.shichu_cnt==1">支柱リスト</span>
+                        </span>
+                        <span ng-hide="data.shisetsu_kbn_nm == '防雪柵'">
+                          <a style="cursor:pointer;"
+                            ng-click="main.location('/tenken/'+data.sno+'/'+data.struct_idx+'/'+data.chk_mng_no)"
+                            ng-hide="(data.sno == null) || (data.struct_idx == null) || (data.chk_mng_no == null)">開く</a>
+                          <span
+                            ng-show="(data.sno == null) || (data.struct_idx == null) || (data.chk_mng_no == null)">-</span>
+                        </span>
+                      </td>
+                      <td colspan="2">
+                        {{data.phase_str_large}}
+                        <span class="fukidashi" ng-if="data.phase_str_large_sub">{{data.phase_str_large_sub}}
+                          <span class="fukidashi-balloon">点検実施状況の詳細は、支柱リストを開いてください。</span>
+                        </span>
+                      </td>
+                      <td colspan="2" class="td-font-color"
+                        ng-class="{'bg-danger-c':data.check_shisetsu_judge == 4,'bg-warning-c':data.check_shisetsu_judge == 3,'bg-green-c':data.check_shisetsu_judge == 2,'bg-blue-c':data.check_shisetsu_judge == 1,'bg-mijisshi-c':data.check_shisetsu_judge == 0}">
+                        {{data.chk_shisetsu_judge_nm}}</td>
+                      <td colspan="2">{{data.syoken}}</td>
+                      <td colspan="2" class="td-font-color"
+                        ng-class="{'bg-danger-c':data.measures_shisetsu_judge == 4,'bg-warning-c':data.measures_shisetsu_judge == 3,'bg-green-c':data.measures_shisetsu_judge == 2,'bg-blue-c':data.measures_shisetsu_judge == 1,'bg-mijisshi-c':data.measures_shisetsu_judge == 0}">
+                        {{data.measures_shisetsu_judge_nm}}</td>
+                      <td colspan="2" style="text-align:center;">
+                        <span ng-show="data.shisetsu_kbn != 4">
+                          <span class="btn btn-xs btn-info" style="float:none;" ng-click="main.openShisetsuJudge(data)"
+                            ng-disabled="(data.shisetsu_cd == null) || (data.shisetsu_ver == null) || (data.shisetsu_kbn == null) || (data.chk_mng_no == null) || (data.rireki_no == null)">確認</span>
+                        </span>
+                        <span ng-show="data.shisetsu_kbn == 4">支柱リスト参照</span>
+                      </td>
+                      <td colspan="2">{{data.rosen_cd}}</td>
+                      <td colspan="2">{{data.rosen_nm}}</td>
+                      <td colspan="2">{{data.sp}}</td>
+                      <td colspan="2">{{data.lr_str}}</td>
+                      <td colspan="2">{{data.syozaichi}}</td>
+                      <td colspan="2">{{data.secchi}}</td>
+                      <td colspan="2">
+                        <span>{{data.chk_dt}}</span>
+                      </td>
+                      <td colspan="2">
+                        <span>{{data.investigate_dt}}</span>
+                      </td>
+                      <td colspan="2">
+                        <span>{{data.re_measures_dt}}</span>
+                      </td>
+                      <td colspan="2">{{data.chk_company}}</td>
+                      <td colspan="2">{{data.chk_person}}</td>
+                      <td colspan="2">{{data.investigate_company}}</td>
+                      <td colspan="2">{{data.investigate_person}}</td>
+                      <td colspan="2">{{data.substitute_road_str}}</td>
+                      <td colspan="2">{{data.emergency_road_str}}</td>
+                      <td colspan="2">{{data.motorway_str}}</td>
+                      <td colspan="2">{{data.senyou}}</td>
+                      <td colspan="2">{{data.fukuin}}</td>
+                      <td colspan="2">{{data.dogen_mei}}</td>
+                      <td colspan="2">{{data.syucchoujo_mei}}</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+              <div class="row" style="text-align:center" ng-show="main.max_page!=0">
+                <ul class="pagination pagination-sm" style="cursor:pointer">
+                  <li ng-class="main.prev_disabled" ng-if="main.current_page!=1">
+                    <span ng-click="main.prevPage()" aria-label="前のページへ">«</span>
+                  </li>
+                  <li ng-class="main.prev_disabled" ng-if="main.current_page==1">
+                    <span aria-hidden="true">«</span>
+                  </li>
+                  <li ng-repeat="n in main.range" ng-click="main.setPage(n)">
+                    <span ng-class="{'page_sel_col':main.current_page==n}">{{n}}</span>
+                  </li>
+                  <li ng-class="main.next_disabled" ng-if="main.current_page!=main.max_page">
+                    <span ng-click="main.nextPage()" aria-label="次のページへ">»</span>
+                  </li>
+                  <li ng-class="main.next_disabled" ng-if="main.current_page==main.max_page">
+                    <span aria-hidden="true">»</span>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </uib-tab>
+        </uib-tabset>
+      </div>
+
+      <!--
+      <div ng-switch="main.checked_data!=null && main.keishiki_not_input==null">
+        <span ng-switch-when="true">submit OK</span>
+        <span ng-switch-when="false">submit ダメ</span>
+      </div><br/>
+      {{main.checked_data}} ／
+      {{main.keishiki_not_input}}
+-->
+
+      <div id="footerdamy"></div>
+    </div>
+    <div style="top:42px;left:0px;z-index:1000; width:151px;" class="sidebar-nav affix container-fluid background"
+      role="complementary">
+      <div class="form-group row" style="margin:10px 0 10px 0;">
+        <label class=" form-control-label margin">
+          <p class="label3">建設管理部</p>
+        </label>
+        <select class="form-control input-sm" ng-model="main.dogen"
+          ng-options="row as row.dogen_mei for row in main.dogen_syucchoujo_dat.dogen_info" ng-change="main.chgDogen()"
+          required>
+          <!-- 建管は必須にする
+          <option value="">---</option>
+-->
+        </select>
+      </div>
+      <div class="form-group row" style="margin:0 0 20px 0;">
+        <label class=" form-control-label margin">
+          <p class="label3">管理区域（出張所）</p>
+        </label>
+        <select ng-show="main.syozoku_cd==1 || main.syozoku_cd==2 || main.syozoku_cd==10001"
+          class="form-control input-sm" ng-model="main.syucchoujo"
+          ng-options="row as row.syucchoujo_mei for row in main.dogen.syucchoujo_row.syucchoujo_info"
+          ng-change="main.chgSyucchoujo()" required>
+          <option value="">全て</option>
+        </select>
+        <select ng-show="main.syozoku_cd==3 || main.syozoku_cd==4" class="form-control input-sm"
+          ng-model="main.syucchoujo"
+          ng-options="row as row.syucchoujo_mei for row in main.dogen.syucchoujo_row.syucchoujo_info"
+          ng-change="main.chgSyucchoujo()" required>
+        </select>
+      </div>
+    </div>
+  </div>
+  <div id="footerArea2">
+    <div class="row" style="margin-top : 8px">
+      <div class="col-sm-3" style="text-align:center;">
+        <a ng-click="main.location('/raf_top')" type="button" class="btn btn-xs btn-inverse btn-sm">
+          <span class="glyphicon glyphicon-arrow-left"></span>&nbsp;附属物点検システムTOPに戻る</a>
+        <!--
+          <a ng-href="{{main.imm_url}}" type="button" class="btn btn-xs btn-inverse btn-sm">
+          <span class="glyphicon glyphicon-arrow-left"></span>&nbsp;公共土木施設維持管理システムTOPに戻る</a>
+-->
+      </div>
+      <!--
+      <div ng-show="main.syucchoujo.syucchoujo_cd==0" class="col-sm-3" style="text-align:center;">
+        <button ng-click="main.editBaseInfo(0)" type="button" class="btn btn-xs btn-success btn-sm">
+          <span class="glyphicon glyphicon-list-alt"></span>&nbsp;基本情報登録</button>
+      </div>
+      <div ng-show="main.syucchoujo.syucchoujo_cd!=0" class="col-sm-3" style="text-align:center;">
+        <a ng-href="#/shisetsu_info" ng-click="main.editBaseInfo(0)" type="button" class="btn btn-xs btn-success btn-sm">
+          <span class="glyphicon glyphicon-list-alt"></span>&nbsp;基本情報登録</a>
+      </div>
+-->
+      <div ng-show="main.syozoku_cd!=3" class="col-sm-3"></div>
+
+      <!-- List表示タブ選択時のみ表示 -->
+      <div class="col-sm-6" style="text-align:right;display:inline-flex;" ng-show="main.default_tab.list == true">
+
+        <!-- 前回の点検票を出力 -->
+        <div ng-switch="main.checked_data!=null">
+          <!-- 有効なチェックデータがある場合 -->
+          <form ng-switch-when="true" name="excel_old_form" method="POST"
+            action="api/index.php/OutputExcel/out_chkDataPack" ng-submit="main.submitCheckedDataToExcel(0)">
+            <input type="hidden" name="mode" ng-value="main.post_data.mode">
+            <input type="hidden" name="checked_data" ng-value="main.post_data.checked_data">
+            <input type="hidden" name="excel_ver" ng-value="0">
+            <button type="subumit" class="btn btn-xs btn-info btn-sm">
+              <span class="glyphicon glyphicon-print"></span>&nbsp;前回の点検票を出力</button>
+          </form>
+          <!-- 有効なチェックデータがない場合 -->
+          <form ng-switch-when="false" name="excel_old_form">
+            <button type="button" class="btn btn-xs btn-info btn-sm" ng-click="main.submitCheckedDataToExcel(0)">
+              <span class="glyphicon glyphicon-print"></span>&nbsp;前回の点検票を出力</button>
+          </form>
+        </div>&nbsp;
+
+        <!-- 最新の点検票を出力 -->
+        <div ng-switch="main.checked_data!=null">
+          <!--<div ng-switch=" (main.checked_data!=null && main.keishiki_not_input==null) || main.account==9999999 ">-->
+          <!-- 有効なチェックデータがあり、形式未登録のものが選択されていない場合 -->
+          <form ng-switch-when="true" name="excel_new_form" method="POST"
+            action="api/index.php/OutputExcel/out_chkDataPack" ng-submit="main.submitCheckedDataToExcel(1)">
+            <input type="hidden" name="mode" ng-value="main.post_data.mode">
+            <input type="hidden" name="checked_data" ng-value="main.post_data.checked_data">
+            <input type="hidden" name="excel_ver" ng-value="0">
+            <button type="subumit" class="btn btn-xs btn-info btn-sm">
+              <span class="glyphicon glyphicon-print"></span>&nbsp;最新の点検票を出力</button>
+          </form>
+          <!-- 有効なチェックデータがない、または形式未登録のものが選択されている場合 -->
+          <form ng-switch-when="false" name="excel_new_form">
+            <button type="button" class="btn btn-xs btn-info btn-sm" ng-click="main.submitCheckedDataToExcel(1)">
+              <span class="glyphicon glyphicon-print"></span>&nbsp;最新の点検票を出力</button>
+          </form>
+        </div>&nbsp;
+
+        <!-- リストを出力 -->
+        <div ng-switch="main.data==null">
+          <!-- 検索未実行(null)の場合はsubmitしない -->
+          <form ng-switch-when="true" name="excel_list_form">
+            <button class="btn btn-xs btn-info btn-sm" ng-click="main.submitListToExcel()">
+              <span class="glyphicon glyphicon-print "></span>&nbsp;リストを出力</button>
+          </form>
+          <!-- 検索結果がある場合はsubmit -->
+          <form ng-switch-when="false" name="excel_list_form" method="POST"
+            action="api/index.php/OutputExcel/out_schList" ng-submit="main.submitListToExcel()">
+            <input type="hidden" name="dogen_cd" value="{{main.post_data.dogen_cd}} ">
+            <input type="hidden" name="syucchoujo_cd" value="{{main.post_data.syucchoujo_cd}}">
+            <input type="hidden" name="srch" value="{{main.post_data.srch}} ">
+            <input type="hidden" name="excel_ver" value="main.post_data.excel_ver">
+            <button type="submit" class="btn btn-xs btn-info btn-sm">
+              <span class="glyphicon glyphicon-print"></span>&nbsp;リストを出力</button>
+          </form>
+        </div>&nbsp;&nbsp;
+
+
+
+        <!-- CSVリストを出力 -->
+        <div ng-switch="main.data==null">
+          <!-- 検索未実行(null)の場合はsubmitしない -->
+          <form ng-switch-when="true" name="csv_list_form">
+            <button class="btn btn-xs btn-info btn-sm" ng-click="main.submitList()">
+              <span class="glyphicon glyphicon-print "></span>&nbsp;リストを出力(CSV)</button>
+          </form>
+          <!-- 検索結果がある場合はsubmit -->
+          <form ng-switch-when="false" name="csv_list_form" method="POST"
+            action="api/index.php/OutputExcel/dlOutShisetsuCsvListHuzokubutsu" ng-submit="main.submitList()">
+            <input type="hidden" name="srch" value="{{main.data}} ">
+            <button type="submit" class="btn btn-xs btn-info btn-sm">
+              <span class="glyphicon glyphicon-print"></span>&nbsp;リストを出力(CSV)</button>
+          </form>
+        </div>
+
+
+
+        <span ng-hide="true">
+          <input type="checkbox" ng-model="main.excel_ver" ng-click="main.excel_ver_click()">
+          <span style="color:black;">Excel2013へ出力</span>
+        </span>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 読込み中オーバーレイ -->
+<div class="waitOverlay " ng-show="main.waitLoadOverlay ">
+  <div style="width:100vw;height:100vh;font-size:60px;display: table-cell;text-align: center;vertical-align: middle; ">
+    <i class="fa fa-spinner fa-spin fa-3x fa-fw "></i>
+    <br>
+    <span>検索中です。
+      <br />しばらくお待ちください。</span>
+  </div>
+</div>

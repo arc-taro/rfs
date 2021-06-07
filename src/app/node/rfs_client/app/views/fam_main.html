@@ -1,0 +1,629 @@
+<div id="fam_main">
+  <!-- Navbar Start-->
+  <div class="navbar navbar-default navbar-fixed-top zidx5009">
+    <div class="container">
+      <a style="color:white;" class="navbar-brand" ng-href="#">
+        <img src="images/logo.png" class="img-rounded">道路施設管理システム</a>
+    </div>
+  </div>
+  <!-- End of Navber -->
+  <div class="row" style="padding-top: 42px;">
+    <div class="col-sm-12" style="padding-left:151px">
+      <div class="s_main" ng-click="fammain.jyoukenkensaku = !fammain.jyoukenkensaku">
+        <a style="color:white;">
+          <i class="fa" ng-class="{'fa-plus' : fammain.jyoukenkensaku , 'fa-minus' : !fammain.jyoukenkensaku}"></i>
+          条件を指定して検索 </a>
+      </div>
+      <div uib-collapse="fammain.jyoukenkensaku">
+        <div style="display:table;">
+          <div class="left_sts_i" style="display:table-cell;">
+            <p class="label4">
+              <i class="fa fa-flag" aria-hidden="true"></i>
+              <br>施設の情報</p>
+          </div>
+          <div class="row" style="display:table-cell;">
+            <div class=" col-sm-12 form-inline " style="float:left;">
+              <div class="form-group input-append text-left" style="margin-right:10px;">
+                <label class="form-control-label text-center margin">
+                  <p class="label">施設管理番号</p>
+                </label>
+                <div class="form-inline">
+                  <div class="form-group">
+                    <input type="text" ng-model="fammain.srch.shisetsu_cd" class="form-control input-sm input_h" style="width:19.4em; text-align: left">
+                  </div>
+                </div>
+              </div>
+              <div class="form-group input-append text-left zidx5008" style="margin-right:10px;">
+                <label class="form-control-label margin">
+                  <p class="label">施設名選択</p>
+                </label>
+                <div>
+                  <div ng-dropdown-multiselect="" options="fammain.shisetsu_kbn_dat" selected-model="fammain.srch.shisetsu_kbn_dat_model"
+                    translation-texts="fammain.translationTexts" extra-settings="fammain.extraSettings" style="height:26px; width:8em; text-align: left"
+                    class="btn-group-justified" events="fammain.chkSS"></div>
+                </div>
+              </div>
+              <div class="
+                    form-group input-append text-left">
+                <label class="form-control-label text-center margin">
+                  <p class="label">設置年度</p>
+                </label>
+                &nbsp;&nbsp;
+                <input style="position:relative; top:2px;" type="checkbox" ng-model="fammain.srch.include_secchi_null">
+                <p class="label">設置年度不明を対象に含める</p>
+                <div class="form-inline">
+                  <div class="form-group">
+                    <select class="form-control input-sm btn-group-justified select_h" ng-model="fammain.srch.secchi_nendo_from"
+                      ng-options="nendo.year as nendo.gengou for nendo in fammain.secchi_nendo" style="width:8em; text-align: left">
+                      <option value="">---</option>
+                    </select>
+                    <span>~</span>
+                    <select class="form-control input-sm btn-group-justified select_h" ng-model="fammain.srch.secchi_nendo_to"
+                      ng-options="nendo.year as nendo.gengou for nendo in fammain.secchi_nendo" style="width:8em; text-align: left">
+                      <option value="">---</option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class=" col-sm-12 form-inline " style="float:left; margin-bottom:14px">
+              <div class="form-group input-append text-left zidx5007" style="margin-right:10px;">
+                <label class="form-control-label margin">
+                  <p class="label">代替路の有無</p>
+                </label>
+                <div>
+                  <div ng-dropdown-multiselect="" options="fammain.substitute_road_arr" selected-model="fammain.srch.substitute_road_dat_model"
+                    translation-texts="fammain.translationTexts" extra-settings="fammain.extraSettings" style="height:26px; width:8em; text-align: left"
+                    class="btn-group-justified"></div>
+                </div>
+              </div>
+              <div class="form-group input-append text-left zidx5006" style="margin-right:10px;">
+                <label class="form-control-label margin">
+                  <p class="label">緊急輸送道路</p>
+                </label>
+                <div>
+                  <div ng-dropdown-multiselect="" options="fammain.emergency_road_arr" selected-model="fammain.srch.emergency_road_dat_model"
+                    translation-texts="fammain.translationTexts" extra-settings="fammain.extraSettings" style="height:26px; width:8em; text-align: left"
+                    class="btn-group-justified"></div>
+                </div>
+              </div>
+              <div class="form-group input-append text-left zidx5005" style="margin-right:10px;">
+                <label class="form-control-label margin">
+                  <p class="label">供用区分</p>
+                </label>
+                <div>
+                  <div ng-dropdown-multiselect="" options="fammain.kyouyou_kbn_arr" selected-model="fammain.srch.kyouyou_kbn_dat_model"
+                    translation-texts="fammain.translationTexts" extra-settings="fammain.extraSettings" style="height:26px; width:8em; text-align: left"
+                    class="btn-group-justified"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div style="display:table;">
+          <div class="left_sts_i" style="display:table-cell;">
+            <p class="label4">
+              <i class="fa fa-map" aria-hidden="true"></i>
+              <br>施設の位置情報</p>
+          </div>
+          <div class="row" style="display:table-cell;">
+            <div class="col-sm-12 form-inline">
+              <div class="form-group input-append text-left zidx5005" style="margin-right:9px;">
+                <label class="form-control-label text-center margin">
+                  <p class="label">路線選択</p>
+                </label>
+                <div class="form-inline">
+                  <div ng-dropdown-multiselect="" options="fammain.filterRosen" selected-model="fammain.srch.rosen_dat_model"
+                    translation-texts="fammain.translationTexts" extra-settings="fammain.extraSettings" style="width:8em; text-align: left"
+                    class="btn-group-justified"></div>
+                </div>
+              </div>
+              <div class="form-group input-append text-left" style="margin-right:10px;">
+                <label class="form-control-label text-center margin">
+                  <p class="label">測点入力（ｍ）※路線選択が一つの場合のみ</p>
+                </label>
+                <div class="form-inline">
+                  <div class="form-group">
+                    <input type="number" ng-model="fammain.srch.sp_from" class="form-control input-sm input_h"
+                      ng-disabled="fammain.srch.rosen_dat_model.length!=1" style="width:9.2em; text-align: left">
+                    <span>~</span>
+                    <input type="number" ng-model="fammain.srch.sp_to" class="form-control input-sm input_h"
+                      ng-disabled="fammain.srch.rosen_dat_model.length!=1" style="width:9em; text-align: left">
+                  </div>
+                </div>
+              </div>
+              <div class="form-group input-append text-left">
+                <label class="form-control-label text-center margin">
+                  <p class="label">所在地</p>
+                </label>
+                <div class="form-inline">
+                  <div class="form-group">
+                    <input type="text" ng-model="fammain.srch.shityouson" class="form-control input-sm input_h"
+                      placeholder="市区町村" style="width:8em; text-align: left">
+                  </div>
+                  <div class="form-group">
+                    <input type="text" ng-model="fammain.srch.azaban" class="form-control input-sm input_h" placeholder="字番"
+                      style="width:9em; text-align: left">
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div style="display:table;" ng-if="fammain.exist_ss">
+          <div class="left_sts_i" style="display:table-cell;">
+            <p class="label4">
+              <i class="glyphicon glyphicon-pencil"></i>
+              <br>その他</p>
+          </div>
+          <div class="row" style="display:table-cell;">
+            <div class="col-sm-12 form-inline">
+              <div class="form-group input-append text-left zidx5005" style="margin-right:9px;">
+                <label class="form-control-label text-center margin">
+                  <p class="label">灯柱番号</p>
+                </label>
+                <div class="form-inline">
+                  <div class="form-group">
+                    <input type="text" ng-model="fammain.srch.touchuu_no" class="form-control input-sm input_h" style="width:19.4em; text-align: left">
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div style="display:table;">
+          <div class="left_sts_i" style="display:table-cell;">
+          </div>
+          <div class="row" style="display:table-cell;">
+            <div class="col-sm-12 form-inline" style="margin-bottom:24px;">
+              <div class="form-group input-append" style="margin-top:26px;  margin-right:5px;">
+                <button type="button" class="btn btn-xs btn-danger btn-group-justified text-center" ng-click="fammain.allReset()"
+                  style="width:8em;">
+                  <span class="glyphicon glyphicon-retweet"></span>　リセット</button>
+              </div>
+              <div class="form-group input-append text-center" style="margin-top:26px;">
+                <button type="button" class="btn btn-xs btn-info btn-group-justified text-center" ng-click="fammain.srchShisetsu()"
+                  style="width:8em;">
+                  <span class="glyphicon glyphicon-search"></span>　検索</button>
+              </div>&nbsp;
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="s_main" ng-click="fammain.naiyoukensaku = !fammain.naiyoukensaku" style="margin-bottom: 10px;">
+        <a style="color:white;">
+          <i class="fa" ng-class="{'fa-plus' : fammain.naiyoukensaku , 'fa-minus' : !fammain.naiyoukensaku}"></i>
+          検索条件内容 </a>
+      </div>
+
+      <div uib-collapse="fammain.naiyoukensaku">
+        <div class="container">
+          <div class="row">
+            <div class="col-sm-12">
+              <table class="type01 table-bordered">
+                <tbody>
+                  <tr class="active">
+                    <th>施設管理番号</th>
+                    <th>施設名</th>
+                    <th>設置年</th>
+                    <th>市区町村</th>
+                    <th>字番</th>
+                    <th>代替路の有無</th>
+                  </tr>
+                  <tr>
+                    <td>{{fammain.srch.shisetsu_cd}}</td>
+                    <td>
+                      <span ng-repeat="shisetsu_kbn_lbl in fammain.srch.shisetsu_kbn_dat_model">
+                        <span ng-hide="$index==0">、</span>{{shisetsu_kbn_lbl.label}}</span>
+                    </td>
+                    <td>
+                      <span ng-hide="fammain.srch.secchi_nendo_from == null || fammain.srch.secchi_nendo_from == ''"
+                        ng-repeat="secchi in fammain.secchi_nendo|filter:{'year':fammain.srch.secchi_nendo_from}">{{secchi.gengou}}</span>
+                      <span ng-hide="fammain.srch.secchi_nendo_to == null || fammain.srch.secchi_nendo_to == ''"
+                        ng-repeat="secchi in fammain.secchi_nendo|filter:{'year':fammain.srch.secchi_nendo_to}">～&nbsp;{{secchi.gengou}}</span>
+                    </td>
+                    <td>{{fammain.srch.shityouson}}</td>
+                    <td>{{fammain.srch.azaban}}</td>
+                    <td>
+                      <span ng-repeat="substitute_road_lbl in fammain.srch.substitute_road_dat_model">
+                        <span ng-hide="$index==0">、</span>{{substitute_road_lbl.label}}</span>
+                    </td>
+                  </tr>
+                  <tr class="active">
+                    <th>緊急輸送道路</th>
+                    <th>路線</th>
+                    <th>測点</th>
+                    <th>供用区分</th>
+                    <th><span ng-if="fammain.exist_ss">灯柱番号</span><span ng-if="!fammain.exist_ss">-</span></th>
+                  </tr>
+                  <tr>
+                    <td>
+                      <span ng-repeat="emergency_road_lbl in fammain.srch.emergency_road_dat_model">
+                        <span ng-hide="$index==0">、</span>{{emergency_road_lbl.label}}</span>
+                    </td>
+                    <td>
+                      <span ng-repeat="rosen_lbl in fammain.srch.rosen_dat_model">
+                        <span ng-hide="$index==0">、</span>{{rosen_lbl.label}}</span>
+                    </td>
+                    <td>
+                      <span ng-hide="fammain.srch.sp_from == null || fammain.srch.sp_from == ''">{{fammain.srch.sp_from}}</span>
+                      <span ng-hide="fammain.srch.sp_to == null || fammain.srch.sp_to == ''">～&nbsp;{{fammain.srch.sp_to}}</span>
+                    </td>
+                    <td>
+                      <span ng-repeat="kyouyou_kbn_lbl in fammain.srch.kyouyou_kbn_dat_model">
+                        <span ng-hide="$index==0">、</span>{{kyouyou_kbn_lbl.label}}</span>
+                    </td>
+                    <td><span ng-if="fammain.exist_ss">{{fammain.srch.touchuu_no}}</span><span ng-if="!fammain.exist_ss">-</span></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="row" style="margin-left:10px;width:99%;">
+        <uib-tabset class="tab-animation">
+          <uib-tab index="1" select="fammain.displayMap()" deselect="fammain.DeselectTab(1)" active="fammain.srch.default_tab_map">
+            <uib-tab-heading>
+              <i class="fa fa-map-o"></i> Map表示
+            </uib-tab-heading>
+            <div>
+              <div id="map" style="width:100%;height:800px;"> </div>
+              <div style="z-index:1000;position: relative;top: -800px;text-align: right; margin-left: auto;width:500px;">
+                <i style="cursor:pointer;font-size:25px; vertical-align:top;" class="fa" ng-class="{'fa-caret-square-o-right':!hanrei,'fa-caret-square-o-left':(hanrei)}"
+                  aria-hidden="true" ng-click="hanrei = !hanrei;"></i>
+                <image ng-hide="hanrei" src="images/hanrei_shisetsu.png"></image>
+              </div>
+            </div>
+            <!--
+            <div class="row" ng-show="fammain.displayIndex!=-1">
+              <div class="col-sm-6">
+                <table class="type02 table-bordered">
+                  <tbody>
+                    <tr ng-repeat="list in list.naiyou">
+                      <th class="text-center">
+                        {{list.name}}
+                        <tr>
+                          <th>施設 </th>
+                          <td>{{fammain.data[fammain.displayIndex].kind}}</td>
+                        </tr>
+                        <tr>
+                          <th>施設</th>
+                          <td>{{fammain.data[fammain.displayIndex].kind}}</td>
+                        </tr>
+                        <tr>
+                          <th>施設</th>
+                          <td>{{fammain.data[fammain.displayIndex].kind}}</td>
+                        </tr>
+                        <tr>
+                          <th>施設名</th>
+                          <td>{{fammain.data[fammain.displayIndex].name}}</td>
+                        </tr>
+                        <tr>
+                          <th>緯度</th>
+                          <td>{{fammain.data[fammain.displayIndex].lat}}</td>
+                        </tr>
+                        <tr>
+                          <th>経度</th>
+                          <td>{{fammain.data[fammain.displayIndex].lon}}</td>
+                        </tr>
+                      </th>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+              <div class="col-sm-6">
+                <span></span>
+                <img width="200px">
+                <img src="{{main.data[fammain.displayIndex].img}}" width="200px">
+              </div>
+            </div>
+ -->
+          </uib-tab>
+          <uib-tab index="2" select="fammain.displayList()" deselect="fammain.DeselectTab(2)" active="fammain.srch.default_tab_list">
+            <uib-tab-heading>
+              <i class="fa fa-list"></i> List表示
+            </uib-tab-heading>
+            <div style="max-width:100%;">
+              <div id="sync-table1" style="overflow:hidden;height: calc(100vh - 500px);width:auto;max-width:35%;overflow-x: scroll;float:left;">
+                <table class="table table-bordered table-hover table-srch_list" style="font-size:12px;">
+                  <tbody>
+                    <tr>
+                      <th>Excel
+                        <br>出力
+                        <br>&nbsp;</th>
+                      <th colspan="2">施設名</th>
+                      <th colspan="2">名称</th>
+                      <th colspan="2">附属物
+                        <br>点検
+                        <br>形式</th>
+                      <th colspan="2">形式等①</th>
+                      <th colspan="2">形式等②</th>
+                      <th colspan="2">管理番号</th>
+                      <th colspan="2"><span ng-if="fammain.exist_ss">灯柱番号</span><span ng-if="!fammain.exist_ss">未使用項目</span></th>
+                    </tr>
+                    <tr style="border-bottom: 3px solid #4682b4;">
+                      <th class="sort_chk">
+                        <input type="checkbox" ng-model="fammain.excel_all_chk_flg" ng-checked="fammain.excel_all_chk_flg"
+                          ng-click="fammain.SetExcelChkStatus()">
+                      </th>
+                      <th ng-repeat="sort_id in fammain.sort_identifiers_left" class="sort_btn" ng-click="fammain.SetSortOrder(sort_id)"
+                        ng-style="fammain.sort_style[sort_id]">
+                        <span ng-if="$even">▲</span>
+                        <span ng-if="$odd">▼</span>
+                      </th>
+                    </tr>
+                    <tr ng-repeat="data in fammain.data | orderBy: fammain.sort_order | offset :  (fammain.current_page-1)*fammain.items_per_page |  limitTo: fammain.items_per_page">
+                      <td>
+                        <input type="checkbox" ng-model="data.chkexcel" ng-checked="data.chkexcel" ng-click="fammain.IsExcelAllChedked()">
+                      </td>
+                      <td colspan="2">{{data.shisetsu_kbn_nm}}</td>
+                      <td colspan="2">{{data.name}}</td>
+                      <td colspan="2">{{data.shisetsu_keishiki_nm}}</td>
+                      <td colspan="2">{{data.keishiki_kubun1}}</td>
+                      <td colspan="2">{{data.keishiki_kubun2}}</td>
+                      <td colspan="2">{{data.shisetsu_cd}}</td>
+                      <td colspan="2"><span ng-if="fammain.exist_ss">{{data.other}}</span><span ng-if="!fammain.exist_ss">-</span></td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+              <div id="sync-table2" style="height: calc(100vh - 500px);width:auto;overflow-x: scroll;">
+                <table class="table table-bordered table-hover table-srch_list" style="font-size:12px;">
+                  <tbody>
+                    <tr>
+                      <th colspan="2">基本情報編集</th>
+                      <th colspan="2">施設
+                        <br>台帳</th>
+                      <th colspan="2">路線
+                        <br>コード
+                      </th>
+                      <th colspan="2">路線名
+                      </th>
+                      <th colspan="2">測点（自）
+                        <br>(m)</th>
+                      <th colspan="2">測点（至）
+                        <br>(m)</th>
+                      <th colspan="2">横断区分</th>
+                      <th colspan="2">延長
+                        <br>(m)</th>
+                      <th colspan="2">幅員
+                        <br>(m)</th>
+                      <th colspan="2">所在地</th>
+                      <th colspan="2">供用区分</th>
+                      <th colspan="2">設置年度</th>
+                      <th colspan="2">廃止年度</th>
+                      <th colspan="2">上下区分</th>
+                      <th colspan="2">一般
+                        <br>交通量
+                        <br>(台/24h)</th>
+                      <th colspan="2">一般
+                        <br>交通量
+                        <br>(台/12h)</th>
+                      <th colspan="2">普通車
+                        <br>交通量
+                        <br>(台/12h)</th>
+                      <th colspan="2">大型車
+                        <br>交通量
+                        <br>(台/12h)</th>
+                      <th colspan="2">代替路
+                        <br>の有無</th>
+                      <th colspan="2">緊急輸
+                        <br>送道路</th>
+                      <th colspan="2">自専道 or
+                        <br>一般道</th>
+                      <th colspan="2">占用物件
+                        <br>（名称）</th>
+                      <th colspan="2">建管</th>
+                      <th colspan="2">出張所</th>
+                    </tr>
+                    <tr style="border-bottom: 3px solid #4682b4;">
+
+                      <!-- CSS調整用のダミー要素 -->
+                      <th class="sort_btn" ng-hide="true"></th>
+
+                      <th ng-repeat="sort_id in fammain.sort_identifiers_right" class="sort_btn" ng-click="fammain.SetSortOrder(sort_id)"
+                        ng-style="fammain.sort_style[sort_id]">
+                        <span ng-if="$even">▲</span>
+                        <span ng-if="$odd">▼</span>
+                      </th>
+                    </tr>
+                    <tr ng-repeat="data in fammain.data | orderBy : fammain.sort_order | offset :  (fammain.current_page-1)*fammain.items_per_page |  limitTo: fammain.items_per_page">
+                      <td colspan="2" style="text-align:center">
+                        <span ng-show="fammain.in_kihonedit">
+                          <a style="cursor:pointer;" ng-click="fammain.editBaseInfo(1, data)">基本情報編集</a>
+                        </span>
+                        <span ng-show="!fammain.in_kihonedit">
+                          －</span>
+                      </td>
+                      <td colspan="2">
+                        <a style="cursor:pointer;" ng-href="#/fam_edit/{{data.sno}}">開く</a>
+                      </td>
+                      <td colspan="2">{{data.rosen_cd}}</td>
+                      <td colspan="2">{{data.rosen_nm}}</td>
+                      <td colspan="2">{{data.sp}}</td>
+                      <td colspan="2">{{data.sp_to}}</td>
+                      <td colspan="2">{{data.lr_str}}</td>
+                      <td colspan="2">{{data.encho}}</td>
+                      <td colspan="2">{{data.fukuin}}</td>
+                      <td colspan="2">{{data.address}}</td>
+                      <td colspan="2">{{data.kyouyou_kbn_str}}</td>
+                      <td colspan="2">{{data.secchi}}</td>
+                      <td colspan="2">{{data.haishi}}</td>
+                      <td colspan="2">{{data.ud_str}}</td>
+                      <td colspan="2">{{data.koutsuuryou_day}}</td>
+                      <td colspan="2">{{data.koutsuuryou_12}}</td>
+                      <td colspan="2">{{data.koutsuuryou_hutuu}}</td>
+                      <td colspan="2">{{data.koutsuuryou_oogata}}</td>
+                      <td colspan="2">{{data.substitute_road_str}}</td>
+                      <td colspan="2">{{data.emergency_road_str}}</td>
+                      <td colspan="2">{{data.motorway_str}}</td>
+                      <td colspan="2">{{data.senyou}}</td>
+                      <td colspan="2">{{data.dogen_mei}}</td>
+                      <td colspan="2">{{data.syucchoujo_mei}}</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+              <div class="row" style="text-align:center" ng-show="fammain.max_page!=0">
+                <div>
+                  <ul class="pagination pagination-sm" style="cursor:pointer">
+                    <li ng-class="fammain.prev_disabled" ng-if="fammain.current_page!=1">
+                      <span ng-click="fammain.prevPage()" aria-label="前のページへ">«</span>
+                    </li>
+                    <li ng-class="fammain.prev_disabled" ng-if="fammain.current_page==1">
+                      <span aria-hidden="true">«</span>
+                    </li>
+                    <li ng-repeat="n in fammain.range" ng-click="fammain.setPage(n)">
+                      <span ng-class="{'page_sel_col':fammain.current_page==n}">{{n}}</span>
+                    </li>
+                    <li ng-class="fammain.next_disabled" ng-if="fammain.current_page!=fammain.max_page">
+                      <span ng-click="fammain.nextPage()" aria-label="次のページへ">»</span>
+                    </li>
+                    <li ng-class="fammain.next_disabled" ng-if="fammain.current_page==fammain.max_page">
+                      <span aria-hidden="true">»</span>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </uib-tab>
+        </uib-tabset>
+      </div>
+      <div id="footerdamy"></div>
+    </div>
+    <div style="top:42px;left:0px;z-index:1000; width:151px;" class="sidebar-nav affix container-fluid background2"
+      role="complementary">
+      <div class="form-group row" style="margin:10px 0 10px 0;">
+        <label class=" form-control-label margin">
+          <p class="label3">建設管理部</p>
+        </label>
+
+        <select class="form-control input-sm" ng-model="fammain.dogen" ng-options="row as row.dogen_mei for row in fammain.dogen_syucchoujo_dat.dogen_info"
+          ng-change="fammain.chgDogen()" required>
+          <!-- 建管は必須にする
+<option value="">---</option>
+-->
+        </select>
+      </div>
+      <div class="form-group row" style="margin:0 0 20px 0;">
+        <label class=" form-control-label margin">
+          <p class="label3">管理区域（出張所）</p>
+        </label>
+        <select ng-show="fammain.ath_syozoku_cd==1 || fammain.ath_syozoku_cd==2 || fammain.ath_syozoku_cd==10001" class="form-control input-sm"
+          ng-model="fammain.syucchoujo" ng-options="row as row.syucchoujo_mei for row in fammain.dogen.syucchoujo_row.syucchoujo_info"
+          ng-change="fammain.chgSyucchoujo()" required>
+          <option value="">全て</option>
+        </select>
+        <select ng-show="fammain.ath_syozoku_cd==3 || fammain.ath_syozoku_cd==4" class="form-control input-sm" ng-model="fammain.syucchoujo"
+          ng-options="row as row.syucchoujo_mei for row in fammain.dogen.syucchoujo_row.syucchoujo_info" ng-change="fammain.chgSyucchoujo()"
+          required>
+        </select>
+      </div>
+    </div>
+  </div>
+  <div id="footerArea2">
+    <div class="row" style="margin-top : 8px">
+      <div class="col-sm-3" style="text-align:center;">
+        <a ng-href="#/sys_top" type="button" class="btn btn-xs btn-inverse btn-sm">
+          <span class="glyphicon glyphicon-arrow-left"></span>&nbsp;道路施設管理システムTOPに戻る</a>
+      </div>
+      <div ng-show="fammain.ath_syozoku_cd <= 2 || fammain.ath_syozoku_cd == 10001 || (fammain.ath_syozoku_cd == 3 && (fammain.ath_syucchoujo_cd==fammain.mng_syucchoujo_cd))"
+        class="col-sm-3" style="text-align:center;">
+        <a ng-click="fammain.editBaseInfo(0, data)" type="button" class="btn btn-xs btn-success btn-sm">
+          <span class="glyphicon glyphicon-list-alt"></span>&nbsp;基本情報登録</a>
+      </div>
+      <!-- List表示タブ選択時のみ表示 -->
+      <div class="col-sm-6" style="text-align:right;display:inline-flex;" ng-show="fammain.srch.default_tab_list == true">
+
+        <!-- 施設台帳を一括で出力 -->
+        <div ng-switch="fammain.checked_data!=null">
+          <!-- 有効なチェックデータがあり、形式未登録のものが選択されていない場合 -->
+          <form ng-switch-when="true" name="excel_new_form" method="POST" action="api/index.php/OutputExcel/outShisetsuDataPack"
+            ng-submit="fammain.submitShisetsuDataToExcel()">
+            <input type="hidden" name="checked_data" ng-value="fammain.post_data.checked_data">
+            <input type="hidden" name="excel_ver" ng-value="0">
+            <button type="submit" class="btn btn-xs btn-info btn-sm">
+              <span class="glyphicon glyphicon-print"></span>&nbsp;施設台帳の一括出力</button>
+          </form>
+          <!-- 有効なチェックデータがない、または形式未登録のものが選択されている場合 -->
+          <form ng-switch-when="false" name="excel_new_form">
+            <button type="button" class="btn btn-xs btn-info btn-sm" ng-click="fammain.submitShisetsuDataToExcel()">
+              <span class="glyphicon glyphicon-print"></span>&nbsp;施設台帳の一括出力</button>
+          </form>
+        </div>&nbsp;
+
+        <!-- Excelリストを出力 -->
+        <div ng-switch="fammain.data==null">
+          <!-- 検索未実行(null)の場合はsubmitしない -->
+          <form ng-switch-when="true" name="excel_list_form">
+            <button class="btn btn-xs btn-info btn-sm" ng-click="fammain.submitList()">
+              <span class="glyphicon glyphicon-print "></span>&nbsp;リストを出力</button>
+          </form>
+          <!-- 検索結果がある場合はsubmit -->
+          <form ng-switch-when="false" name="excel_list_form" method="POST" action="api/index.php/OutputExcel/dlOutShisetsuList"
+            ng-submit="fammain.submitList()">
+            <input type="hidden" name="dogen_cd" value="{{fammain.post_data.dogen_cd}} ">
+            <input type="hidden" name="syucchoujo_cd" value="{{fammain.post_data.syucchoujo_cd}}">
+            <input type="hidden" name="srch" value="{{fammain.post_data.srch}} ">
+            <button type="submit" class="btn btn-xs btn-info btn-sm">
+              <span class="glyphicon glyphicon-print"></span>&nbsp;リストを出力</button>
+          </form>
+        </div>&nbsp;
+
+        <!-- CSVリストを出力 -->
+        <div ng-switch="fammain.data==null">
+          <!-- 検索未実行(null)の場合はsubmitしない -->
+          <form ng-switch-when="true" name="csv_list_form">
+            <button class="btn btn-xs btn-info btn-sm" ng-click="fammain.submitList()">
+              <span class="glyphicon glyphicon-print "></span>&nbsp;CSVリストを出力</button>
+          </form>
+          <!-- 検索結果がある場合はsubmit -->
+          <form ng-switch-when="false" name="csv_list_form" method="POST" action="api/index.php/OutputExcel/dlOutShisetsuCsvList"
+            ng-submit="fammain.submitList()">
+            <input type="hidden" name="dogen_cd" value="{{fammain.post_data.dogen_cd}} ">
+            <input type="hidden" name="syucchoujo_cd" value="{{fammain.post_data.syucchoujo_cd}}">
+            <input type="hidden" name="srch" value="{{fammain.post_data.srch}} ">
+            <button type="submit" class="btn btn-xs btn-info btn-sm">
+              <span class="glyphicon glyphicon-print"></span>&nbsp;CSVリストを出力</button>
+          </form>
+        </div>&nbsp; &nbsp;
+      </div>
+      <div ng-show="fammain.ath_syozoku_cd!=3" class="col-sm-3"></div>
+    </div>
+  </div>
+
+  <!-- 保存中オーバーレイ -->
+  <div class="waitOverlay " ng-show="fammain.waitOverlay">
+    <div style="width:100vw;height:100vh;font-size:60px;display: table-cell;text-align: center;vertical-align: middle; ">
+      <i class="fa fa-spinner fa-spin fa-3x fa-fw "></i>
+      <br>
+      <span>保存中です。
+        <br />しばらくお待ちください。</span>
+    </div>
+  </div>
+
+  <!-- 読込み中オーバーレイ -->
+  <div class="waitOverlay " ng-show="fammain.waitLoadOverlay">
+    <div style="width:100vw;height:100vh;font-size:60px;display: table-cell;text-align: center;vertical-align: middle; ">
+      <i class="fa fa-spinner fa-spin fa-3x fa-fw "></i>
+      <br>
+      <span>読込み中です。
+        <br />しばらくお待ちください。</span>
+    </div>
+  </div>
+
+  <!-- 削除中オーバーレイ -->
+  <div class="waitOverlay " ng-show="fammain.waitDeleteOverlay">
+    <div style="width:100vw;height:100vh;font-size:60px;display: table-cell;text-align: center;vertical-align: middle; ">
+      <i class="fa fa-spinner fa-spin fa-3x fa-fw "></i>
+      <br>
+      <span>削除中です。
+        <br />しばらくお待ちください。</span>
+    </div>
+  </div>
+
+</div>
