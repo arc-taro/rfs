@@ -112,7 +112,17 @@ class SysTopAjax extends BaseController {
     $ret_ts=$this->SysTopModel->getSumShisetsu($dogen_cd, $syucchoujo_cd, 20);
     // ロードヒーティング(未決定だったので仮にrhにした)
     $ret_rh=$this->SysTopModel->getSumShisetsu($dogen_cd, $syucchoujo_cd, 21);
-
+    // 橋梁・横断歩道橋
+    $ret_br=$this->SysTopModel->getSumShisetsu($dogen_cd, $syucchoujo_cd, 24);
+    // トンネル・シェッド等・大型カルバート
+    $ret_ok=$this->SysTopModel->getSumShisetsu($dogen_cd, $syucchoujo_cd, 25);
+    // 道路土工構造物（法面・擁壁・函渠）
+    $ret_kf=$this->SysTopModel->getSumShisetsu($dogen_cd, $syucchoujo_cd, 26);
+    // 歩道
+    $ret_hd=$this->SysTopModel->getSumShisetsu($dogen_cd, $syucchoujo_cd, 27);
+    // カルテ点検
+    $ret_gk=$this->SysTopModel->getSumShisetsu($dogen_cd, $syucchoujo_cd, 28);
+    
     // 返却$result作成
     $result["dh"] = $ret_dh;
     $result["jd"] = $ret_jd;
@@ -135,6 +145,12 @@ class SysTopAjax extends BaseController {
     $result["dn"] = $ret_dn;
     $result["ts"] = $ret_ts;
     $result["rh"] = $ret_rh;
+    $result["br"] = $ret_br;
+    $result["ok"] = $ret_ok;
+    $result["kf"] = $ret_kf;
+    $result["hd"] = $ret_hd;
+    $result["gk"] = $ret_gk;
+
     return $result;
   }
 
