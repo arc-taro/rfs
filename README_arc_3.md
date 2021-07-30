@@ -357,6 +357,15 @@ npm run watch -->
         http://localhost:8080/rfs/#/
 
 --------------------
+docker内のexcelsディレクトリのパーミッション設定
+ubuntsuを起動
+docker exec -it rfs_app_php_container sh
+cd /var/www/html/
+chmod -R 777 excels
+
+※コンテナの名前はdocker-compose.ymlのcontainer_nameを参照
+
+--------------------
 ＜次回起動時＞
 1.visual studio codeでrfs環境を呼び出し、ターミナルを起動する。
 2.ターミナルで下記のコマンドを入力
