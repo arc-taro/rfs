@@ -1531,6 +1531,11 @@ class FamMainCtrl extends BaseCtrl {
     this.SetSrchDataChecked(this.excel_all_chk_flg);
   }
 
+  // 令和3年度に追加した施設かどうかを返す（Excelのチェックボックスを無効にする）
+  IsAdditionalShisetsuR03(shisetsuKbn) {
+    return [24, 25, 26, 27, 28].indexOf(Number(shisetsuKbn)) > -1;
+  }
+
   // 検索結果リストの全てのチェックボックスを更新
   SetSrchDataChecked(checked) {
     if (this.data == null) {
@@ -1538,7 +1543,12 @@ class FamMainCtrl extends BaseCtrl {
     }
 
     for (var i = 0; Object.keys(this.data).length > i; i++) {
-      this.data[i].chkexcel = checked;
+      if (this.IsAdditionalShisetsuR03(this.data[i].shisetsu_kbn)) {
+        // 令和3年度に追加した施設の場合、Excel出力を無効にする
+        this.data[i].chkexcel = false;
+      } else {
+        this.data[i].chkexcel = checked;
+      }
     }
 
     // チェックされているデータを点検票出力対象に追加

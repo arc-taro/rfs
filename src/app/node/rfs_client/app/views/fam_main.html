@@ -358,7 +358,7 @@
                     </tr>
                     <tr ng-repeat="data in fammain.data | orderBy: fammain.sort_order | offset :  (fammain.current_page-1)*fammain.items_per_page |  limitTo: fammain.items_per_page">
                       <td>
-                        <input type="checkbox" ng-model="data.chkexcel" ng-checked="data.chkexcel" ng-click="fammain.IsExcelAllChedked()">
+                        <input type="checkbox" ng-model="data.chkexcel" ng-checked="!fammain.IsAdditionalShisetsuR03(data.shisetsu_kbn) && data.chkexcel" ng-disabled="fammain.IsAdditionalShisetsuR03(data.shisetsu_kbn)" ng-click="fammain.IsExcelAllChedked()">
                       </td>
                       <td colspan="2">{{data.shisetsu_kbn_nm}}</td>
                       <td colspan="2">{{data.name}}</td>
