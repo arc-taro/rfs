@@ -359,7 +359,9 @@ npm run watch -->
 --------------------
 ＜次回起動時＞
 1.visual studio codeでrfs環境を呼び出し、ターミナルを起動する。
-2.docker-compose up -d
+2.ターミナルで下記のコマンドを入力
+docker-compose down
+docker-compose up -d
 3.http://localhost:8080/login/ を開く
 4.3.が開けた場合、少し待った後（上のログ参照）
  http://localhost:8080/rfs/#/
