@@ -609,6 +609,71 @@ class FameditCtrl extends BaseCtrl {
             'views/daichou/tenken_hosyuu_rireki.html',
           ]
         }
+      },
+      "24": { // 橋梁・横断歩道橋
+        num: [],
+        num_str: [],
+        pulldown: [],
+        date: [],
+        include_tpl: {
+          daichou_tplnm: 'views/daichou/kyouryou_oudanhodoukyou.html',
+          daichou_rireki: [
+            'views/daichou/tenken_houtei.html',
+            'views/daichou/tenken_hosyuu_rireki.html',
+          ]
+        }
+      },
+      "25": { // トンネル・シェッド等・大型カルバート
+        num: [],
+        num_str: [],
+        pulldown: [],
+        date: [],
+        include_tpl: {
+          daichou_tplnm: 'views/daichou/tonneru_shed_culvert.html',
+          daichou_rireki: [
+            'views/daichou/tenken_houtei.html',
+            'views/daichou/tenken_hosyuu_rireki.html',
+          ]
+        }
+      },
+      "26": { // 道路土工構造物（法面・擁壁・函渠）
+        num: [],
+        num_str: [],
+        pulldown: [],
+        date: [],
+        include_tpl: {
+          daichou_tplnm: 'views/daichou/douro_dokou_kouzoubutsu.html',
+          daichou_rireki: [
+            'views/daichou/tenken_houtei.html',
+            'views/daichou/tenken_hosyuu_rireki.html',
+          ]
+        }
+      },
+      "27": { // 歩道
+        num: [],
+        num_str: [],
+        pulldown: [],
+        date: [],
+        include_tpl: {
+          daichou_tplnm: 'views/daichou/hodou.html',
+          daichou_rireki: [
+            'views/daichou/tenken_houtei.html',
+            'views/daichou/tenken_hosyuu_rireki.html',
+          ]
+        }
+      },
+      "28": { // 橋梁・横断歩道橋
+        num: [],
+        num_str: [],
+        pulldown: [],
+        date: [],
+        include_tpl: {
+          daichou_tplnm: 'views/daichou/kyouryou_oudanhodoukyou.html',
+          daichou_rireki: [
+            'views/daichou/tenken_houtei.html',
+            'views/daichou/tenken_hosyuu_rireki.html',
+          ]
+        }
       }
     };
 
@@ -1049,16 +1114,16 @@ class FameditCtrl extends BaseCtrl {
         this.feature.style.externalGraphic = `images/icon/shisetsu_mng/kk_1.gif`;
       } else if (this.shisetsu.shisetsu_kbn == 23) {
         this.feature.style.externalGraphic = `images/icon/shisetsu_mng/tk_1.gif`;
-      } else if (this.data[k].shisetsu_kbn == 24) {
-        feature.style.externalGraphic = `images/icon/shisetsu_mng/br_1.gif`;
-      } else if (this.data[k].shisetsu_kbn == 25) {
-        feature.style.externalGraphic = `images/icon/shisetsu_mng/ok_1.gif`;
-      } else if (this.data[k].shisetsu_kbn == 26) {
-        feature.style.externalGraphic = `images/icon/shisetsu_mng/kf_1.gif`;
-      } else if (this.data[k].shisetsu_kbn == 27) {
-        feature.style.externalGraphic = `images/icon/shisetsu_mng/hd_1.gif`;
-      } else if (this.data[k].shisetsu_kbn == 28) {
-        feature.style.externalGraphic = `images/icon/shisetsu_mng/gk_1.gif`;
+      } else if (this.shisetsu.shisetsu_kbn == 24) {
+        this.feature.style.externalGraphic = `images/icon/shisetsu_mng/br_1.gif`;
+      } else if (this.shisetsu.shisetsu_kbn == 25) {
+        this.feature.style.externalGraphic = `images/icon/shisetsu_mng/ok_1.gif`;
+      } else if (this.shisetsu.shisetsu_kbn == 26) {
+        this.feature.style.externalGraphic = `images/icon/shisetsu_mng/kf_1.gif`;
+      } else if (this.shisetsu.shisetsu_kbn == 27) {
+        this.feature.style.externalGraphic = `images/icon/shisetsu_mng/hd_1.gif`;
+      } else if (this.shisetsu.shisetsu_kbn == 28) {
+        this.feature.style.externalGraphic = `images/icon/shisetsu_mng/gk_1.gif`;
       }
       this.vectorLayer.addFeatures([this.feature]);
     } else {

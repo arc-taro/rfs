@@ -232,6 +232,16 @@ class FamEditAjax extends BaseController {
               'mst_syuunetsu',
               'mst_hounetsu',
               'mst_denryoku_keiyaku_syubetsu'];
+    $tbl[24]=[];
+    $val[24]=[];
+    $tbl[25]=[];
+    $val[25]=[];
+    $tbl[26]=[];
+    $val[26]=[];
+    $tbl[27]=[];
+    $val[27]=[];
+    $tbl[28]=[];
+    $val[28]=[];
 
     // シンプルマスタはこちら
     for($i = 0 ; $i < count($tbl[$shisetsu_kbn]);$i++){
@@ -420,6 +430,21 @@ class FamEditAjax extends BaseController {
     } else if ($daichou['shisetsu_kbn']==21) { // ロードヒーティング
       $this->load->model("FamEditModelRH");
       $model = $this->FamEditModelRH;
+    } else if ($daichou['shisetsu_kbn']==24) { // 橋梁 
+      $this->load->model("FamEditModelBR");
+      $model = $this->FamEditModelBR;
+    } else if ($daichou['shisetsu_kbn']==25) { // トンネル・シェッド等・大型カルバート
+      $this->load->model("FamEditModelOK");
+      $model = $this->FamEditModelOK;
+    } else if ($daichou['shisetsu_kbn']==26) { // 道路土工構造物（法面・擁壁・函渠）
+      $this->load->model("FamEditModelKF");
+      $model = $this->FamEditModelKF;
+    } else if ($daichou['shisetsu_kbn']==27) { // 歩道 
+      $this->load->model("FamEditModelHD");
+      $model = $this->FamEditModelHD;
+    } else if ($daichou['shisetsu_kbn']==28) { // カルテ点検（落石・崩壊、急流河川） 
+      $this->load->model("FamEditModelGK");
+      $model = $this->FamEditModelGK;
     }
 
     $model->saveShisetsuDaichou($this->post);
