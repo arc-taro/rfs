@@ -1192,6 +1192,40 @@ class FameditCtrl extends BaseCtrl {
   }
 
   /**
+   * 法定点検のファイルのリンクをクリックした場合に呼ばれる。ファイルをダウンロードさせる
+   * @param {*} url 
+   * @param {*} fileName 
+   */
+  saveAttachedFile(url,fileName){
+    console.log("saveAttachedFile("+url+","+fileName+")");
+
+    // XMLHttpRequestオブジェクトを作成する
+    const xhr = new XMLHttpRequest();
+    xhr.open("GET", url , true);
+    xhr.responseType = "blob"; // Blobオブジェクトとしてダウンロードする
+    xhr.onload = function () {
+        // ダウンロード完了後の処理を定義する
+        const blob = xhr.response;
+        if (window.navigator.msSaveBlob) {
+          // IEとEdge
+          window.navigator.msSaveBlob(blob, fileName);
+        }
+        else {
+          // それ以外のブラウザ
+          const objectURL = window.URL.createObjectURL(blob);
+          const link = document.createElement("a");
+          document.body.appendChild(link);
+          link.href = objectURL;
+          link.download = fileName;
+          link.click();
+          document.body.removeChild(link);
+        }
+    };
+    // XMLHttpRequestオブジェクトの通信を開始する
+    xhr.send();
+}
+
+  /**
    * アップロードされたら実行される
    */
   fileUploadSuccess1($file, message, $flow, $index) {
