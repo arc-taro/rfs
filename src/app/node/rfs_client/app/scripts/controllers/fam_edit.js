@@ -1196,7 +1196,7 @@ class FameditCtrl extends BaseCtrl {
    * @param {*} url 
    * @param {*} fileName 
    */
-  saveAttachedFile(url,fileName){
+  downloadAttachedFile(url,fileName){
     console.log("saveAttachedFile("+url+","+fileName+")");
 
     // XMLHttpRequestオブジェクトを作成する
