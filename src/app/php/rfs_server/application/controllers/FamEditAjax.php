@@ -67,7 +67,7 @@ class FamEditAjax extends BaseController {
 
     // UPD 20200108 hirano 数値じゃまずい項目、全ての施設に影響するため、この項目のみ対応する
     if ($daityou) {
-      if ($daityou[0]['d_hokuden_kyakuban']) {
+      if (isset($daityou[0]['d_hokuden_kyakuban']) && $daityou[0]['d_hokuden_kyakuban']) {
         $daityou[0]['d_hokuden_kyakuban'] = $daityou[0]['d_hokuden_kyakuban']." ";
       } else {
         $daityou[0]['d_hokuden_kyakuban'] = " ";
@@ -150,6 +150,11 @@ class FamEditAjax extends BaseController {
       // 戻り値に設定
       $result['huzokubutsu']=$huzokubutsu;
     }
+
+    /********************/
+    /*** 法定点検取得 ***/
+    /********************/
+    $result['houtei'] = $this->FamEditModel->getHouteiTenken($sno);
 
 //    $r=print_r($result, true);
 //    log_message("debug", "---result------------------------->$r\n");

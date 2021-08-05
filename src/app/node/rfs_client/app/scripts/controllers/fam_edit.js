@@ -64,6 +64,15 @@ class FameditCtrl extends BaseCtrl {
       this.secchi_nendo = json.wareki_list; // 和暦リスト
       this.zenkei_picture = []; // 全景写真の初期化
       this.zumen = {};
+
+      this.houtei = json.houtei; // 法定点検
+      for (let i = 0; i < this.houtei.length; i++) {
+        // ファイルパスからファイル名を取得して保持する
+        this.houtei[i].file_name = "";
+        if (this.houtei[i].file_path) {
+          this.houtei[i].file_name = this.houtei[i].file_path.substring(this.houtei[i].file_path.lastIndexOf('/') + 1, this.houtei[i].file_path.length);
+        }
+      }
       // 台帳作成日編集可否
       this.desabled_create_dt = true;
       // 台帳データ
@@ -1146,6 +1155,42 @@ class FameditCtrl extends BaseCtrl {
     }
   }
 
+  // ファイルのURLをエンコードする
+  urlEncode(str) {
+    return window.encodeURIComponent(str);
+  }
+
+  /**
+   * 法定点検のファイルがアップロードされたら実行される
+   */
+  houteiFileUploadSuccess(chk_mng_no, $file, message, $flow, $index) {
+    message = JSON.parse(message);
+    for (let i = 0; i < this.houtei.length; i++) {
+      // ファイルがアップロードされたchk_mng_noと一致する点検のファイルパスを更新する
+      if(this.houtei[i].chk_mng_no == chk_mng_no) {
+        this.houtei[i].file_path = message.path;
+        this.houtei[i].file_name = $file.name;
+        this.houtei[i].updt_dt = moment().format("YYYY-MM-DD HH:mm")
+      }
+    }
+    $flow.files = [];
+  }
+
+  /**
+   * 法定点検のファイル削除ボタンを押すと呼ばれる
+   * 該当する点検のファイルパスを削除する（削除された状態で台帳を保存するとDB上もファイルが削除される）
+   */
+  deleteHouteiFile(chk_mng_no) {
+    for (let i = 0; i < this.houtei.length; i++) {
+      // ファイルがアップロードされたchk_mng_noと一致する点検のファイルパスを更新する
+      if(this.houtei[i].chk_mng_no == chk_mng_no) {
+        this.houtei[i].file_path = "";
+        this.houtei[i].file_name = "";
+        this.houtei[i].updt_dt = "";
+      }
+    }
+  }
+
   /**
    * アップロードされたら実行される
    */
@@ -1179,6 +1224,35 @@ class FameditCtrl extends BaseCtrl {
     }
   }
 
+  /**
+   * 法定点検の添付ファイルを保存する
+   */
+  saveHouteiAttach() {
+    const attach_list = [];
+    for (let i = 0; i < this.houtei.length; i++) {
+      if (this.houtei[i].file_path) {
+        // ファイルパスがあるもののみリクエストパラメータに含める
+        attach_list.push({
+          chk_mng_no: this.houtei[i].chk_mng_no,
+          file_path: this.houtei[i].file_path,
+          file_name: this.houtei[i].file_name,
+          comment: "",
+          updt_dt: this.houtei[i].updt_dt,
+        })
+      }
+    }
+
+    var url = "api/index.php/HouteiAttachController/saveAttach";
+    this.$http({
+      method: 'POST',
+      url: url,
+      data: {
+        sno: this.sno,
+        attach_list
+      }
+    });
+  }
+
   save() {
     // 保存処理（confirm → OK）
     var message = '台帳を保存してよろしいですか？';
@@ -1203,6 +1277,7 @@ class FameditCtrl extends BaseCtrl {
       this.waitOverlay = true;
       // 添付ファイルの保存
       //this.saveUpload();
+      this.saveHouteiAttach();
 
       // 補修履歴をオブジェクト化
       //this.convHosyuuRireki();
