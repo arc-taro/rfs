@@ -14,20 +14,21 @@
         flow-file-success="famedit.houteiFileUploadSuccess( houtei.chk_mng_no, $file, $message, $flow )">
         <td>{{houtei.gengou}}</td>
         <td>
-          <button ng-if="!houtei.file_path" class="btn btn-sm btn-default text-center" flow-btn style="width:10em;"
-            ng-disabled="!famedit.editable">
+          <button ng-if="!houtei.file_path && famedit.editable" class="btn btn-sm btn-default text-center" flow-btn
+            style="width:10em;">
             <span class="glyphicon glyphicon-hand-up"></span>　ファイル選択</button>
-          <a ng-if="houtei.file_path" ng-href="api/index.php/UploadController/download?file={{famedit.urlEncode(houtei.file_path)}}" download="{{houtei.file_path}}"
-            target="_blank">
+            <a ng-if="houtei.file_path" href="" ng-click="famedit.saveAttachedFile(houtei.file_path,houtei.file_name)" target="_blank">
             {{houtei.file_name}}</a>
         </td>
         <td>
-          <button class="btn btn-sm btn-danger text-center" ng-show="houtei.file_path"
-            ng-click="famedit.deleteHouteiFile(houtei.chk_mng_no);" style="width:10em;" ng-disabled="!famedit.editable">
+          <button class="btn btn-sm btn-danger text-center" ng-show="houtei.file_path && famedit.editable"
+            ng-click="famedit.deleteHouteiFile(houtei.chk_mng_no);" style="width:10em;">
             <span class="glyphicon glyphicon-remove"></span>　ファイル削除</button>
-          <span ng-show="$flow.isUploading()" class="ng-binding">{{ Math.round($flow.progress() * 100) }}% Complete</span>
+          <span ng-show="$flow.isUploading()" class="ng-binding">{{ Math.round($flow.progress() * 100) }}%
+            Complete</span>
         </td>
       </tr>
     </tbody>
   </table>
+  <div>※添付ファイルを保存する場合は、確定保存ボタンをクリックして確定してください</div>
 </div>
