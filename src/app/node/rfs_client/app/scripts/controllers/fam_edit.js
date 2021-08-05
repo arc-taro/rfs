@@ -671,13 +671,13 @@ class FameditCtrl extends BaseCtrl {
           ]
         }
       },
-      "28": { // 橋梁・横断歩道橋
+      "28": { // カルテ点検（落石・崩壊、急流河川）
         num: [],
         num_str: [],
         pulldown: [],
         date: [],
         include_tpl: {
-          daichou_tplnm: 'views/daichou/kyouryou_oudanhodoukyou.html',
+          daichou_tplnm: 'views/daichou/carte_tenken.html',
           daichou_rireki: [
             'views/daichou/tenken_houtei.html',
             'views/daichou/tenken_hosyuu_rireki.html',
