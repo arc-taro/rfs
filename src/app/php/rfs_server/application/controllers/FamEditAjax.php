@@ -67,7 +67,7 @@ class FamEditAjax extends BaseController {
 
     // UPD 20200108 hirano 数値じゃまずい項目、全ての施設に影響するため、この項目のみ対応する
     if ($daityou) {
-      if ($daityou[0]['d_hokuden_kyakuban']) {
+      if (isset($daityou[0]['d_hokuden_kyakuban']) && $daityou[0]['d_hokuden_kyakuban']) {
         $daityou[0]['d_hokuden_kyakuban'] = $daityou[0]['d_hokuden_kyakuban']." ";
       } else {
         $daityou[0]['d_hokuden_kyakuban'] = " ";
@@ -151,6 +151,11 @@ class FamEditAjax extends BaseController {
       $result['huzokubutsu']=$huzokubutsu;
     }
 
+    /********************/
+    /*** 法定点検取得 ***/
+    /********************/
+    $result['houtei'] = $this->FamEditModel->getHouteiTenken($sno);
+
 //    $r=print_r($result, true);
 //    log_message("debug", "---result------------------------->$r\n");
 
@@ -232,6 +237,16 @@ class FamEditAjax extends BaseController {
               'mst_syuunetsu',
               'mst_hounetsu',
               'mst_denryoku_keiyaku_syubetsu'];
+    $tbl[24]=[];
+    $val[24]=[];
+    $tbl[25]=[];
+    $val[25]=[];
+    $tbl[26]=[];
+    $val[26]=[];
+    $tbl[27]=[];
+    $val[27]=[];
+    $tbl[28]=[];
+    $val[28]=[];
 
     // シンプルマスタはこちら
     for($i = 0 ; $i < count($tbl[$shisetsu_kbn]);$i++){
@@ -420,6 +435,21 @@ class FamEditAjax extends BaseController {
     } else if ($daichou['shisetsu_kbn']==21) { // ロードヒーティング
       $this->load->model("FamEditModelRH");
       $model = $this->FamEditModelRH;
+    } else if ($daichou['shisetsu_kbn']==24) { // 橋梁 
+      $this->load->model("FamEditModelBR");
+      $model = $this->FamEditModelBR;
+    } else if ($daichou['shisetsu_kbn']==25) { // トンネル・シェッド等・大型カルバート
+      $this->load->model("FamEditModelOK");
+      $model = $this->FamEditModelOK;
+    } else if ($daichou['shisetsu_kbn']==26) { // 道路土工構造物（法面・擁壁・函渠）
+      $this->load->model("FamEditModelKF");
+      $model = $this->FamEditModelKF;
+    } else if ($daichou['shisetsu_kbn']==27) { // 歩道 
+      $this->load->model("FamEditModelHD");
+      $model = $this->FamEditModelHD;
+    } else if ($daichou['shisetsu_kbn']==28) { // カルテ点検（落石・崩壊、急流河川） 
+      $this->load->model("FamEditModelGK");
+      $model = $this->FamEditModelGK;
     }
 
     $model->saveShisetsuDaichou($this->post);

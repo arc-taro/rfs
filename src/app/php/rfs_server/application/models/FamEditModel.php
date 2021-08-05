@@ -842,4 +842,38 @@ SQL;
     return $result;
   }
 
+  /***
+   * 法定点検を取得する
+   *
+   * 引数:$sno 施設番号
+   *
+   ***/
+  public function getHouteiTenken($sno){
+    log_message('info', 'getHouteiTenken');
+    $sql= <<<EOF
+SELECT
+  rtch.*
+  ,vwsf.wareki_ryaku || '年' gengou
+  ,rtha.attachfile_no
+  ,rtha.comment
+  ,rtha.file_type
+  ,rtha.file_size
+  ,rtha.file_path
+  ,rtha.updt_dt
+FROM
+  rfs_t_chk_houtei rtch
+LEFT JOIN
+  rfs_t_houtei_attachfile rtha
+  ON rtch.chk_mng_no = rtha.chk_mng_no
+LEFT JOIN
+  v_wareki_seireki_future vwsf
+  ON date_part('year', rtch.target_dt) = vwsf.seireki
+WHERE
+  rtch.sno = $sno
+EOF;
+    $query = $this->DB_rfs->query($sql);
+    $result = $query->result('array');
+    return $result;
+  }
+
 }

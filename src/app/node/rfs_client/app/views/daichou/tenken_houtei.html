@@ -1,0 +1,33 @@
+<div class="row">
+  <h6 style="margin-top:30px">&nbsp;法定点検</h6>
+</div>
+<div class="row" style="margin-top:15px;">
+  <table class="fam01 table-bordered" style="word-break:break-all;">
+    <tbody>
+      <tr>
+        <th style="width:200px">点検年</th>
+        <th style="width:200px"></th>
+        <th style="width:200px"></th>
+      </tr>
+      <tr ng-repeat="houtei in famedit.houtei" flow-init="{target: 'api/index.php/UploadController/upload'}"
+        flow-name="tenken_houtei.flow" flow-files-submitted="$flow.upload()"
+        flow-file-success="famedit.houteiFileUploadSuccess( houtei.chk_mng_no, $file, $message, $flow )">
+        <td>{{houtei.gengou}}</td>
+        <td>
+          <button ng-if="!houtei.file_path" class="btn btn-sm btn-default text-center" flow-btn style="width:10em;"
+            ng-disabled="!famedit.editable">
+            <span class="glyphicon glyphicon-hand-up"></span>　ファイル選択</button>
+          <a ng-if="houtei.file_path" ng-href="api/index.php/UploadController/download?file={{famedit.urlEncode(houtei.file_path)}}" download="{{houtei.file_path}}"
+            target="_blank">
+            {{houtei.file_name}}</a>
+        </td>
+        <td>
+          <button class="btn btn-sm btn-danger text-center" ng-show="houtei.file_path"
+            ng-click="famedit.deleteHouteiFile(houtei.chk_mng_no);" style="width:10em;" ng-disabled="!famedit.editable">
+            <span class="glyphicon glyphicon-remove"></span>　ファイル削除</button>
+          <span ng-show="$flow.isUploading()" class="ng-binding">{{ Math.round($flow.progress() * 100) }}% Complete</span>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>

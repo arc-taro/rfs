@@ -127,7 +127,8 @@ class UploadController extends BaseController {
 
   public function download(){
     header('Content-Type: application/octet-stream');
-    header('Content-Disposition: attachment; filename='.basename($this->get["file"]));
+    header('Content-Disposition: attachment; filename='.mb_convert_encoding(basename($this->get["file"]), 'sjis-win', 'UTF-8'));// IEでファイル名が文字化けするのでエンコードする
+
     readfile($this->config->config['www_path'].$this->get["file"]);
   }
 
