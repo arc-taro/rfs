@@ -1,0 +1,36 @@
+<div class="row" ng-if="famedit.teiki_patrol && famedit.teiki_patrol.length > 0">
+  <h6 style="margin-top:30px">&nbsp;定期パトロール</h6>
+</div>
+<div class="row" style="margin-top:15px;" ng-if="famedit.teiki_patrol && famedit.teiki_patrol.length > 0">
+  <table class="fam01 table-bordered" style="word-break:break-all;">
+    <tbody>
+      <tr>
+        <th style="width:200px">点検年</th>
+        <th style="width:200px">異常有無</th>
+        <th style="width:200px">全ての部材</th>
+        <th style="width:200px"></th>
+        <th style="width:200px"></th>
+      </tr>
+      <tr ng-repeat="patrol in famedit.teiki_patrol">
+        <td>{{patrol.wareki_ryaku}}</td>
+        <td>
+          {{patrol.ijou_umu_flg ? "有" : "無"}}
+        </td>
+        <td>
+          {{patrol.buzai}}
+        </td>
+        <td>
+          <button class="btn btn-sm btn-danger text-center"
+            ng-click="famedit.deleteHouteiFile(houtei.chk_mng_no);" style="width:10em;">
+            画面を開く</button>
+        </td>
+        <td>
+          <button class="btn btn-sm btn-danger text-center"
+            ng-click="famedit.downloadTeikiPatrolExcel(patrol.tenken_list_cd, patrol.tenken_list_name);" style="width:10em;">
+            Excel出力</button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+  <div>※添付ファイルを保存する場合は、確定保存ボタンをクリックして確定してください</div>
+</div>

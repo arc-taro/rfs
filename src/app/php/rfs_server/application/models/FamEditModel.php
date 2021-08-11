@@ -843,6 +843,70 @@ SQL;
   }
 
   /***
+   * 定期パトロールを取得する
+   *
+   * 引数:$sno 施設番号
+   *
+   ***/
+  public function getTeikiPatrol($sno){
+    log_message('info', 'getTeikiPatrol');
+
+    // 定期パトロール本体のデータを取得
+    $sql= <<<EOF
+SELECT 
+  tls.tenken_list_cd,
+  shi.sno,
+  shi.shisetsu_kbn,
+  tld.tenken_list_detail_cd,
+  wf.wareki_ryaku || '年' wareki_ryaku,
+  tld.ijyou_umu_flg,
+  tls.tenken_list_name
+FROM
+  teiki_patrol.tenken_lists tls
+INNER JOIN teiki_patrol.tenken_list_details  tld
+  ON tls.tenken_list_cd = tld.tenken_list_cd
+LEFT JOIN v_wareki_seireki_future wf
+  ON EXTRACT(YEAR FROM tls.deliveried_at) = wf.seireki
+LEFT JOIN rfs_m_shisetsu shi
+  ON tld.sno = shi.sno
+WHERE
+  tld.sno = $sno
+  AND wf.wareki_ryaku IS NOT NULL
+EOF;
+    $query = $this->DB_rfs->query($sql);
+    $result = $query->result('array');
+    
+    for($i = 0; $i < count($result); $i++) {
+      $tenken_list_detail_cd = $result[$i]['tenken_list_detail_cd'];
+      $shisetsu_kbn = $result[$i]['shisetsu_kbn'];
+      // 部材を取得して結果と結合
+      $buzai_sql = <<<EOF
+SELECT
+  sbu.shisetsu_buzai_nm
+FROM
+  teiki_patrol.sonsyou_naiyou ssn
+LEFT JOIN public.rfs_m_shisetsu_buzai sbu
+  ON ssn.buzai_cd = sbu.shisetsu_buzai_kbn AND sbu.shisetsu_kbn = $shisetsu_kbn
+WHERE
+  ssn.tenken_list_detail_cd = $tenken_list_detail_cd
+EOF;
+
+      $buzai_query = $this->DB_rfs->query($buzai_sql);
+      $buzai_result = $buzai_query->result('array');
+
+      // 連想配列の配列からshisesu_buzai_nmの配列に直してカンマ区切りで結合
+      $buzai_nm_array = array_map(function($buzai){ return $buzai['shisetsu_buzai_nm'];}, $buzai_result);
+      $all_buzai = implode(',', $buzai_nm_array);
+
+    log_message('info', "buzai=$all_buzai");
+
+      $result[$i]['buzai'] = $all_buzai;
+    }
+
+    return $result;
+  }
+
+  /***
    * 法定点検を取得する
    *
    * 引数:$sno 施設番号
