@@ -17,7 +17,7 @@
           <button ng-if="!houtei.file_path && famedit.editable" class="btn btn-sm btn-default text-center" flow-btn
             style="width:10em;">
             <span class="glyphicon glyphicon-hand-up"></span>　ファイル選択</button>
-            <a ng-if="houtei.file_path" href="" ng-click="famedit.saveAttachedFile(houtei.file_path,houtei.file_name)" target="_blank">
+            <a ng-if="houtei.file_path" href="" ng-click="famedit.downloadAttachedFile(houtei.file_path,houtei.file_name)" target="_blank">
             {{houtei.file_name}}</a>
         </td>
         <td>

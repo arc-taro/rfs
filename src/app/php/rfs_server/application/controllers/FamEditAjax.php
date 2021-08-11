@@ -152,6 +152,11 @@ class FamEditAjax extends BaseController {
     }
 
     /********************/
+    /*** 定期パトロール取得 ***/
+    /********************/
+    $result['teiki_patrol'] = $this->FamEditModel->getTeikiPatrol($sno);
+
+    /********************/
     /*** 法定点検取得 ***/
     /********************/
     $result['houtei'] = $this->FamEditModel->getHouteiTenken($sno);

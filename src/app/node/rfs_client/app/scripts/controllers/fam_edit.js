@@ -65,6 +65,8 @@ class FameditCtrl extends BaseCtrl {
       this.zenkei_picture = []; // 全景写真の初期化
       this.zumen = {};
 
+      this.teiki_patrol = json.teiki_patrol;// 定期パトロール
+
       this.houtei = json.houtei; // 法定点検
       for (let i = 0; i < this.houtei.length; i++) {
         // ファイルパスからファイル名を取得して保持する
@@ -334,6 +336,7 @@ class FameditCtrl extends BaseCtrl {
           daichou_tplnm: 'views/daichou/hyoushiki.html',
           daichou_rireki: [
             'views/daichou/tenken_huzokubutsu.html',
+            'views/daichou/tenken_teiki_patrol.html',
             'views/daichou/tenken_hosyuu_rireki.html',
           ],
           gdh_tplnm: 'views/daichou/gdh.html'
@@ -349,6 +352,7 @@ class FameditCtrl extends BaseCtrl {
           daichou_rireki: [
             'views/daichou/tenken_huzokubutsu.html',
             'views/daichou/tenken_denki.html',
+            'views/daichou/tenken_teiki_patrol.html',
             'views/daichou/tenken_hosyuu_rireki.html',
           ]
         }
@@ -365,6 +369,7 @@ class FameditCtrl extends BaseCtrl {
           daichou_tplnm: 'views/daichou/syoumei.html',
           daichou_rireki: [
             'views/daichou/tenken_huzokubutsu.html',
+            'views/daichou/tenken_teiki_patrol.html',
             'views/daichou/tenken_hosyuu_rireki.html',
           ]
         }
@@ -378,6 +383,7 @@ class FameditCtrl extends BaseCtrl {
           daichou_tplnm: 'views/daichou/bousetsu.html',
           daichou_rireki: [
             'views/daichou/tenken_huzokubutsu.html',
+            'views/daichou/tenken_teiki_patrol.html',
             'views/daichou/tenken_hosyuu_rireki.html',
           ]
         }
@@ -391,6 +397,7 @@ class FameditCtrl extends BaseCtrl {
           daichou_tplnm: 'views/daichou/snowpole.html',
           daichou_rireki: [
             'views/daichou/tenken_huzokubutsu.html',
+            'views/daichou/tenken_teiki_patrol.html',
             'views/daichou/tenken_hosyuu_rireki.html',
           ]
         }
@@ -404,6 +411,7 @@ class FameditCtrl extends BaseCtrl {
           daichou_tplnm: 'views/daichou/kisyou_kanshi.html',
           daichou_rireki: [
             'views/daichou/tenken_denki.html',
+            'views/daichou/tenken_teiki_patrol.html',
             'views/daichou/tenken_hosyuu_rireki.html',
           ]
         }
@@ -417,6 +425,7 @@ class FameditCtrl extends BaseCtrl {
           daichou_tplnm: 'views/daichou/kisyou_jushin.html',
           daichou_rireki: [
             'views/daichou/tenken_denki.html',
+            'views/daichou/tenken_teiki_patrol.html',
             'views/daichou/tenken_hosyuu_rireki.html',
           ]
         }
@@ -430,6 +439,7 @@ class FameditCtrl extends BaseCtrl {
           daichou_tplnm: 'views/daichou/kisyou_chuukei.html',
           daichou_rireki: [
             'views/daichou/tenken_denki.html',
+            'views/daichou/tenken_teiki_patrol.html',
             'views/daichou/tenken_hosyuu_rireki.html',
           ]
         }
@@ -443,6 +453,7 @@ class FameditCtrl extends BaseCtrl {
           daichou_tplnm: 'views/daichou/kisyou_kansoku.html',
           daichou_rireki: [
             'views/daichou/tenken_denki.html',
+            'views/daichou/tenken_teiki_patrol.html',
             'views/daichou/tenken_hosyuu_rireki.html',
           ]
         }
@@ -456,6 +467,7 @@ class FameditCtrl extends BaseCtrl {
           daichou_tplnm: 'views/daichou/kisyou_camera.html',
           daichou_rireki: [
             'views/daichou/tenken_denki.html',
+            'views/daichou/tenken_teiki_patrol.html',
             'views/daichou/tenken_hosyuu_rireki.html',
           ]
         }
@@ -468,6 +480,7 @@ class FameditCtrl extends BaseCtrl {
         include_tpl: {
           daichou_tplnm: 'views/daichou/jyouhouban_ctype.html',
           daichou_rireki: [
+            'views/daichou/tenken_teiki_patrol.html',
             'views/daichou/tenken_hosyuu_rireki.html',
           ]
         }
@@ -480,6 +493,7 @@ class FameditCtrl extends BaseCtrl {
         include_tpl: {
           daichou_tplnm: 'views/daichou/syadanki.html',
           daichou_rireki: [
+            'views/daichou/tenken_teiki_patrol.html',
             'views/daichou/tenken_hosyuu_rireki.html',
           ]
         }
@@ -492,6 +506,7 @@ class FameditCtrl extends BaseCtrl {
         include_tpl: {
           daichou_tplnm: 'views/daichou/dot.html',
           daichou_rireki: [
+            'views/daichou/tenken_teiki_patrol.html',
             'views/daichou/tenken_hosyuu_rireki.html',
           ]
         }
@@ -505,6 +520,7 @@ class FameditCtrl extends BaseCtrl {
           daichou_tplnm: 'views/daichou/tonneru.html',
           daichou_rireki: [
             'views/daichou/tenken_denki.html',
+            'views/daichou/tenken_teiki_patrol.html',
             'views/daichou/tenken_hosyuu_rireki.html',
           ]
         }
@@ -517,6 +533,7 @@ class FameditCtrl extends BaseCtrl {
         include_tpl: {
           daichou_tplnm: 'views/daichou/chuusya.html',
           daichou_rireki: [
+            'views/daichou/tenken_teiki_patrol.html',
             'views/daichou/tenken_hosyuu_rireki.html',
           ]
         }
@@ -529,6 +546,7 @@ class FameditCtrl extends BaseCtrl {
         include_tpl: {
           daichou_tplnm: 'views/daichou/ryokuka.html',
           daichou_rireki: [
+            'views/daichou/tenken_teiki_patrol.html',
             'views/daichou/tenken_hosyuu_rireki.html',
           ]
         }
@@ -541,6 +559,7 @@ class FameditCtrl extends BaseCtrl {
         include_tpl: {
           daichou_tplnm: 'views/daichou/rittai.html',
           daichou_rireki: [
+            'views/daichou/tenken_teiki_patrol.html',
             'views/daichou/tenken_hosyuu_rireki.html',
           ]
         }
@@ -553,6 +572,7 @@ class FameditCtrl extends BaseCtrl {
         include_tpl: {
           daichou_tplnm: 'views/daichou/youheki.html',
           daichou_rireki: [
+            'views/daichou/tenken_teiki_patrol.html',
             'views/daichou/tenken_hosyuu_rireki.html',
           ]
         }
@@ -565,6 +585,7 @@ class FameditCtrl extends BaseCtrl {
         include_tpl: {
           daichou_tplnm: 'views/daichou/norimen.html',
           daichou_rireki: [
+            'views/daichou/tenken_teiki_patrol.html',
             'views/daichou/tenken_hosyuu_rireki.html',
           ]
         }
@@ -577,6 +598,7 @@ class FameditCtrl extends BaseCtrl {
         include_tpl: {
           daichou_tplnm: 'views/daichou/shinsyutsu.html',
           daichou_rireki: [
+            'views/daichou/tenken_teiki_patrol.html',
             'views/daichou/tenken_hosyuu_rireki.html',
           ]
         }
@@ -588,7 +610,10 @@ class FameditCtrl extends BaseCtrl {
         date: [],
         include_tpl: {
           daichou_tplnm: 'views/daichou/roadheating.html',
-          daichou_rireki: ['views/daichou/tenken_hosyuu_rireki.html']
+          daichou_rireki: [
+            'views/daichou/tenken_teiki_patrol.html',
+            'views/daichou/tenken_hosyuu_rireki.html'
+          ]
         }
       },
       "22": { // 冠水警報表示
@@ -601,6 +626,7 @@ class FameditCtrl extends BaseCtrl {
           daichou_rireki: [
             'views/daichou/tenken_huzokubutsu.html',
             'views/daichou/tenken_denki.html',
+            'views/daichou/tenken_teiki_patrol.html',
             'views/daichou/tenken_hosyuu_rireki.html',
           ]
         }
@@ -615,6 +641,7 @@ class FameditCtrl extends BaseCtrl {
           daichou_rireki: [
             'views/daichou/tenken_huzokubutsu.html',
             'views/daichou/tenken_denki.html',
+            'views/daichou/tenken_teiki_patrol.html',
             'views/daichou/tenken_hosyuu_rireki.html',
           ]
         }
@@ -628,6 +655,7 @@ class FameditCtrl extends BaseCtrl {
           daichou_tplnm: 'views/daichou/kyouryou_oudanhodoukyou.html',
           daichou_rireki: [
             'views/daichou/tenken_houtei.html',
+            'views/daichou/tenken_teiki_patrol.html',
             'views/daichou/tenken_hosyuu_rireki.html',
           ]
         }
@@ -641,6 +669,7 @@ class FameditCtrl extends BaseCtrl {
           daichou_tplnm: 'views/daichou/tonneru_shed_culvert.html',
           daichou_rireki: [
             'views/daichou/tenken_houtei.html',
+            'views/daichou/tenken_teiki_patrol.html',
             'views/daichou/tenken_hosyuu_rireki.html',
           ]
         }
@@ -654,6 +683,7 @@ class FameditCtrl extends BaseCtrl {
           daichou_tplnm: 'views/daichou/douro_dokou_kouzoubutsu.html',
           daichou_rireki: [
             'views/daichou/tenken_houtei.html',
+            'views/daichou/tenken_teiki_patrol.html',
             'views/daichou/tenken_hosyuu_rireki.html',
           ]
         }
@@ -667,6 +697,7 @@ class FameditCtrl extends BaseCtrl {
           daichou_tplnm: 'views/daichou/hodou.html',
           daichou_rireki: [
             'views/daichou/tenken_houtei.html',
+            'views/daichou/tenken_teiki_patrol.html',
             'views/daichou/tenken_hosyuu_rireki.html',
           ]
         }
@@ -680,6 +711,7 @@ class FameditCtrl extends BaseCtrl {
           daichou_tplnm: 'views/daichou/carte_tenken.html',
           daichou_rireki: [
             'views/daichou/tenken_houtei.html',
+            'views/daichou/tenken_teiki_patrol.html',
             'views/daichou/tenken_hosyuu_rireki.html',
           ]
         }
@@ -1196,7 +1228,7 @@ class FameditCtrl extends BaseCtrl {
    * @param {*} url 
    * @param {*} fileName 
    */
-  saveAttachedFile(url,fileName){
+  downloadAttachedFile(url,fileName){
     console.log("saveAttachedFile("+url+","+fileName+")");
 
     // XMLHttpRequestオブジェクトを作成する
@@ -1223,7 +1255,14 @@ class FameditCtrl extends BaseCtrl {
     };
     // XMLHttpRequestオブジェクトの通信を開始する
     xhr.send();
-}
+  }
+
+  // 定期パトロールのExcelをダウンロードする
+  downloadTeikiPatrolExcel(tenken_list_cd, tenken_list_name) {
+    const urlObj = new URL(window.location.href);
+    const url = urlObj.origin + "/tpat/api/index.php/Output/tenken_list?tenken_list_cd=" + tenken_list_cd;
+    this.downloadAttachedFile(url,`${tenken_list_name}.zip`);// 定期パトロールに合わせてファイル名はtenken_list_nameを使用する
+  }
 
   /**
    * アップロードされたら実行される
