@@ -6,29 +6,25 @@
     <tbody>
       <tr>
         <th style="width:200px">点検年</th>
-        <th style="width:200px"></th>
-        <th style="width:200px"></th>
+        <th style="width:400px">PDF出力</th>
+        <th style="width:200px">PDF取込み</th>
       </tr>
       <tr ng-repeat="houtei in famedit.houtei" flow-init="{target: 'api/index.php/UploadController/upload'}"
-        flow-name="tenken_houtei.flow" flow-files-submitted="$flow.upload()"
+        flow-name="tenken_houtei.flow" flow-files-submitted="$flow.upload()" flow-attrs="{accept:'application/pdf'}"
         flow-file-success="famedit.houteiFileUploadSuccess( houtei.chk_mng_no, $file, $message, $flow )">
         <td>{{houtei.gengou}}</td>
         <td>
-          <button ng-if="!houtei.file_path && famedit.editable" class="btn btn-sm btn-default text-center" flow-btn
-            style="width:10em;">
-            <span class="glyphicon glyphicon-hand-up"></span>　ファイル選択</button>
-            <a ng-if="houtei.file_path" href="" ng-click="famedit.downloadFile(houtei.file_path,houtei.file_name)" target="_blank">
-            {{houtei.file_name}}</a>
+          <div ng-repeat="attach_file in houtei.attach_files">
+            <a ng-if="attach_file.file_path" href="" ng-click="famedit.downloadFile(attach_file.file_path,attach_file.file_name)" target="_blank">
+              {{attach_file.file_name}}</a>
+            <a ng-if="famedit.editable" href="" style="margin-left: 10px;" ng-click="famedit.deleteHouteiFile(houtei.chk_mng_no, attach_file.attachfile_no);">ファイル削除</a>
+          </div>
         </td>
         <td>
-          <button class="btn btn-sm btn-danger text-center" ng-show="houtei.file_path && famedit.editable"
-            ng-click="famedit.deleteHouteiFile(houtei.chk_mng_no);" style="width:10em;">
-            <span class="glyphicon glyphicon-remove"></span>　ファイル削除</button>
-          <span ng-show="$flow.isUploading()" class="ng-binding">{{ Math.round($flow.progress() * 100) }}%
-            Complete</span>
+          <span ng-if="famedit.editable" flow-btn flow-attrs="{accept:'application/pdf'}"
+          style="color: #18bc9c; text-decoration: underline; cursor: pointer;">アップロード</span>
         </td>
       </tr>
     </tbody>
   </table>
   <div>※添付ファイルを保存する場合は、確定保存ボタンをクリックして確定してください</div>
-</div>

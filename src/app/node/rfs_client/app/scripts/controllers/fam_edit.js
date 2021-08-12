@@ -68,11 +68,13 @@ class FameditCtrl extends BaseCtrl {
       this.teiki_patrol = json.teiki_patrol;// 定期パトロール
 
       this.houtei = json.houtei; // 法定点検
-      for (let i = 0; i < this.houtei.length; i++) {
+      for (let iHoutei = 0; iHoutei < this.houtei.length; iHoutei++) {
         // ファイルパスからファイル名を取得して保持する
-        this.houtei[i].file_name = "";
-        if (this.houtei[i].file_path) {
-          this.houtei[i].file_name = this.houtei[i].file_path.substring(this.houtei[i].file_path.lastIndexOf('/') + 1, this.houtei[i].file_path.length);
+        for (let iAttachFile = 0; iAttachFile < this.houtei[iHoutei].attach_files.length; iAttachFile++) {
+          this.houtei[iHoutei].attach_files[iAttachFile].file_name = "";
+          if (this.houtei[iHoutei].attach_files[iAttachFile].file_path) {
+            this.houtei[iHoutei].attach_files[iAttachFile].file_name = this.houtei[iHoutei].attach_files[iAttachFile].file_path.substring(this.houtei[iHoutei].attach_files[iAttachFile].file_path.lastIndexOf('/') + 1, this.houtei[iHoutei].attach_files[iAttachFile].file_path.length);
+          }
         }
       }
       // 台帳作成日編集可否
@@ -1211,30 +1213,59 @@ class FameditCtrl extends BaseCtrl {
   /**
    * 法定点検のファイルがアップロードされたら実行される
    */
-  houteiFileUploadSuccess(chk_mng_no, $file, message, $flow, $index) {
+  async houteiFileUploadSuccess(chk_mng_no, $file, message, $flow, $index) {
     message = JSON.parse(message);
+    
+    // 拡張子のチェック
+    const reg = /(.*)(?:\.([^.]+$))/;
+    const ext = message.path.match(reg)[2].toUpperCase();
+    if (!ext.match(/PDF/)) {
+      await this.alert("ファイル選択エラー", "PDFファイルを選択してください");
+      return;
+    }
     for (let i = 0; i < this.houtei.length; i++) {
-      // ファイルがアップロードされたchk_mng_noと一致する点検のファイルパスを更新する
+      // ファイルがアップロードされたchk_mng_noと一致する点検にファイルを追加する
       if(this.houtei[i].chk_mng_no == chk_mng_no) {
-        this.houtei[i].file_path = message.path;
-        this.houtei[i].file_name = $file.name;
-        this.houtei[i].updt_dt = moment().format("YYYY-MM-DD HH:mm")
+        const newAttachFile = {};
+        newAttachFile.file_path = message.path;
+        newAttachFile.file_name = $file.name;
+        newAttachFile.updt_dt = moment().format("YYYY-MM-DD HH:mm");
+        // ファイル削除時の特定ように仮のattachfile_noが必要なので、仮の番号を振る
+        newAttachFile.attachfile_no = 'temp' + (this.getMaxTempAttachFileNo() + 1);
+
+        this.houtei[i].attach_files.push(newAttachFile);
       }
     }
     $flow.files = [];
   }
 
+  // 添付ファイルのうち、仮のattach_file_noの最大値を求める（仮のattach_file_noの生成用）
+  getMaxTempAttachFileNo() {
+    let maxNo = 0;
+    const tempPattern = /^temp[0-9]+$/;
+    // 各点検ごとの添付ファイルのうち、attachfile_noが「temp#」となっているものの数字のみを抜き出して配列とする
+    for (const houtei of this.houtei) {
+      for (const attachFile of houtei.attach_files) {
+        if (String(attachFile.attachfile_no).match(tempPattern)) {
+           // attachfile_noが「temp#」となっているものだけ、「temp#」から数字を切り出す
+          const tempNo = attachFile.attachfile_no.replace('temp', '');
+          maxNo = Math.max(maxNo, tempNo);
+        }
+      }
+    }
+
+    return maxNo;
+  }
+
   /**
    * 法定点検のファイル削除ボタンを押すと呼ばれる
-   * 該当する点検のファイルパスを削除する（削除された状態で台帳を保存するとDB上もファイルが削除される）
+   * 該当するファイルを削除する
    */
-  deleteHouteiFile(chk_mng_no) {
+  deleteHouteiFile(chk_mng_no, attachfile_no) {
     for (let i = 0; i < this.houtei.length; i++) {
-      // ファイルがアップロードされたchk_mng_noと一致する点検のファイルパスを更新する
+      // ファイルがアップロードされたchk_mng_noと一致する点検から、attachfile_noが一致するものを除外する
       if(this.houtei[i].chk_mng_no == chk_mng_no) {
-        this.houtei[i].file_path = "";
-        this.houtei[i].file_name = "";
-        this.houtei[i].updt_dt = "";
+        this.houtei[i].attach_files = this.houtei[i].attach_files.filter(attachFile => attachFile.attachfile_no != attachfile_no);
       }
     }
   }
@@ -1245,7 +1276,7 @@ class FameditCtrl extends BaseCtrl {
    * @param {*} fileName 
    */
   downloadFile(url,fileName){
-    console.log("saveAttachedFile("+url+","+fileName+")");
+    console.log("downloadFile("+url+","+fileName+")");
 
     // XMLHttpRequestオブジェクトを作成する
     const xhr = new XMLHttpRequest();
@@ -1317,16 +1348,15 @@ class FameditCtrl extends BaseCtrl {
    */
   saveHouteiAttach() {
     const attach_list = [];
-    for (let i = 0; i < this.houtei.length; i++) {
-      if (this.houtei[i].file_path) {
-        // ファイルパスがあるもののみリクエストパラメータに含める
+    for (const houtei of this.houtei) {
+      for (const attachFile of houtei.attach_files) {
         attach_list.push({
-          chk_mng_no: this.houtei[i].chk_mng_no,
-          file_path: this.houtei[i].file_path,
-          file_name: this.houtei[i].file_name,
+          chk_mng_no: houtei.chk_mng_no,
+          file_path: attachFile.file_path,
+          file_name: attachFile.file_name,
           comment: "",
-          updt_dt: this.houtei[i].updt_dt,
-        })
+          updt_dt: attachFile.updt_dt,
+        });
       }
     }
 
