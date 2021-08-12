@@ -122,6 +122,8 @@ class SysTopAjax extends BaseController {
     $ret_hd=$this->SysTopModel->getSumShisetsu($dogen_cd, $syucchoujo_cd, 27);
     // カルテ点検
     $ret_gk=$this->SysTopModel->getSumShisetsu($dogen_cd, $syucchoujo_cd, 28);
+    // 道路標識（門型）
+    $ret_dm=$this->SysTopModel->getSumShisetsu($dogen_cd, $syucchoujo_cd, 29);
     
     // 返却$result作成
     $result["dh"] = $ret_dh;
@@ -150,6 +152,7 @@ class SysTopAjax extends BaseController {
     $result["kf"] = $ret_kf;
     $result["hd"] = $ret_hd;
     $result["gk"] = $ret_gk;
+    $result["dm"] = $ret_dm;
 
     return $result;
   }

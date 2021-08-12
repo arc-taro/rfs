@@ -1000,6 +1000,48 @@
       </div>
     </div>
 
+    <!-- <div id="s25" class="col-sm-12">
+      <div class="col-sm-6" style="margin-top:20px">
+        <h3 style="font-weight: bold"> 25. 道路標識（門型）&nbsp;&nbsp;&nbsp;&nbsp;
+          <a ng-href="#/fam_main/1/{{systop.sum_dm[0].shisetsu_kbn}}/6/-1/">{{systop.sum_dm[5].cnt_all}}施設</a>
+        </h3>
+        <table class="sys table-bordered" style="font-size:12px; margin-top:-10px;">
+          <thead>
+            <tr class="active">
+              <th>設置年度</th>
+              <th>供用</th>
+              <th>一部休止</th>
+              <th>休止</th>
+              <th>未登録</th>
+              <th>計</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr ng-repeat=" row_dm in systop.sum_dm">
+              <th>{{row_dm.str}}</th>
+              <td ng-class="{'small_sum' : row_dm.idx==6}">
+                <a ng-href="#/fam_main/1/{{row_dm.shisetsu_kbn}}/{{row_dm.idx}}/1/">{{row_dm.cnt_kyouyou}}</a>
+              </td>
+              <td ng-class="{'small_sum' : row_dm.idx==6}">
+                <a ng-href="#/fam_main/1/{{row_dm.shisetsu_kbn}}/{{row_dm.idx}}/2/">{{row_dm.cnt_ichibu}}</a>
+              </td>
+              <td ng-class="{'small_sum' : row_dm.idx==6}">
+                <a ng-href="#/fam_main/1/{{row_dm.shisetsu_kbn}}/{{row_dm.idx}}/0/">{{row_dm.cnt_kyuushi}}</a>
+              </td>
+              <td ng-class="{'small_sum' : row_dm.idx==6}">
+                <a ng-href="#/fam_main/1/{{row_dm.shisetsu_kbn}}/{{row_dm.idx}}/-2/">{{row_dm.cnt_noinput}}</a>
+              </td>
+              <td ng-class="{'small_sum' : row_dm.idx!=6, 'big_sum' : row_dm.idx==6}">
+                <a ng-href="#/fam_main/1/{{row_dm.shisetsu_kbn}}/{{row_dm.idx}}/-1/">{{row_dm.cnt_all}}</a>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="col-sm-6" style="margin-top:20px">
+      </div>
+    </div> -->
+
     <!--
     <div id="s21" class="col-sm-12">
       <div class="col-sm-6" style="margin-top:20px">
@@ -1158,6 +1200,9 @@
         <div class="left_s">
           <a ng-href="#/fam_main/1/28/6/-1/">カルテ点検（落石・崩壊、急流河川）</a>
         </div>
+        <!-- <div class="left_s">
+          <a ng-href="#/fam_main/1/29/6/-1/">道路標識（門型）</a>
+        </div> -->
       </div>
 
       <div style="margin:20px 0 10px 0;">

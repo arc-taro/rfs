@@ -953,6 +953,8 @@ class FamMainCtrl extends BaseCtrl {
         feature.style.externalGraphic = `images/icon/shisetsu_mng/hd_1.gif`;
       } else if (this.data[k].shisetsu_kbn == 28) {
         feature.style.externalGraphic = `images/icon/shisetsu_mng/gk_1.gif`;
+      // } else if (this.data[k].shisetsu_kbn == 29) {
+      //   feature.style.externalGraphic = `images/icon/shisetsu_mng/dm_1.gif`;
       }
       feature.data = this.data[k];
       this.vectorLayers[this.data[k].shisetsu_kbn - 1].addFeatures([feature]);
@@ -1533,7 +1535,7 @@ class FamMainCtrl extends BaseCtrl {
 
   // 令和3年度に追加した施設かどうかを返す（Excelのチェックボックスを無効にする）
   IsAdditionalShisetsuR03(shisetsuKbn) {
-    return [24, 25, 26, 27, 28].indexOf(Number(shisetsuKbn)) > -1;
+    return [24, 25, 26, 27, 28, 29].indexOf(Number(shisetsuKbn)) > -1;
   }
 
   // 検索結果リストの全てのチェックボックスを更新

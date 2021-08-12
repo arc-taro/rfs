@@ -252,6 +252,8 @@ class FamEditAjax extends BaseController {
     $val[27]=[];
     $tbl[28]=[];
     $val[28]=[];
+    $tbl[29]=[];
+    $val[29]=[];
 
     // シンプルマスタはこちら
     for($i = 0 ; $i < count($tbl[$shisetsu_kbn]);$i++){
@@ -455,6 +457,9 @@ class FamEditAjax extends BaseController {
     } else if ($daichou['shisetsu_kbn']==28) { // カルテ点検（落石・崩壊、急流河川） 
       $this->load->model("FamEditModelGK");
       $model = $this->FamEditModelGK;
+    } else if ($daichou['shisetsu_kbn']==29) { // 道路標識（門型） 
+      $this->load->model("FamEditModelDM");
+      $model = $this->FamEditModelDM;
     }
 
     $model->saveShisetsuDaichou($this->post);
