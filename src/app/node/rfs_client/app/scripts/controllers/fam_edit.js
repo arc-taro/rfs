@@ -1228,7 +1228,7 @@ class FameditCtrl extends BaseCtrl {
    * @param {*} url 
    * @param {*} fileName 
    */
-  downloadAttachedFile(url,fileName){
+  downloadFile(url,fileName){
     console.log("saveAttachedFile("+url+","+fileName+")");
 
     // XMLHttpRequestオブジェクトを作成する
@@ -1259,9 +1259,8 @@ class FameditCtrl extends BaseCtrl {
 
   // 定期パトロールのExcelをダウンロードする
   downloadTeikiPatrolExcel(tenken_list_cd, tenken_list_name) {
-    const urlObj = new URL(window.location.href);
-    const url = urlObj.origin + "/tpat/api/index.php/Output/tenken_list?tenken_list_cd=" + tenken_list_cd;
-    this.downloadAttachedFile(url,`${tenken_list_name}.zip`);// 定期パトロールに合わせてファイル名はtenken_list_nameを使用する
+    const url = location.origin + "/tpat/api/index.php/Output/tenken_list?tenken_list_cd=" + tenken_list_cd;
+    this.downloadFile(url, tenken_list_name + ".zip");// 定期パトロールに合わせてファイル名はtenken_list_nameを使用する
   }
 
   /**
