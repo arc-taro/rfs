@@ -953,8 +953,8 @@ class FamMainCtrl extends BaseCtrl {
         feature.style.externalGraphic = `images/icon/shisetsu_mng/hd_1.gif`;
       } else if (this.data[k].shisetsu_kbn == 28) {
         feature.style.externalGraphic = `images/icon/shisetsu_mng/gk_1.gif`;
-      // } else if (this.data[k].shisetsu_kbn == 29) {
-      //   feature.style.externalGraphic = `images/icon/shisetsu_mng/dm_1.gif`;
+      } else if (this.data[k].shisetsu_kbn == 29) {
+        feature.style.externalGraphic = `images/icon/shisetsu_mng/dm_1.gif`;
       }
       feature.data = this.data[k];
       this.vectorLayers[this.data[k].shisetsu_kbn - 1].addFeatures([feature]);

@@ -87,7 +87,7 @@ class SystopCtrl extends BaseCtrl {
       this.sum_kf = json.kf;
       this.sum_hd = json.hd;
       this.sum_gk = json.gk;
-      // this.sum_dm = json.dm;
+      this.sum_dm = json.dm;
 
       // 電気通信URL
       this.ele_url = json.ele_url;
@@ -191,7 +191,7 @@ class SystopCtrl extends BaseCtrl {
       this.sum_kf = json.kf;
       this.sum_hd = json.hd;
       this.sum_gk = json.gk;
-      // this.sum_dm = json.dm;
+      this.sum_dm = json.dm;
       this.waitLoadOverlay = false; // 読込み中です
     });
   }
@@ -252,7 +252,7 @@ class SystopCtrl extends BaseCtrl {
       this.sum_kf = json.kf;
       this.sum_hd = json.hd;
       this.sum_gk = json.gk;
-      // this.sum_dm = json.dm;
+      this.sum_dm = json.dm;
       this.waitLoadOverlay = false; // 読込み中です
     });
   }
@@ -300,7 +300,7 @@ class SystopCtrl extends BaseCtrl {
       this.sum_kf = json.kf;
       this.sum_hd = json.hd;
       this.sum_gk = json.gk;
-      // this.sum_dm = json.dm;
+      this.sum_dm = json.dm;
       this.waitLoadOverlay = false; // 読込み中です
 
     });

@@ -717,20 +717,20 @@ class FameditCtrl extends BaseCtrl {
             'views/daichou/tenken_hosyuu_rireki.html',
           ]
         }
-      // },
-      // "29": { // 道路標識（門型）
-      //   num: [],
-      //   num_str: [],
-      //   pulldown: [],
-      //   date: [],
-      //   include_tpl: {
-      //     daichou_tplnm: 'views/daichou/hyoushiki_mongata.html',
-      //     daichou_rireki: [
-      //       'views/daichou/tenken_houtei.html',
-      //       'views/daichou/tenken_teiki_patrol.html',
-      //       'views/daichou/tenken_hosyuu_rireki.html',
-      //     ]
-      //   }
+      },
+      "29": { // 道路標識（門型）
+        num: [],
+        num_str: [],
+        pulldown: [],
+        date: [],
+        include_tpl: {
+          daichou_tplnm: 'views/daichou/hyoushiki_mongata.html',
+          daichou_rireki: [
+            'views/daichou/tenken_houtei.html',
+            'views/daichou/tenken_teiki_patrol.html',
+            'views/daichou/tenken_hosyuu_rireki.html',
+          ]
+        }
       }
     };
 
@@ -1181,8 +1181,8 @@ class FameditCtrl extends BaseCtrl {
         this.feature.style.externalGraphic = `images/icon/shisetsu_mng/hd_1.gif`;
       } else if (this.shisetsu.shisetsu_kbn == 28) {
         this.feature.style.externalGraphic = `images/icon/shisetsu_mng/gk_1.gif`;
-      // } else if (this.shisetsu.shisetsu_kbn == 29) {
-      //   this.feature.style.externalGraphic = `images/icon/shisetsu_mng/dm_1.gif`;
+      } else if (this.shisetsu.shisetsu_kbn == 29) {
+        this.feature.style.externalGraphic = `images/icon/shisetsu_mng/dm_1.gif`;
       }
       this.vectorLayer.addFeatures([this.feature]);
     } else {
