@@ -915,20 +915,25 @@ EOF;
   public function getHouteiTenken($sno){
     log_message('info', 'getHouteiTenken');
     $sql= <<<EOF
+-- rfs_t_chk_houteiとrfs_t_houtei_attachfileを結合するとrfs_t_chk_houteiの行数も増えてしまうので、rfs_t_chk_houteiはJSON文字列として取得
+WITH attachfile AS (
+  SELECT
+    rtha.chk_mng_no
+    , json_agg(rtha) json
+  FROM
+    rfs_t_houtei_attachfile rtha
+  GROUP BY
+    rtha.chk_mng_no
+)
 SELECT
   rtch.*
   ,vwsf.wareki_ryaku || '年' gengou
-  ,rtha.attachfile_no
-  ,rtha.comment
-  ,rtha.file_type
-  ,rtha.file_size
-  ,rtha.file_path
-  ,rtha.updt_dt
+  ,af.json attach_files
 FROM
   rfs_t_chk_houtei rtch
 LEFT JOIN
-  rfs_t_houtei_attachfile rtha
-  ON rtch.chk_mng_no = rtha.chk_mng_no
+  attachfile af
+  ON rtch.chk_mng_no = af.chk_mng_no
 LEFT JOIN
   v_wareki_seireki_future vwsf
   ON date_part('year', rtch.target_dt) = vwsf.seireki
@@ -937,6 +942,11 @@ WHERE
 EOF;
     $query = $this->DB_rfs->query($sql);
     $result = $query->result('array');
+    $result = array_map(function($row) {
+      // attach_filesはJSON文字列なので連想配列に戻す
+      $row['attach_files'] = json_decode($row['attach_files']);
+      return $row;
+    }, $result);
     return $result;
   }
 

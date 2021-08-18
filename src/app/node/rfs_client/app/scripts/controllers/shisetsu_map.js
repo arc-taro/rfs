@@ -263,6 +263,8 @@ class ShisetsuMapCtrl {
         feature.style.externalGraphic = `images/icon/shisetsu_mng/hd_1.gif`;
       } else if (this.data[k].shisetsu_kbn == 28) {
         feature.style.externalGraphic = `images/icon/shisetsu_mng/gk_1.gif`;
+      } else if (this.data[k].shisetsu_kbn == 29) {
+        feature.style.externalGraphic = `images/icon/shisetsu_mng/dm_1.gif`;
       }
       //      }
       this.feature.data = this.data;

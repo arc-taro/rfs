@@ -6,9 +6,9 @@
     <tbody>
       <tr>
         <th style="width:200px">点検年</th>
-        <th style="width:200px">異常有無</th>
-        <th style="width:200px">全ての部材</th>
-        <th style="width:200px"></th>
+        <th style="width:200px">異常の有無</th>
+        <th style="width:200px">部材</th>
+        <th style="width:200px">画面を開く（リスト表示）</th>
         <th style="width:200px"></th>
       </tr>
       <tr ng-repeat="patrol in famedit.teiki_patrol">
@@ -20,9 +20,8 @@
           {{patrol.buzai}}
         </td>
         <td>
-          <button class="btn btn-sm btn-danger text-center"
-            ng-click="famedit.deleteHouteiFile(houtei.chk_mng_no);" style="width:10em;">
-            画面を開く</button>
+          <a href="/tpat/pc.html#/douro">
+            画面を開く</a>
         </td>
         <td>
           <button class="btn btn-sm btn-danger text-center"
@@ -32,5 +31,4 @@
       </tr>
     </tbody>
   </table>
-  <div>※添付ファイルを保存する場合は、確定保存ボタンをクリックして確定してください</div>
 </div>
