@@ -915,7 +915,8 @@ EOF;
   public function getHouteiTenken($sno){
     log_message('info', 'getHouteiTenken');
     $sql= <<<EOF
--- rfs_t_chk_houteiとrfs_t_houtei_attachfileを結合するとrfs_t_chk_houteiの行数も増えてしまうので、rfs_t_chk_houteiはJSON文字列として取得
+-- Angular側の表示を容易にするため、rfs_t_chk_houtei(rtch)1レコード（1行）に対して、
+-- 複数の添付ファイルの情報を保持するため、各添付ファイルの情報はJSON文字列として複数の情報を1レコードとして取得する
 WITH attachfile AS (
   SELECT
     rtha.chk_mng_no
