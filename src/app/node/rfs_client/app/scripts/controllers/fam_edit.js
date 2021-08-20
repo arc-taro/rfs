@@ -1222,8 +1222,22 @@ class FameditCtrl extends BaseCtrl {
     const ext = message.path.match(reg)[2].toUpperCase();
     if (!ext.match(/PDF/)) {
       await this.alert("ファイル選択エラー", "PDFファイルを選択してください");
+      $flow.files = [];
       return;
     }
+
+    // 同名のファイルがアップロード済みでないか確認
+    // （添付ファイルは施設ごとにサーバー上のディレクトリに保存されるため、同名のファイルは複数存在できない）
+    for (const houtei of this.houtei) {
+      for (const attachFile of houtei.attach_files) {
+        if ($file.name == attachFile.file_name) {
+          await this.alert("ファイル選択エラー", "既に同名のファイルがアップロードされています");
+          $flow.files = [];
+          return;
+        }
+      }
+    }
+
     for (let i = 0; i < this.houtei.length; i++) {
       // ファイルがアップロードされたchk_mng_noと一致する点検にファイルを追加する
       if(this.houtei[i].chk_mng_no == chk_mng_no) {
