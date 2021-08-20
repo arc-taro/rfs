@@ -155,6 +155,8 @@ class FamEditAjax extends BaseController {
     /*** 定期パトロール取得 ***/
     /********************/
     $result['teiki_patrol'] = $this->FamEditModel->getTeikiPatrol($sno);
+    // 定期パトロールのURLも渡す
+    $result['tpat_url'] = $this->config->config['tpat_url'];
 
     /********************/
     /*** 法定点検取得 ***/

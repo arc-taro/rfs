@@ -32,6 +32,7 @@ $config['ele_url'] = "/ele/";
 $config['www_ele_path'] = "/ele/";
 $config['attach_path'] = 'images/photos/gdh/';
 $config['houtei_attach_path'] = 'upload/houtei/';// 法定点検のファイルのアップロード先（www_pathに続くパス）
+$config['tpat_url'] = "/tpat/"; // 定期パトロールのURL（オリジンの後ろの部分）
 
 /*
 |--------------------------------------------------------------------------

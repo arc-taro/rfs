@@ -66,6 +66,7 @@ class FameditCtrl extends BaseCtrl {
       this.zumen = {};
 
       this.teiki_patrol = json.teiki_patrol;// 定期パトロール
+      this.tpat_url = json.tpat_url; // 定期パトロールのURL（オリジンの後ろの部分）
 
       this.houtei = json.houtei; // 法定点検
       for (let iHoutei = 0; iHoutei < this.houtei.length; iHoutei++) {
@@ -1306,7 +1307,7 @@ class FameditCtrl extends BaseCtrl {
 
   // 定期パトロールのExcelをダウンロードする
   downloadTeikiPatrolExcel(tenken_list_cd, tenken_list_name) {
-    const url = location.origin + "/tpat/api/index.php/Output/tenken_list?tenken_list_cd=" + tenken_list_cd;
+    const url = location.origin + this.tpat_url + "api/index.php/Output/tenken_list?tenken_list_cd=" + tenken_list_cd;
     this.downloadFile(url, tenken_list_name + ".zip");// 定期パトロールに合わせてファイル名はtenken_list_nameを使用する
   }
 
