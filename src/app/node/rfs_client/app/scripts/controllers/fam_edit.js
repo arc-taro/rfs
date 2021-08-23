@@ -644,6 +644,7 @@ class FameditCtrl extends BaseCtrl {
         include_tpl: {
           daichou_tplnm: 'views/daichou/kansui_keihou.html',
           daichou_rireki: [
+            'views/daichou/tenken_huzokubutsu.html',
             'views/daichou/tenken_houtei.html',
             'views/daichou/tenken_denki.html',
             'views/daichou/tenken_teiki_patrol.html',
@@ -659,6 +660,7 @@ class FameditCtrl extends BaseCtrl {
         include_tpl: {
           daichou_tplnm: 'views/daichou/tonneru_keihou.html',
           daichou_rireki: [
+            'views/daichou/tenken_huzokubutsu.html',
             'views/daichou/tenken_houtei.html',
             'views/daichou/tenken_denki.html',
             'views/daichou/tenken_teiki_patrol.html',
