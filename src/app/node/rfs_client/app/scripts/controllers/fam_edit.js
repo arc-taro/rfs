@@ -279,6 +279,7 @@ class FameditCtrl extends BaseCtrl {
     this.err_message = [];
     // ○○中表示
     this.waitOverlay = false; // 保存中です
+    this.waitUploadOverlay = false; // アップロード中のオーバーレイ（スピナー）の表示をコントロールするフラグ
 
     // 補修履歴入力欄初期化
     this.chk_year = null;
@@ -1211,10 +1212,18 @@ class FameditCtrl extends BaseCtrl {
     return window.encodeURIComponent(str);
   }
 
+  // ng-flowがファイルのアップロードを開始した際に呼ばれる
+  filesSubmitted($flow) {
+    console.log("filesSubmitted");
+    this.waitUploadOverlay = true;
+    $flow.upload()
+  }
+
   /**
    * 法定点検のファイルがアップロードされたら実行される
    */
   async houteiFileUploadSuccess(chk_mng_no, $file, message, $flow, $index) {
+    this.waitUploadOverlay = false;
     message = JSON.parse(message);
     
     // 拡張子のチェック
