@@ -1249,6 +1249,9 @@ class FameditCtrl extends BaseCtrl {
     const ext = message.path.match(reg)[2].toUpperCase();
     if (!ext.match(/PDF/)) {
       await this.alert("ファイル選択エラー", "PDFファイルを選択してください");
+
+      // 成功したときと同様に、失敗したときにもfilesの中身を空にしないと、
+      // 以降ファイルをアップロードしてもこの関数が呼ばれなくなるので空にしておく
       $flow.files = [];
       return;
     }
@@ -1259,6 +1262,9 @@ class FameditCtrl extends BaseCtrl {
       for (const attachFile of houtei.attach_files) {
         if ($file.name == attachFile.file_name) {
           await this.alert("ファイル選択エラー", "既に同名のファイルがアップロードされています");
+          
+          // 成功したときと同様に、失敗したときにもfilesの中身を空にしないと、
+          // 以降ファイルをアップロードしてもこの関数が呼ばれなくなるので空にしておく
           $flow.files = [];
           return;
         }
