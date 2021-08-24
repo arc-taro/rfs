@@ -6,23 +6,23 @@
     <tbody>
       <tr>
         <th style="width:200px">点検年</th>
-        <th style="width:300px">PDF出力</th>
-        <th style="width:200px" ng-if="famedit.editable">PDF取込み</th>
+        <th style="width:350px">PDF出力</th>
+        <th style="width:150px" ng-if="famedit.editable">PDF取込み</th>
       </tr>
       <tr ng-repeat="houtei in famedit.houtei" flow-init="{target: 'api/index.php/UploadController/upload'}"
         flow-name="tenken_houtei.flow" flow-files-submitted="famedit.filesSubmitted($flow)" flow-attrs="{accept:'application/pdf'}"
         flow-file-success="famedit.houteiFileUploadSuccess( houtei.chk_mng_no, $file, $message, $flow )">
         <td>{{houtei.gengou}}</td>
-        <td style="width:200px; padding: 0;">
+        <td style="padding: 0;">
           <table style="width: 100%;">
             <!-- ファイルダウンロードのリンク -->
             <tr ng-repeat="attach_file in houtei.attach_files">
-              <td ng-style="$last ? {'border-bottom': 'none'} : {}">
+              <td style="width:250px;" ng-style="$last ? {'border-bottom': 'none'} : {}">
                 <a ng-if="attach_file.file_path" href=""
                   ng-click="famedit.downloadFile(attach_file.file_path,attach_file.file_name)" target="_blank">
                   {{attach_file.file_name}}</a>
               </td>
-              <td ng-if="famedit.editable" style="border-left: 1px solid #ecf0f1;" ng-style="$last ? {'border-bottom': 'none'} : {}">
+              <td ng-if="famedit.editable" style="width:100px; border-left: 1px solid #ecf0f1;" ng-style="$last ? {'border-bottom': 'none'} : {}">
                 <a ng-if="famedit.editable" href="" style="margin-left: 10px;"
                   ng-click="famedit.deleteHouteiFile(houtei.chk_mng_no, attach_file.attachfile_no);">ファイル削除</a>
               </td>
