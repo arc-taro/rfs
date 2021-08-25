@@ -327,6 +327,18 @@ class FamEditAjax extends BaseController {
       $keishiki_kubun_num=2; // 形式区分2つ
     } else if ($shisetsu_kbn == 21) { /*** ロードヒーティング ***/
       $keishiki_kubun_num=2; // 形式区分2つ
+    } else if ($shisetsu_kbn == 24) { /*** 橋梁・横断歩道橋 ***/
+      // TODO: 詳細不明
+    } else if ($shisetsu_kbn == 25) { /*** トンネル・シェッド等・大型カルバート ***/
+      // TODO: 詳細不明
+    } else if ($shisetsu_kbn == 26) { /*** 道路土工構造物 ***/
+      // TODO: 詳細不明
+    } else if ($shisetsu_kbn == 27) { /*** 歩道 ***/
+      // TODO: 詳細不明
+    } else if ($shisetsu_kbn == 28) { /*** カルテ点検（落石・崩壊、急流河川） ***/
+      // TODO: 詳細不明
+    } else if ($shisetsu_kbn == 29) { /*** 道路標識（門型） ***/
+      // TODO: 詳細不明
     }
 
     // 形式区分の設定

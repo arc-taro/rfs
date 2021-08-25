@@ -1061,6 +1061,18 @@ class ShisetsuEditCtrl extends BaseCtrl {
       this.data.shisetsu_cd = "KK";
     } else if (this.data.shisetsu_kbn == 23) {
       this.data.shisetsu_cd = "TK";
+    } else if (this.data.shisetsu_kbn == 24) {
+      this.data.shisetsu_cd = "BR";
+    } else if (this.data.shisetsu_kbn == 25) {
+      this.data.shisetsu_cd = "OK";
+    } else if (this.data.shisetsu_kbn == 26) {
+      this.data.shisetsu_cd = "KF";
+    } else if (this.data.shisetsu_kbn == 27) {
+      this.data.shisetsu_cd = "HD";
+    } else if (this.data.shisetsu_kbn == 28) {
+      this.data.shisetsu_cd = "GK";
+    } else if (this.data.shisetsu_kbn == 29) {
+      this.data.shisetsu_cd = "DM";
     }
   }
 

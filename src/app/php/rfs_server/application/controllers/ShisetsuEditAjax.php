@@ -199,6 +199,18 @@ class ShisetsuEditAjax extends BaseController {
     } else if ($shisetsu_kbn==21) { // ロードヒーティング
       $this->load->model("CreateDaichouExcelRH");
       $model_excel = $this->CreateDaichouExcelRH;
+    } else if ($shisetsu_kbn==24) { // 橋梁・横断歩道橋
+      // TODO: Excel作成時に必要
+    } else if ($shisetsu_kbn==25) { // トンネル・シェッド等・大型カルバート
+      // TODO: Excel作成時に必要
+    } else if ($shisetsu_kbn==26) { // 道路土工構造物
+      // TODO: Excel作成時に必要
+    } else if ($shisetsu_kbn==27) { // 歩道
+      // TODO: Excel作成時に必要
+    } else if ($shisetsu_kbn==28) { // カルテ点検（落石・崩壊、急流河川）
+      // TODO: Excel作成時に必要
+    } else if ($shisetsu_kbn==29) { // 道路標識（門型）
+      // TODO: Excel作成時に必要
     }
 
     // Excelを作成
