@@ -1352,6 +1352,13 @@ class FameditCtrl extends BaseCtrl {
     xhr.send();
   }
 
+  // 定期パトロール画面に遷移する
+  transitToTeikiPatrol() {
+    // 画面遷移の確認ダイアログを無効にする
+    window.onbeforeunload = null;
+    location.href = this.tpat_url + 'pc.html#';
+  }
+
   // 定期パトロールのExcelをダウンロードする
   downloadTeikiPatrolExcel(tenken_list_cd, tenken_list_name) {
     const url = location.origin + this.tpat_url + "api/index.php/Output/tenken_list?tenken_list_cd=" + tenken_list_cd;
