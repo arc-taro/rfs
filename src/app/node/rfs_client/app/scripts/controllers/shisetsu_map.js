@@ -253,18 +253,18 @@ class ShisetsuMapCtrl {
         this.feature.style.externalGraphic = `images/icon/shisetsu_mng/ts_1.gif`;
       } else if (this.data.shisetsu_kbn == 21) {
         this.feature.style.externalGraphic = `images/icon/shisetsu_mng/rh_1.gif`;
-      } else if (this.data[k].shisetsu_kbn == 24) {
-        feature.style.externalGraphic = `images/icon/shisetsu_mng/br_1.gif`;
-      } else if (this.data[k].shisetsu_kbn == 25) {
-        feature.style.externalGraphic = `images/icon/shisetsu_mng/ok_1.gif`;
-      } else if (this.data[k].shisetsu_kbn == 26) {
-        feature.style.externalGraphic = `images/icon/shisetsu_mng/kf_1.gif`;
-      } else if (this.data[k].shisetsu_kbn == 27) {
-        feature.style.externalGraphic = `images/icon/shisetsu_mng/hd_1.gif`;
-      } else if (this.data[k].shisetsu_kbn == 28) {
-        feature.style.externalGraphic = `images/icon/shisetsu_mng/gk_1.gif`;
-      } else if (this.data[k].shisetsu_kbn == 29) {
-        feature.style.externalGraphic = `images/icon/shisetsu_mng/dm_1.gif`;
+      } else if (this.data.shisetsu_kbn == 24) {
+        this.feature.style.externalGraphic = `images/icon/shisetsu_mng/br_1.gif`;
+      } else if (this.data.shisetsu_kbn == 25) {
+        this.feature.style.externalGraphic = `images/icon/shisetsu_mng/ok_1.gif`;
+      } else if (this.data.shisetsu_kbn == 26) {
+        this.feature.style.externalGraphic = `images/icon/shisetsu_mng/kf_1.gif`;
+      } else if (this.data.shisetsu_kbn == 27) {
+        this.feature.style.externalGraphic = `images/icon/shisetsu_mng/hd_1.gif`;
+      } else if (this.data.shisetsu_kbn == 28) {
+        this.feature.style.externalGraphic = `images/icon/shisetsu_mng/gk_1.gif`;
+      } else if (this.data.shisetsu_kbn == 29) {
+        this.feature.style.externalGraphic = `images/icon/shisetsu_mng/dm_1.gif`;
       }
       //      }
       this.feature.data = this.data;
