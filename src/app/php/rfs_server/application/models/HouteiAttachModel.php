@@ -51,7 +51,7 @@ SQL;
         //「$directory_path」で指定されたディレクトリが存在するか確認
         if (!is_dir($server_path)) {
           //存在しないときの処理（「$directory_path」で指定されたディレクトリを作成する）
-          mkdir($server_path, 0755, true);
+          mkdir($server_path, 0777, true);
         }
         $src_file = $this->config->config['www_path'] . $attach_list[$i]['file_path'];
         $dist_file = $server_path . $filename;

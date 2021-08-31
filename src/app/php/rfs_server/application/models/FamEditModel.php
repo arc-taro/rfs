@@ -945,7 +945,7 @@ EOF;
     $result = $query->result('array');
     $result = array_map(function($row) {
       // attach_filesはJSON文字列なので連想配列に戻す
-      $row['attach_files'] = json_decode($row['attach_files']);
+      $row['attach_files'] = is_null($row['attach_files']) ? [] : json_decode($row['attach_files']);
       return $row;
     }, $result);
     return $result;
