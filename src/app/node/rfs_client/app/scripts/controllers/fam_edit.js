@@ -1356,7 +1356,8 @@ class FameditCtrl extends BaseCtrl {
   transitToTeikiPatrol() {
     // 画面遷移の確認ダイアログを無効にする
     window.onbeforeunload = null;
-    location.href = this.tpat_url + 'pc.html#';
+    // location.href = this.tpat_url + 'pc.html#';
+    location.href = this.tpat_url + 'pc.html#/douro';
   }
 
   // 定期パトロールのExcelをダウンロードする
