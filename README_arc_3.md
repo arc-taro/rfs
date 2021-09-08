@@ -379,3 +379,23 @@ docker-compose up -d
 6.コマンドプロンプトを開く
 7.wsl --shutdown
 8.色々再起動が始まり、2.からやり直す。
+
+
+--------------------
+＜ビルド手順＞
+前提条件: 開発環境が整って動作できる状態になっていること。
+1. dockerコンテナ群を起動する
+$ docker-compose up -d
+
+※コンテナの起動時にビルドが走るので、恐らくこの時点でビルドは完了しているが、念のため手動でビルドコマンドを実行する。
+
+2. AngularJSのコンテナに入る
+$ docker exec -it rfs_app_node_container bash
+3. ログイン後のディレクトリ（/app）の内容を確認
+# ls
+Gruntfile.js        README.md           app                 bower.json          node_modules        package-lock.json   package.json        sum_shisetsu1.json  test                webpack.config.js   www
+4. wwwディレクトリを削除（念のため）
+# sudo rm -R www
+5. ビルドを実行する
+# npm run build
+6. ビルドされたファイル群が/app/wwwディレクトリに格納されるので、ホスト側の共有ディレクトリからファイル群を取り出す。
