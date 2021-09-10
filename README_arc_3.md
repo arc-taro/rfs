@@ -390,7 +390,7 @@ $ docker-compose up -d
 ※コンテナの起動時にビルドが走るので、恐らくこの時点でビルドは完了しているが、念のため手動でビルドコマンドを実行する。
 
 2. AngularJSのコンテナに入る
-$ docker exec -it rfs_app_node_container bash
+$ docker exec -it rfs_app_node_container sh
 3. ログイン後のディレクトリ（/app）の内容を確認
 # ls
 Gruntfile.js        README.md           app                 bower.json          node_modules        package-lock.json   package.json        sum_shisetsu1.json  test                webpack.config.js   www
@@ -398,4 +398,4 @@ Gruntfile.js        README.md           app                 bower.json          
 # sudo rm -R www
 5. ビルドを実行する
 # npm run build
-6. ビルドされたファイル群が/app/wwwディレクトリに格納されるので、ホスト側の共有ディレクトリからファイル群を取り出す。
+6. ビルドされたファイル群がコンテナの/app/wwwディレクトリに格納されるので、このディレクトリを共有しているホスト側のディレクトリ（src/app/node/rfs_client/www）からファイル群を取り出す。
