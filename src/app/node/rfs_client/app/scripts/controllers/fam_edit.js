@@ -1361,8 +1361,8 @@ class FameditCtrl extends BaseCtrl {
   }
 
   // 定期パトロールのExcelをダウンロードする
-  downloadTeikiPatrolExcel(tenken_list_cd, tenken_list_name) {
-    const url = location.origin + this.tpat_url + "api/index.php/Output/tenken_list?tenken_list_cd=" + tenken_list_cd;
+  downloadTeikiPatrolExcel(tenken_list_cd, tenken_list_name, tenken_list_detail_cd) {
+    const url = location.origin + this.tpat_url + "api/index.php/Output/tenken_list?tenken_list_cd=" + tenken_list_cd + "&excel_list=[" + tenken_list_detail_cd + "]&disabled_shisetsu_list=[]";
     this.downloadFile(url, tenken_list_name + ".zip");// 定期パトロールに合わせてファイル名はtenken_list_nameを使用する
   }
 
