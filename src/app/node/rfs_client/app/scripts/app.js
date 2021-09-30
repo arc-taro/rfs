@@ -96,6 +96,11 @@ module.exports.angApp = angular
         controller: 'SrCsvCtrl',
         controllerAs: 'srcsv'
       })
+      .when('/tenken_keikaku', {
+        templateUrl: 'views/tenken_keikaku.html',
+        controller: 'TenkenKeikakuCtrl',
+        controllerAs: 'tenkenkeikaku'
+      })
       .otherwise({
         redirectTo: '/'
       });
