@@ -107,10 +107,6 @@ class TenkenKeikakuCtrl extends BaseCtrl {
               w_chk_dt: "R1",
               check_shisetsu_judge_nm: "II"
             },
-            // latest_houtei_nendo: "R1",
-            // latest_houtei_shisetsu_judge: "II",
-            // latest_teiki_pat_nendo: "R3",
-            // latest_teiki_pat_ijou_umu: "無",
             houtei_nendo: "",
             houtei_shisetsu_judge: "",
             teiki_pat_nendo: "R4",
@@ -448,6 +444,36 @@ class TenkenKeikakuCtrl extends BaseCtrl {
         return false;
       });
     }
+  }
+
+  // 異常有無欄のセルのスタイルを生成する
+  getIjouUmuCellStyle(ijyou_umu_flg) {
+    const result = {};
+    if (ijyou_umu_flg) {
+      result['backgroundColor'] = '#FF0000';
+      result['color'] = "#FFFFFF";
+    }
+    return result;
+  }
+
+  // 健全性欄のセルのスタイルを生成する（健全性によって背景色が変わるため）
+  getCheckShisetsuJudgeCellStyle(check_shisetsu_judge) {
+    const result = {};
+    switch(check_shisetsu_judge) {
+      case "1":
+        result['backgroundColor'] = '#0000FF';
+        result['color'] = "#FFFFFF";
+        break;
+      case "2":
+        result['backgroundColor'] = "#00B050";
+        result['color'] = "#FFFFFF";
+        break;
+      case "3":
+        result['backgroundColor'] = "#FFC000";
+        result['color'] = "#FFFFFF";
+        break;
+    }
+    return result;
   }
 
   // Map表示タブ選択

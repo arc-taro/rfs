@@ -198,9 +198,9 @@
                 <tbody>
                   <tr ng-repeat="keikaku in tenkenkeikaku.keikaku_list track by keikaku.sno">
                     <td style="min-height: 44px; max-height: 44px;">{{ keikaku.latest_huzokubutsu && keikaku.latest_huzokubutsu.w_chk_dt ? keikaku.latest_huzokubutsu.w_chk_dt : '' }}</td>
-                    <td style="min-height: 44px; max-height: 44px;">{{ keikaku.latest_huzokubutsu && keikaku.latest_huzokubutsu.check_shisetsu_judge_nm ? keikaku.latest_huzokubutsu.check_shisetsu_judge_nm : '' }}</td>
+                    <td style="min-height: 44px; max-height: 44px;" ng-style="keikaku.latest_huzokubutsu ? tenkenkeikaku.getCheckShisetsuJudgeCellStyle(keikaku.latest_huzokubutsu.check_shisetsu_judge) : {}">{{ keikaku.latest_huzokubutsu && keikaku.latest_huzokubutsu.check_shisetsu_judge_nm ? keikaku.latest_huzokubutsu.check_shisetsu_judge_nm : '' }}</td>
                     <td style="min-height: 44px; max-height: 44px;">{{ keikaku.latest_teiki_pat && keikaku.latest_teiki_pat.wareki_ryaku ? keikaku.latest_teiki_pat.wareki_ryaku : '' }}</td>
-                    <td style="min-height: 44px; max-height: 44px;">{{ keikaku.latest_teiki_pat && keikaku.latest_teiki_pat.umu_str ? keikaku.latest_teiki_pat.umu_str : ''  }}</td>
+                    <td style="min-height: 44px; max-height: 44px;" ng-style="keikaku.latest_teiki_pat ? tenkenkeikaku.getIjouUmuCellStyle(keikaku.latest_teiki_pat.ijyou_umu_flg) : {}">{{ keikaku.latest_teiki_pat && keikaku.latest_teiki_pat.umu_str ? keikaku.latest_teiki_pat.umu_str : ''  }}</td>
                     <td style="min-height: 44px; max-height: 44px;">{{ keikaku.houtei_nendo }}</td>
                     <td style="min-height: 44px; max-height: 44px;">{{ keikaku.houtei_shisetsu_judge }}</td>
                     <td style="min-height: 44px; max-height: 44px;">{{ keikaku.teiki_pat_nendo }}</td>
