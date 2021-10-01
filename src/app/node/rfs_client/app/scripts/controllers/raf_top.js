@@ -71,6 +71,21 @@ class RaftopCtrl extends BaseCtrl {
         }
       }
 
+      // プルダウンチェックボックス設定
+      this.extraSettings = {
+        externalIdProp: "",
+        buttonClasses: "btn btn-default btn-xs btn-block",
+        scrollable: true,
+        scrollableHeight: "200px"
+      };
+      this.translationTexts = {
+        checkAll: "全て",
+        uncheckAll: "全て外す",
+        buttonDefaultText: "選択",
+        dynamicButtonTextSuffix: "個選択"
+      };
+      this.shisetsu_kbn_dat_model = [];
+
       return this.$http({
         method: 'GET',
         url: 'api/index.php/RafTopAjax/initRafTop',
@@ -121,6 +136,10 @@ class RaftopCtrl extends BaseCtrl {
 
       // 施設区分
       this.shisetsu_kbns = json.shisetsu_kbns;
+
+      // 施設区分(選択プルダウン用)
+      this.shisetsu_kbn_dat = JSON.parse(json.shisetsu_kbns_multi.shisetsu_kbn_row);
+
       // 集計用
       this.sum_select = "";
 
@@ -316,6 +335,28 @@ class RaftopCtrl extends BaseCtrl {
       this.location('/main');
     });
   }
+
+  // 全施設＆点検データ作成
+  async createShisetsuAndCheckAll() {
+
+    // 全て必須
+    if (this.sum_nendo2 == "" || this.shisetsu_kbn_dat_model.length == 0 || this.mail_address == "") {
+      this.alert('入力エラー', '全施設附属物リストを出力する際は、「年度」「施設」「メールアドレス」が必須です');
+      return;
+    }
+
+    await this.$http({
+      method: 'POST',
+      url: 'api/index.php/SumHuzokubutsuController/requestCreateCsv',
+      data: {
+        nendo: this.sum_nendo2,
+        sel_shisetsu_kbns: this.shisetsu_kbn_dat_model,
+        mail_address: this.mail_address
+      }
+    });
+    this.alert('作成依頼', 'CSV作成依頼を行いました。メールが届くまでお待ちください。');
+  }
+
 }
 
 

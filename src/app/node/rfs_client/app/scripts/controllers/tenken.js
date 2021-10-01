@@ -544,7 +544,12 @@ class TenkenCtrl extends BaseCtrl {
       //            }
 
       // 健全性の再計算
+      // UPD 20210750 ストックの場合特別ルールがあるため再計算をしない（台無しになる）
+      if (this.baseinfo.chk_times == 0) {
+        console.log("this.baseinfo.chk_times == 0----------------------->");
+      } else {
       this.updateBuzaiJudge();
+      }
 
       /*
             this.unwatch[0] = this.$scope.$watch(
@@ -2329,7 +2334,7 @@ class TenkenCtrl extends BaseCtrl {
       点検日、点検員が更新されないため、確定保存時のみ更新する
 
       ※本処理が実行される時点では、フェーズチェックにてフェーズが変更されているため、
-      　フェーズは変更前の値を参照する（= current_phase）
+       フェーズは変更前の値を参照する（= current_phase）
         最新のフェーズ（フェーズチェック後）は、phaseにて取得可能。
     */
 
@@ -2873,7 +2878,9 @@ class TenkenCtrl extends BaseCtrl {
   }
 
   buzaiClick(index) {
+    if (this.editable) {
     this.sum_judge();
+    }
     this.btnIndex = index;
   }
 
