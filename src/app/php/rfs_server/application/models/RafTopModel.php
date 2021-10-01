@@ -384,4 +384,27 @@ EOF;
 
   }
 
+    /**
+     * 施設区分取得（選択プルダウン用）
+     *
+     * @param   道路附属物点検DBコネクション
+     * @return array
+     *         array['shisetsu_kbn_row'] : <br>
+     */
+    public function getShisetsuKbnFormulti() {
+      log_message('debug', __METHOD__);
+      $sql= <<<EOF
+select
+  jsonb_set(
+  '{}'
+  , '{shisetsu_kbn_info}'
+  , jsonb_agg(to_jsonb(s) - 'sort_no' )
+) AS shisetsu_kbn_row
+from
+(select shisetsu_kbn as id, shisetsu_kbn_nm as label, shisetsu_kbn, sort_no from rfs_m_shisetsu_kbn order by sort_no) s
+EOF;
+      $query = $this->DB_rfs->query($sql);
+      $result = $query->result('array');
+      return $result;
+  }
 }
