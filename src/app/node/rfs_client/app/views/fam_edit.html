@@ -467,7 +467,8 @@
           <form name="excel_form" method="POST" action="api/index.php/OutputExcel/dlDaichouData" target="_blank">
             <input type="hidden" name="sno" ng-value="famedit.sno">
             <input type="hidden" name="shisetsu_kbn" ng-value="famedit.shisetsu.shisetsu_kbn">
-            <button type="submit" class="btn btn-xs btn-info btn-sm" ng-disabled="famedit.editable || (famedit.shisetsu.shisetsu_kbn >= 24)">
+            <!-- <button type="submit" class="btn btn-xs btn-info btn-sm" ng-disabled="famedit.editable || (famedit.shisetsu.shisetsu_kbn >= 24)"> -->
+            <button type="submit" class="btn btn-xs btn-info btn-sm" ng-disabled="famedit.editable>
               <span class="glyphicon glyphicon-print"></span>&nbsp;施設台帳の出力</button>
           </form>
         </div>
