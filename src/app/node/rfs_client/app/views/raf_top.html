@@ -79,7 +79,38 @@
         </div>
       </div>
     </div>
+    <div class="row" ng-show="raftop.ath_syozoku_cd==1">
+      <div class="col-sm-9">
+        <div class="form-group input-append text-left" style="padding-left:170px;">
+          <div class="form-inline">
+            <div class="form-group">
+              <select class="input-sm form-control" ng-model="raftop.sum_nendo2"
+                ng-options="nendo.year as nendo.gengou for nendo in raftop.target_nendo"
+                style="width:10em; text-align: left">
+                <option value="">---</option>
+              </select>
+              <span>&nbsp;</span>
+              <div class="form-group input-append text-left zidx1000" style="margin-right:10px;">
+                <div>
+                  <div ng-dropdown-multiselect="" options="raftop.shisetsu_kbn_dat.shisetsu_kbn_info"
+                    selected-model="raftop.shisetsu_kbn_dat_model" translation-texts="raftop.translationTexts"
+                    extra-settings="raftop.extraSettings" style="height:26px; width:8em; text-align: left"
+                    class="btn-group-justified"></div>
+                </div>
+              </div>
+              <span>&nbsp;</span>
+              <input type="text" class="form-control input-sm" ng-model="raftop.mail_address" />
+              <span>&nbsp;</span>
 
+              <div class="form-group input-append text-center" style="margin-left:15px;">
+                <button type="button" class="btn btn-xs btn-info btn-sm" ng-click="raftop.createShisetsuAndCheckAll()">
+                  <span class="glyphicon glyphicon-file"></span>&nbsp;全施設附属物リスト作成</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
     <!--<div ng-show="raftop.disp_sum">-->
     <div class="col-sm-12" style="padding-left:151px; padding-top: 10px;">
       <div class="col-sm-6" style="margin-top:20px">

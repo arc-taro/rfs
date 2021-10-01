@@ -75,6 +75,9 @@ class RafTopAjax extends BaseController {
     // 施設区分取得
     $result["shisetsu_kbns"]=$this->SchCommon->getShisetsuKbnsHuzokubutsu();
 
+    //$this->load->model('RafTopModel');
+    // 施設区分取得(選択プルダウン用)
+    $result["shisetsu_kbns_multi"]=$this->RafTopModel->getShisetsuKbnFormulti()[0];
     // 和暦年度リスト
     $result['wareki_list']=$wareki_list;
 

@@ -73,4 +73,10 @@ class SumHuzokubutsuController extends BaseController {
     return;
   }
 
+  public function requestCreateCsv() {
+    log_message('debug', __METHOD__);
+    $this->load->model('SumHuzokubutsuModels');
+    $this->SumHuzokubutsuModels->requestCreateCsv($this->post);
+  }
+
 }

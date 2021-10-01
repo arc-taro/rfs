@@ -61,6 +61,7 @@ function getForOutDataRH($db,$cd) {
 , shisetsu.shisetsu_cd_daichou
 , shisetsu.kyouyou_kbn
 , CASE shisetsu.kyouyou_kbn 
+  WHEN 2 THEN '一部休止' 
   WHEN 1 THEN '供用' 
   WHEN 0 THEN '休止' 
   ELSE '' 
