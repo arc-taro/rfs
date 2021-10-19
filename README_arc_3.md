@@ -77,6 +77,20 @@ $config['www_ele_path'] = "/ele/"; ←★★★ここを変更★★★
 $config['attach_path'] = 'images/photos/gdh/'; ←★★★ここを変更★★★
 ```
 
+AngularJSのコンテナ内での起動ポートを5000から8080に変更します。
+
+rfs/src/app/node/rfs_client/package.json
+
+変更前
+```
+"watch:serve": "browser-sync start --server 'www' --files 'www' --port 5000",
+```
+
+変更後
+```
+"watch:serve": "browser-sync start --server 'www' --files 'www' --port 8080",
+```
+
 # 3. docker の起動
 
 各サーバを起動します。
