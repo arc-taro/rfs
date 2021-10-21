@@ -183,7 +183,7 @@ EOF;
         $result[$i]['latest_teiki_pat'] = $latest_teiki_pat_result[0];
       }
 
-      if (1 < $shisetsu_kbn && $shisetsu_kbn <= 5) {
+      if (1 <= $shisetsu_kbn && $shisetsu_kbn <= 5) {
         $result[$i]['latest_huzokubutsu'] = [];
         // 附属物点検
         $latest_huzokubutsu_result = $this->getChkMainMaxData($sno, $shisetsu_kbn);
@@ -300,11 +300,34 @@ EOF;
       $where_rosen .= ")";
     }
 
+    /***
+     * 点検計画の取得期間（翌年から10年後まで）
+     * 法定点検か附属物点検かによって5年か10年かが変わるので、一旦10年分取得して法定点検のものは6年後以降を削除する
+     */
+    // 今年度
+    $this_business_year = date('Y', strtotime('-3 month'));
+    $start_date = (new DateTime())->setDate($this_business_year + 1, 4, 1)->setTime(0,0,0);
+    $end_date = (new DateTime())->setDate($this_business_year + 10, 4, 1)->setTime(0,0,0);
+    $houtei_end_date = (new DateTime())->setDate($this_business_year + 5, 4, 1)->setTime(0,0,0);
+    $start_date_str = date_format($start_date, 'Y-m-d');
+    $end_date_str = date_format($end_date, 'Y-m-d');
+
     /*************************/
     /***   条件設定ここまで   ***/
     /*************************/
 $sql= <<<EOF
-WITH shisetsu AS (
+WITH patrol_plan AS (
+  SELECT
+    rtpp.sno
+    , json_agg(rtpp) json
+  FROM
+  rfs_t_patrol_plan rtpp
+  WHERE
+    rtpp.target_dt BETWEEN '$start_date_str' AND '$end_date_str'
+  GROUP BY
+    rtpp.sno
+)
+, shisetsu AS (
   SELECT
       s1.*
   FROM
@@ -355,12 +378,15 @@ SELECT
   , s.syucchoujo_cd
   , s.keishiki_kubun_cd1
   , s.keishiki_kubun_cd2
+  , pp.json teiki_pat_plans
 FROM
   shisetsu s
   LEFT JOIN rfs_m_shisetsu_kbn sk
     ON s.shisetsu_kbn = sk.shisetsu_kbn
   LEFT JOIN rfs_m_rosen r
     ON s.rosen_cd = r.rosen_cd
+  LEFT JOIN patrol_plan pp
+    ON s.sno = pp.sno
 WHERE TRUE
 --  s.shisetsu_ver = (
 --    SELECT
@@ -382,6 +408,40 @@ EOF;
 log_message('debug', "sql=$sql");
     $query = $this->DB_rfs->query($sql);
     $result = $query->result('array');
+
+    $result = array_map(function($row) use($houtei_end_date, $this_business_year) {
+      // teiki_pat_plansはJSON文字列なので連想配列に戻す
+      $row['teiki_pat_plans'] = is_null($row['teiki_pat_plans']) ? [] : json_decode($row['teiki_pat_plans'], true);
+      
+      if ($row['shisetsu_kbn'] > 5) {
+        // 法定点検は5年分なので5年分のみに絞り込む
+        log_message('debug', print_r($row['teiki_pat_plans'], true));
+        $row['teiki_pat_plans'] = array_filter($row['teiki_pat_plans'], function($plan) use($houtei_end_date) {
+          return (new DateTime($plan['target_dt']) <= $houtei_end_date);
+        });
+      }
+
+      // チェックボックスに対応するデータを作成する
+      $row['plan_list'] = [];
+      // 施設区分が5以下のものは附属物点検を行うので10年分、それ以外は法定点検なので5年分データを作成する
+      $patrol_years = $row['shisetsu_kbn'] > 5 ? 5 : 10;
+      for ($i = 0; $i < $patrol_years; $i++) {
+        // 1年毎の処理
+        $target_year = $this_business_year + $i + 1;
+        $row['plan_list'][$i]['year'] = $target_year;
+        $row['plan_list'][$i]['teiki_pat_planned'] = false;
+        // teiki_pat_plansにこの年のデータがあるかどうか探す。あれば定期パトを実施する。無ければ法定/附属物点検を行う。
+        foreach ($row['teiki_pat_plans'] as $plan) {
+          $planned_year = (new DateTime($plan['target_dt']))->format('Y');
+          if ($planned_year == $target_year) {
+            $row['plan_list'][$i]['teiki_pat_planned'] = true;
+          }
+        }
+      }
+
+      return $row;
+    }, $result);
+
 
     //    log_message('debug', "sql=$sql");
     //    $r = print_r($result, true);

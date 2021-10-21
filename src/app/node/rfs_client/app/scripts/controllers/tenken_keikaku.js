@@ -147,6 +147,10 @@ class TenkenKeikakuCtrl extends BaseCtrl {
 
         // 和暦リスト
         this.secchi_nendo = json.wareki_list;
+
+        // 点検計画のヘッダー部分（初期表示分は5年分生成しておく）
+        this.patrol_plan_headers = [];
+
         // 建管_出張所データ抽出
         this.dogen_syucchoujo_dat = JSON.parse(
           json.dogen_syucchoujo[0].dogen_row
