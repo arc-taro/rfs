@@ -524,8 +524,8 @@ class FameditCtrl extends BaseCtrl {
         }
       },
       "14": { // トンネル
-        num: ['syoumei_kisuu', 'push_button_num', 'hijou_tel_num', 'keihou_hyoujiban_num', 'tenmetsutou_num', 'syoukaki_num', 'yuudou_hyoujiban_num'],
-        num_str: ['照明基数', '押ボタン数', '非常電話数', '警報表示板数', '点滅灯数', '消火器数', '誘導表示板数'],
+        num: ['syoumei_kisuu', 'push_button_num', 'hijou_tel_num', 'keihou_hyoujiban_num', 'tenmetsutou_num', 'syoukaki_num', 'yuudou_hyoujiban_num', 'lamp_su1', 'lamp_su2', 'lamp_su3', 'lamp_su4', 'lamp_su5', 'lamp_su6', 'lamp_su7', 'lamp_su8', 'lamp_su9', 'lamp_su10', 'lamp_su11', 'lamp_su12'],
+        num_str: ['照明基数', '押ボタン数', '非常電話数', '警報表示板数', '点滅灯数', '消火器数', '誘導表示板数', '照明数1', '照明数2', '照明数3', '照明数4', '照明数5', '照明数6', '照明数7', '照明数8', '照明数9', '照明数10', '照明数11', '照明数12'],
         pulldown: [],
         date: ['musen_kyoka_dt'],
         include_tpl: {

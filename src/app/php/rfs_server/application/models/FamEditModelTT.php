@@ -91,6 +91,32 @@ class FamEditModelTT extends FamEditModel {
               , update_busyo_cd
               , update_account_nm
               --最終更新者追加END
+              , mabiki_umu
+              , taiou_dt
+              , lamp_syu1
+              , lamp_su1
+              , lamp_syu2
+              , lamp_su2
+              , lamp_syu3
+              , lamp_su3
+              , lamp_syu4
+              , lamp_su4
+              , lamp_syu5
+              , lamp_su5
+              , lamp_syu6
+              , lamp_su6
+              , lamp_syu7
+              , lamp_su7
+              , lamp_syu8
+              , lamp_su8
+              , lamp_syu9
+              , lamp_su9
+              , lamp_syu10
+              , lamp_su10
+              , lamp_syu11
+              , lamp_su11
+              , lamp_syu12
+              , lamp_su12
             )values(
               {$daichou['sno']}
               , {$daichou['toukyuu_cd']}
@@ -156,6 +182,32 @@ class FamEditModelTT extends FamEditModel {
               , {$daichou['update_busyo_cd']}
               , {$daichou['update_account_nm']}
               --最終更新者追加END
+              , {$daichou['mabiki_umu']}
+              , {$daichou['taiou_dt']}
+              , {$daichou['lamp_syu1']}
+              , {$daichou['lamp_su1']}
+              , {$daichou['lamp_syu2']}
+              , {$daichou['lamp_su2']}
+              , {$daichou['lamp_syu3']}
+              , {$daichou['lamp_su3']}
+              , {$daichou['lamp_syu4']}
+              , {$daichou['lamp_su4']}
+              , {$daichou['lamp_syu5']}
+              , {$daichou['lamp_su5']}
+              , {$daichou['lamp_syu6']}
+              , {$daichou['lamp_su6']}
+              , {$daichou['lamp_syu7']}
+              , {$daichou['lamp_su7']}
+              , {$daichou['lamp_syu8']}
+              , {$daichou['lamp_su8']}
+              , {$daichou['lamp_syu9']}
+              , {$daichou['lamp_su9']}
+              , {$daichou['lamp_syu10']}
+              , {$daichou['lamp_su10']}
+              , {$daichou['lamp_syu11']}
+              , {$daichou['lamp_su11']}
+              , {$daichou['lamp_syu12']}
+              , {$daichou['lamp_su12']}
             )
             ON CONFLICT ON CONSTRAINT rfs_t_daichou_tt_pkey
             DO UPDATE SET
@@ -221,6 +273,32 @@ class FamEditModelTT extends FamEditModel {
               ,update_busyo_cd = {$daichou['update_busyo_cd']}
               ,update_account_nm = {$daichou['update_account_nm']}
               --最終更新者追加END
+              ,mabiki_umu = {$daichou['mabiki_umu']}
+              ,taiou_dt = {$daichou['taiou_dt']}
+              ,lamp_syu1 = {$daichou['lamp_syu1']}
+              ,lamp_su1 = {$daichou['lamp_su1']}
+              ,lamp_syu2 = {$daichou['lamp_syu2']}
+              ,lamp_su2 = {$daichou['lamp_su2']}
+              ,lamp_syu3 = {$daichou['lamp_syu3']}
+              ,lamp_su3 = {$daichou['lamp_su3']}
+              ,lamp_syu4 = {$daichou['lamp_syu4']}
+              ,lamp_su4 = {$daichou['lamp_su4']}
+              ,lamp_syu5 = {$daichou['lamp_syu5']}
+              ,lamp_su5 = {$daichou['lamp_su5']}
+              ,lamp_syu6 = {$daichou['lamp_syu6']}
+              ,lamp_su6 = {$daichou['lamp_su6']}
+              ,lamp_syu7 = {$daichou['lamp_syu7']}
+              ,lamp_su7 = {$daichou['lamp_su7']}
+              ,lamp_syu8 = {$daichou['lamp_syu8']}
+              ,lamp_su8 = {$daichou['lamp_su8']}
+              ,lamp_syu9 = {$daichou['lamp_syu9']}
+              ,lamp_su9 = {$daichou['lamp_su9']}
+              ,lamp_syu10 = {$daichou['lamp_syu10']}
+              ,lamp_su10 = {$daichou['lamp_su10']}
+              ,lamp_syu11 = {$daichou['lamp_syu11']}
+              ,lamp_su11 = {$daichou['lamp_su11']}
+              ,lamp_syu12 = {$daichou['lamp_syu12']}
+              ,lamp_su12 = {$daichou['lamp_su12']}
 SQL;
     //log_message('debug', "sql=$sql");
     $this->DB_rfs->query($sql);
@@ -264,5 +342,31 @@ SQL;
       }
       $daichou['jieisen_denki']=$this->chkItem($daichou, 'jieisen_denki',1);
       $daichou['jieisen_tsuushin']=$this->chkItem($daichou, 'jieisen_tsuushin',1);
+      $daichou['mabiki_umu']=$this->chkItem($daichou, 'mabiki_umu', 1);
+      $daichou['taiou_dt']=$this->chkItem($daichou, 'taiou_dt', 2);
+      $daichou['lamp_syu1']=$this->chkItem($daichou, 'lamp_syu1', 2);
+      $daichou['lamp_su1']=$this->chkItem($daichou, 'lamp_su1', 1);
+      $daichou['lamp_syu2']=$this->chkItem($daichou, 'lamp_syu2', 2);
+      $daichou['lamp_su2']=$this->chkItem($daichou, 'lamp_su2', 1);
+      $daichou['lamp_syu3']=$this->chkItem($daichou, 'lamp_syu3', 2);
+      $daichou['lamp_su3']=$this->chkItem($daichou, 'lamp_su3', 1);
+      $daichou['lamp_syu4']=$this->chkItem($daichou, 'lamp_syu4', 2);
+      $daichou['lamp_su4']=$this->chkItem($daichou, 'lamp_su4', 1);
+      $daichou['lamp_syu5']=$this->chkItem($daichou, 'lamp_syu5', 2);
+      $daichou['lamp_su5']=$this->chkItem($daichou, 'lamp_su5', 1);
+      $daichou['lamp_syu6']=$this->chkItem($daichou, 'lamp_syu6', 2);
+      $daichou['lamp_su6']=$this->chkItem($daichou, 'lamp_su6', 1);
+      $daichou['lamp_syu7']=$this->chkItem($daichou, 'lamp_syu7', 2);
+      $daichou['lamp_su7']=$this->chkItem($daichou, 'lamp_su7', 1);
+      $daichou['lamp_syu8']=$this->chkItem($daichou, 'lamp_syu8', 2);
+      $daichou['lamp_su8']=$this->chkItem($daichou, 'lamp_su8', 1);
+      $daichou['lamp_syu9']=$this->chkItem($daichou, 'lamp_syu9', 2);
+      $daichou['lamp_su9']=$this->chkItem($daichou, 'lamp_su9', 1);
+      $daichou['lamp_syu10']=$this->chkItem($daichou, 'lamp_syu10', 2);
+      $daichou['lamp_su10']=$this->chkItem($daichou, 'lamp_su10', 1);
+      $daichou['lamp_syu11']=$this->chkItem($daichou, 'lamp_syu11', 2);
+      $daichou['lamp_su11']=$this->chkItem($daichou, 'lamp_su11', 1);
+      $daichou['lamp_syu12']=$this->chkItem($daichou, 'lamp_syu12', 2);
+      $daichou['lamp_su12']=$this->chkItem($daichou, 'lamp_su12', 1);
   }
 }
