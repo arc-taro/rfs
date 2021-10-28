@@ -424,6 +424,245 @@
           </div>
         </div>
       </div>
+      <div class=" col-sm-12">
+        <hr class="style4">
+      </div>
+      <div class=" col-sm-12 form-inline " style="float:left;margin-top:10px;">
+        <div class="form-group" style="margin:0 40px 0 15px;">
+          <p class="control-label label2">間引き有無</p>
+          <div class="radio-inline">
+            <input type="radio" value="1" ng-model="famedit.daichou.mabiki_umu" ng-disabled="!famedit.editable">
+            <p class="label5">有</p>
+          </div>
+          <div class="radio-inline">
+            <input type="radio" value="2" ng-model="famedit.daichou.mabiki_umu" ng-disabled="!famedit.editable">
+            <p class="label5">無</p>
+          </div>
+          <div class="radio-inline">
+            <input type="radio" value="0" ng-model="famedit.daichou.mabiki_umu" ng-disabled="!famedit.editable">
+            <p class="label5">不明</p>
+          </div>
+        </div>
+        <div class="form-group" style="margin-right:40px;">
+          <p class="control-label label2">間引きなし対応年月日</p>
+          <div class="input-group">
+            <input name="input" ng-model="famedit.daichou.taiou_dt" uib-datepicker-popup="yyyy-MM-dd" is-open="status5.opened" class="form-control input-sm" placeholder="" current-text="今日" clear-text="クリア" close-text="閉じる" datepicker-options="{showWeeks:false}" style="width:10em; text-align: left; color:dimgray;" ng-disabled="true">
+            <span class="input-group-btn">
+              <button type="button" class="btn btn-sm btn-default" ng-click="status5.opened = !status5.opened" style="height:35px" ng-disabled="!famedit.editable"><i class="glyphicon glyphicon-calendar"></i></button>
+            </span>
+          </div>
+        </div>
+      </div>
+      <div class=" col-sm-12" style="margin-top:15px;">
+        <h6>&nbsp;基本照明</h6>
+      </div>
+      <div class="col-sm-12 form-inline " style="float:left;margin-top:10px;">
+        <div class="form-group input-append text-left" style="margin:0 10px 0 15px;">
+          <label class="form-control-label text-center margin">
+            <p class="label">ランプ種別1</p>
+          </label>
+          <div class="form-inline">
+            <input type="text" class="form-control input-sm" ng-model="famedit.daichou.lamp_syu1" style="width:12em; text-align: left" ng-disabled="!famedit.editable">
+          </div>
+        </div>
+        <div class="form-group input-append text-left" style="margin:0 10px 0 15px;">
+          <label class="form-control-label text-center margin">
+            <p class="label">ランプ種別2</p>
+          </label>
+          <div class="form-inline">
+            <input type="text" class="form-control input-sm" ng-model="famedit.daichou.lamp_syu2" style="width:12em; text-align: left" ng-disabled="!famedit.editable">
+          </div>
+        </div>
+        <div class="form-group input-append text-left" style="margin:0 10px 0 15px;">
+          <label class="form-control-label text-center margin">
+            <p class="label">ランプ種別3</p>
+          </label>
+          <div class="form-inline">
+            <input type="text" class="form-control input-sm" ng-model="famedit.daichou.lamp_syu3" style="width:12em; text-align: left" ng-disabled="!famedit.editable">
+          </div>
+        </div>
+      </div>
+      <div class="col-sm-12 form-inline " style="float:left;margin-top:10px;">
+        <div class="form-group input-append text-left" style="margin:0 10px 0 15px; width:156px;">
+          <label class="form-control-label text-center margin">
+            <p class="label">ランプ数1</p>
+          </label>
+          <div class="form-inline">
+            <input type="number" class="form-control input-sm" ng-model="famedit.daichou.lamp_su1" style="width:6em; text-align: left" ng-disabled="!famedit.editable">
+          </div>
+        </div>
+        <div class="form-group input-append text-left" style="margin:0 10px 0 15px; width:156px;">
+          <label class="form-control-label text-center margin">
+            <p class="label">ランプ数2</p>
+          </label>
+          <div class="form-inline">
+            <input type="number" class="form-control input-sm" ng-model="famedit.daichou.lamp_su2" style="width:6em; text-align: left" ng-disabled="!famedit.editable">
+          </div>
+        </div>
+        <div class="form-group input-append text-left" style="margin:0 10px 0 15px; width:156px;">
+          <label class="form-control-label text-center margin">
+            <p class="label">ランプ数3</p>
+          </label>
+          <div class="form-inline">
+            <input type="number" class="form-control input-sm" ng-model="famedit.daichou.lamp_su3" style="width:6em; text-align: left" ng-disabled="!famedit.editable">
+          </div>
+        </div>
+      </div>
+      <div class=" col-sm-12" style="margin-top:15px;">
+        <h6>&nbsp;出入口照明</h6>
+      </div>
+      <div class="col-sm-12 form-inline " style="float:left;margin-top:10px;">
+        <div class="form-group input-append text-left" style="margin:0 10px 0 15px;">
+          <label class="form-control-label text-center margin">
+            <p class="label">ランプ種別4</p>
+          </label>
+          <div class="form-inline">
+            <input type="text" class="form-control input-sm" ng-model="famedit.daichou.lamp_syu4" style="width:12em; text-align: left" ng-disabled="!famedit.editable">
+          </div>
+        </div>
+        <div class="form-group input-append text-left" style="margin:0 10px 0 15px;">
+          <label class="form-control-label text-center margin">
+            <p class="label">ランプ種別5</p>
+          </label>
+          <div class="form-inline">
+            <input type="text" class="form-control input-sm" ng-model="famedit.daichou.lamp_syu5" style="width:12em; text-align: left" ng-disabled="!famedit.editable">
+          </div>
+        </div>
+        <div class="form-group input-append text-left" style="margin:0 10px 0 15px;">
+          <label class="form-control-label text-center margin">
+            <p class="label">ランプ種別6</p>
+          </label>
+          <div class="form-inline">
+            <input type="text" class="form-control input-sm" ng-model="famedit.daichou.lamp_syu6" style="width:12em; text-align: left" ng-disabled="!famedit.editable">
+          </div>
+        </div>
+      </div>
+      <div class="col-sm-12 form-inline " style="float:left;margin-top:10px;">
+        <div class="form-group input-append text-left" style="margin:0 10px 0 15px; width:156px;">
+          <label class="form-control-label text-center margin">
+            <p class="label">ランプ数4</p>
+          </label>
+          <div class="form-inline">
+            <input type="number" class="form-control input-sm" ng-model="famedit.daichou.lamp_su4" style="width:6em; text-align: left" ng-disabled="!famedit.editable">
+          </div>
+        </div>
+        <div class="form-group input-append text-left" style="margin:0 10px 0 15px; width:156px;">
+          <label class="form-control-label text-center margin">
+            <p class="label">ランプ数5</p>
+          </label>
+          <div class="form-inline">
+            <input type="number" class="form-control input-sm" ng-model="famedit.daichou.lamp_su5" style="width:6em; text-align: left" ng-disabled="!famedit.editable">
+          </div>
+        </div>
+        <div class="form-group input-append text-left" style="margin:0 10px 0 15px; width:156px;">
+          <label class="form-control-label text-center margin">
+            <p class="label">ランプ数6</p>
+          </label>
+          <div class="form-inline">
+            <input type="number" class="form-control input-sm" ng-model="famedit.daichou.lamp_su6" style="width:6em; text-align: left" ng-disabled="!famedit.editable">
+          </div>
+        </div>
+      </div>
+      <div class="col-sm-12 form-inline " style="float:left;margin-top:10px;">
+        <div class="form-group input-append text-left" style="margin:0 10px 0 15px;">
+          <label class="form-control-label text-center margin">
+            <p class="label">ランプ種別7</p>
+          </label>
+          <div class="form-inline">
+            <input type="text" class="form-control input-sm" ng-model="famedit.daichou.lamp_syu7" style="width:12em; text-align: left" ng-disabled="!famedit.editable">
+          </div>
+        </div>
+        <div class="form-group input-append text-left" style="margin:0 10px 0 15px;">
+          <label class="form-control-label text-center margin">
+            <p class="label">ランプ種別8</p>
+          </label>
+          <div class="form-inline">
+            <input type="text" class="form-control input-sm" ng-model="famedit.daichou.lamp_syu8" style="width:12em; text-align: left" ng-disabled="!famedit.editable">
+          </div>
+        </div>
+        <div class="form-group input-append text-left" style="margin:0 10px 0 15px;">
+          <label class="form-control-label text-center margin">
+            <p class="label">ランプ種別9</p>
+          </label>
+          <div class="form-inline">
+            <input type="text" class="form-control input-sm" ng-model="famedit.daichou.lamp_syu9" style="width:12em; text-align: left" ng-disabled="!famedit.editable">
+          </div>
+        </div>
+        <div class="form-group input-append text-left" style="margin:0 10px 0 15px;">
+          <label class="form-control-label text-center margin">
+            <p class="label">ランプ種別10</p>
+          </label>
+          <div class="form-inline">
+            <input type="text" class="form-control input-sm" ng-model="famedit.daichou.lamp_syu10" style="width:12em; text-align: left" ng-disabled="!famedit.editable">
+          </div>
+        </div>
+        <div class="form-group input-append text-left" style="margin:0 10px 0 15px;">
+          <label class="form-control-label text-center margin">
+            <p class="label">ランプ種別11</p>
+          </label>
+          <div class="form-inline">
+            <input type="text" class="form-control input-sm" ng-model="famedit.daichou.lamp_syu11" style="width:12em; text-align: left" ng-disabled="!famedit.editable">
+          </div>
+        </div>
+        <div class="form-group input-append text-left" style="margin:0 10px 0 15px;">
+          <label class="form-control-label text-center margin">
+            <p class="label">ランプ種別12</p>
+          </label>
+          <div class="form-inline">
+            <input type="text" class="form-control input-sm" ng-model="famedit.daichou.lamp_syu12" style="width:12em; text-align: left" ng-disabled="!famedit.editable">
+          </div>
+        </div>
+      </div>
+      <div class="col-sm-12 form-inline " style="float:left;margin-top:10px;">
+        <div class="form-group input-append text-left" style="margin:0 10px 0 15px; width:156px;">
+          <label class="form-control-label text-center margin">
+            <p class="label">ランプ数7</p>
+          </label>
+          <div class="form-inline">
+            <input type="number" class="form-control input-sm" ng-model="famedit.daichou.lamp_su7" style="width:6em; text-align: left" ng-disabled="!famedit.editable">
+          </div>
+        </div>
+        <div class="form-group input-append text-left" style="margin:0 10px 0 15px; width:156px;">
+          <label class="form-control-label text-center margin">
+            <p class="label">ランプ数8</p>
+          </label>
+          <div class="form-inline">
+            <input type="number" class="form-control input-sm" ng-model="famedit.daichou.lamp_su8" style="width:6em; text-align: left" ng-disabled="!famedit.editable">
+          </div>
+        </div>
+        <div class="form-group input-append text-left" style="margin:0 10px 0 15px; width:156px;">
+          <label class="form-control-label text-center margin">
+            <p class="label">ランプ数9</p>
+          </label>
+          <div class="form-inline">
+            <input type="number" class="form-control input-sm" ng-model="famedit.daichou.lamp_su9" style="width:6em; text-align: left" ng-disabled="!famedit.editable">
+          </div>
+        </div>
+        <div class="form-group input-append text-left" style="margin:0 10px 0 15px; width:156px;">
+          <label class="form-control-label text-center margin">
+            <p class="label">ランプ数10</p>
+          </label>
+          <div class="form-inline">
+            <input type="number" class="form-control input-sm" ng-model="famedit.daichou.lamp_su10" style="width:6em; text-align: left" ng-disabled="!famedit.editable">
+          </div>
+        </div>
+        <div class="form-group input-append text-left" style="margin:0 10px 0 15px; width:156px;">
+          <label class="form-control-label text-center margin">
+            <p class="label">ランプ数11</p>
+          </label>
+          <div class="form-inline">
+            <input type="number" class="form-control input-sm" ng-model="famedit.daichou.lamp_su11" style="width:6em; text-align: left" ng-disabled="!famedit.editable">
+          </div>
+        </div>
+        <div class="form-group input-append text-left" style="margin:0 10px 0 15px; width:156px;">
+          <label class="form-control-label text-center margin">
+            <p class="label">ランプ数12</p>
+          </label>
+          <div class="form-inline">
+            <input type="number" class="form-control input-sm" ng-model="famedit.daichou.lamp_su12" style="width:6em; text-align: left" ng-disabled="!famedit.editable">
+          </div>
+        </div>
+      </div>
     </div>
   </uib-tab>
   <uib-tab index="1">
