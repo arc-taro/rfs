@@ -219,6 +219,39 @@
         </table>
       </div>
       <div class="col-sm-6" style="margin-top:20px">
+        <h3 style="font-weight: bold"> 6. 気象情報収集装置（監視局）&nbsp;&nbsp;&nbsp;&nbsp;
+          <a ng-href="#/fam_main/1/{{systop.sum_ka[0].shisetsu_kbn}}/6/-1/">{{systop.sum_ka[5].cnt_all}}施設</a>
+        </h3>
+        <table class="sys table-bordered" style="font-size:12px; margin-top:-10px;">
+          <thead>
+            <tr class="active">
+              <th>設置年度</th>
+              <th>供用</th>
+              <th>休止</th>
+              <th>未登録</th>
+              <th>計</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr ng-repeat=" row_ka in systop.sum_ka">
+              <th>{{row_ka.str}}</th>
+              <td ng-class="{'small_sum' : row_ka.idx==6}">
+                <a ng-href="#/fam_main/1/{{row_ka.shisetsu_kbn}}/{{row_ka.idx}}/1/">{{row_ka.cnt_kyouyou}}</a>
+              </td>
+              <td ng-class="{'small_sum' : row_ka.idx==6}">
+                <a ng-href="#/fam_main/1/{{row_ka.shisetsu_kbn}}/{{row_ka.idx}}/0/">{{row_ka.cnt_kyuushi}}</a>
+              </td>
+              <td ng-class="{'small_sum' : row_ka.idx==6}">
+                <a ng-href="#/fam_main/1/{{row_ka.shisetsu_kbn}}/{{row_ka.idx}}/-2/">{{row_ka.cnt_noinput}}</a>
+              </td>
+              <td ng-class="{'small_sum' : row_ka.idx!=6, 'big_sum' : row_ka.idx==6}">
+                <a ng-href="#/fam_main/1/{{row_ka.shisetsu_kbn}}/{{row_ka.idx}}/-1/">{{row_ka.cnt_all}}</a>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <!-- <div class="col-sm-6" style="margin-top:20px">
         <h3 style="font-weight: bold"> 6. 冠水警報表示&nbsp;&nbsp;&nbsp;&nbsp;
           <a ng-href="#/fam_main/1/{{systop.sum_kk[0].shisetsu_kbn}}/6/-1/">{{systop.sum_kk[5].cnt_all}}施設</a>
         </h3>
@@ -250,11 +283,11 @@
             </tr>
           </tbody>
         </table>
-      </div>
+      </div> -->
     </div>
 
-    <div id="s7" class="col-sm-12">
-      <div class="col-sm-6" style="margin-top:20px">
+    <!-- <div id="s7" class="col-sm-12"> -->
+      <!-- <div class="col-sm-6" style="margin-top:20px">
         <h3 style="font-weight: bold"> 7. トンネル警報表示&nbsp;&nbsp;&nbsp;&nbsp;
           <a ng-href="#/fam_main/1/{{systop.sum_tk[0].shisetsu_kbn}}/6/-1/">{{systop.sum_tk[5].cnt_all}}施設</a>
         </h3>
@@ -320,11 +353,12 @@
           </tbody>
         </table>
       </div>
-    </div>
+     -->
+    <!-- </div> -->
 
     <div id="s9" class="col-sm-12">
       <div class="col-sm-6" style="margin-top:20px">
-        <h3 style="font-weight: bold"> 9. 気象情報収集装置（受信局）&nbsp;&nbsp;&nbsp;&nbsp;
+        <h3 style="font-weight: bold"> 7. 気象情報収集装置（受信局）&nbsp;&nbsp;&nbsp;&nbsp;
           <a ng-href="#/fam_main/1/{{systop.sum_kb[0].shisetsu_kbn}}/6/-1/">{{systop.sum_kb[5].cnt_all}}施設</a>
         </h3>
         <table class="sys table-bordered" style="font-size:12px; margin-top:-10px;">
@@ -357,7 +391,7 @@
         </table>
       </div>
       <div class="col-sm-6" style="margin-top:20px">
-        <h3 style="font-weight: bold"> 10. 気象情報収集装置（中継局）&nbsp;&nbsp;&nbsp;&nbsp;
+        <h3 style="font-weight: bold"> 8. 気象情報収集装置（中継局）&nbsp;&nbsp;&nbsp;&nbsp;
           <a ng-href="#/fam_main/1/{{systop.sum_kc[0].shisetsu_kbn}}/6/-1/">{{systop.sum_kc[5].cnt_all}}施設</a>
         </h3>
         <table class="sys table-bordered" style="font-size:12px; margin-top:-10px;">
@@ -393,7 +427,7 @@
 
     <div id="s11" class="col-sm-12">
       <div class="col-sm-6" style="margin-top:20px">
-        <h3 style="font-weight: bold"> 11. 気象情報収集装置（観測局）&nbsp;&nbsp;&nbsp;&nbsp;
+        <h3 style="font-weight: bold"> 9. 気象情報収集装置（観測局）&nbsp;&nbsp;&nbsp;&nbsp;
           <a ng-href="#/fam_main/1/{{systop.sum_kd[0].shisetsu_kbn}}/6/-1/">{{systop.sum_kd[5].cnt_all}}施設</a>
         </h3>
         <table class="sys table-bordered" style="font-size:12px; margin-top:-10px;">
@@ -426,7 +460,7 @@
         </table>
       </div>
       <div class="col-sm-6" style="margin-top:20px">
-        <h3 style="font-weight: bold"> 12. 気象情報収集装置（ITV）&nbsp;&nbsp;&nbsp;&nbsp;
+        <h3 style="font-weight: bold"> 10. 気象情報収集装置（ITV）&nbsp;&nbsp;&nbsp;&nbsp;
           <a ng-href="#/fam_main/1/{{systop.sum_ki[0].shisetsu_kbn}}/6/-1/">{{systop.sum_ki[5].cnt_all}}施設</a>
         </h3>
         <table class="sys table-bordered" style="font-size:12px; margin-top:-10px;">
@@ -462,7 +496,7 @@
 
     <div id="s13" class="col-sm-12">
       <div class="col-sm-6" style="margin-top:20px">
-        <h3 style="font-weight: bold"> 13. 道路情報板（C型）&nbsp;&nbsp;&nbsp;&nbsp;
+        <h3 style="font-weight: bold"> 11. 道路情報板（C型）&nbsp;&nbsp;&nbsp;&nbsp;
           <a ng-href="#/fam_main/1/{{systop.sum_jh[0].shisetsu_kbn}}/6/-1/">{{systop.sum_jh[5].cnt_all}}施設</a>
         </h3>
         <table class="sys table-bordered" style="font-size:12px; margin-top:-10px;">
@@ -495,7 +529,7 @@
         </table>
       </div>
       <div class="col-sm-6" style="margin-top:20px">
-        <h3 style="font-weight: bold"> 14. 遮断機&nbsp;&nbsp;&nbsp;&nbsp;
+        <h3 style="font-weight: bold"> 12. 遮断機&nbsp;&nbsp;&nbsp;&nbsp;
           <a ng-href="#/fam_main/1/{{systop.sum_sd[0].shisetsu_kbn}}/6/-1/">{{systop.sum_sd[5].cnt_all}}施設</a>
         </h3>
         <table class="sys table-bordered" style="font-size:12px; margin-top:-10px;">
@@ -556,7 +590,7 @@
       </div>
 -->
       <div class="col-sm-6" style="margin-top:20px">
-        <h3 style="font-weight: bold"> 15. トンネル&nbsp;&nbsp;&nbsp;&nbsp;
+        <h3 style="font-weight: bold"> 13. トンネル&nbsp;&nbsp;&nbsp;&nbsp;
           <a ng-href="#/fam_main/1/{{systop.sum_tt[0].shisetsu_kbn}}/6/-1/">{{systop.sum_tt[5].cnt_all}}施設</a>
         </h3>
         <table class="sys table-bordered" style="font-size:12px; margin-top:-10px;">
@@ -589,7 +623,7 @@
         </table>
       </div>
       <div class="col-sm-6" style="margin-top:20px">
-        <h3 style="font-weight: bold"> 16. 駐車公園&nbsp;&nbsp;&nbsp;&nbsp;
+        <h3 style="font-weight: bold"> 14. 駐車公園&nbsp;&nbsp;&nbsp;&nbsp;
           <a ng-href="#/fam_main/1/{{systop.sum_ck[0].shisetsu_kbn}}/6/-1/">{{systop.sum_ck[5].cnt_all}}施設</a>
         </h3>
         <table class="sys table-bordered" style="font-size:12px; margin-top:-10px;">
@@ -625,7 +659,7 @@
 
     <div id="s17" class="col-sm-12">
       <div class="col-sm-6" style="margin-top:20px">
-        <h3 style="font-weight: bold"> 17. 緑化樹木&nbsp;&nbsp;&nbsp;&nbsp;
+        <h3 style="font-weight: bold"> 15. 緑化樹木&nbsp;&nbsp;&nbsp;&nbsp;
           <a ng-href="#/fam_main/1/{{systop.sum_sk[0].shisetsu_kbn}}/6/-1/">{{systop.sum_sk[5].cnt_all}}施設</a>
         </h3>
         <table class="sys table-bordered" style="font-size:12px; margin-top:-10px;">
@@ -658,7 +692,7 @@
         </table>
       </div>
       <div class="col-sm-6" style="margin-top:20px">
-        <h3 style="font-weight: bold"> 18. 立体横断&nbsp;&nbsp;&nbsp;&nbsp;
+        <h3 style="font-weight: bold"> 16. 立体横断&nbsp;&nbsp;&nbsp;&nbsp;
           <a ng-href="#/fam_main/1/{{systop.sum_bh[0].shisetsu_kbn}}/6/-1/">{{systop.sum_bh[5].cnt_all}}施設</a>
         </h3>
         <table class="sys table-bordered" style="font-size:12px; margin-top:-10px;">
@@ -771,7 +805,7 @@
       </div>
 -->
       <div class="col-sm-6" style="margin-top:20px">
-        <h3 style="font-weight: bold"> 19. ロードヒーティング&nbsp;&nbsp;&nbsp;&nbsp;
+        <h3 style="font-weight: bold"> 17. ロードヒーティング&nbsp;&nbsp;&nbsp;&nbsp;
           <a ng-href="#/fam_main/1/{{systop.sum_rh[0].shisetsu_kbn}}/6/-1/">{{systop.sum_rh[5].cnt_all}}施設</a>
         </h3>
         <table class="sys table-bordered" style="font-size:12px; margin-top:-10px;">
@@ -1126,12 +1160,12 @@
         <div class="left_s">
           <a ng-href="#/fam_main/1/5/6/-1/">大型スノーポール</a>
         </div>
-        <div class="left_s">
+        <!-- <div class="left_s">
           <a ng-href="#/fam_main/1/22/6/-1/">冠水警報表示</a>
         </div>
         <div class="left_s">
           <a ng-href="#/fam_main/1/23/6/-1/">トンネル警報表示</a>
-        </div>
+        </div> -->
         <div class="left_s">
           <a ng-href="#/fam_main/1/6/6/-1/">気象情報（監視局）</a>
         </div>

@@ -1078,4 +1078,126 @@ EOF;
     return $result;
   }
 
+    /**
+   * 建管・出張所取得
+   *
+   * @return array
+   *         array['dogen_row'] : <br>
+   */
+  public function getDogenSyucchoujo2() {
+
+    log_message('debug', 'getDogenSyucchoujo');
+
+    $sql = <<<SQL
+SELECT
+  jsonb_set(
+    '{}'
+    , '{dogen_info}'
+    , jsonb_agg(to_jsonb(all_info))
+  ) AS dogen_row
+FROM
+  (
+    SELECT
+      d.*
+      , syucchoujo_row
+    FROM
+      (
+        SELECT
+          *
+        FROM
+          rfs_m_dogen
+        WHERE
+          dogen_cd = {$this->session['ath']['dogen_cd']}
+          OR 0 = {$this->session['ath']['dogen_cd']}
+      ) d JOIN (
+        SELECT
+          s.dogen_cd
+          , jsonb_set(
+            '{}'
+            , '{syucchoujo_info}'
+            , jsonb_agg(to_jsonb(s) - 'dogen_cd')
+          ) AS syucchoujo_row
+        FROM
+          (
+            SELECT
+              syucchoujo_cd
+              , syucchoujo_mei
+              , dogen_cd
+              , lt_lon
+              , lt_lat
+              , rb_lon
+              , rb_lat
+            FROM
+              rfs_m_syucchoujo
+            ORDER BY
+              syucchoujo_cd
+          ) AS s
+        GROUP BY
+          s.dogen_cd
+        ORDER BY
+          s.dogen_cd
+      ) AS s_row
+        ON d.dogen_cd = s_row.dogen_cd
+  ) all_info
+
+SQL;
+
+    $query = $this->DB_rfs->query($sql);
+    $result = $query->result('array');
+
+    //$r = print_r($result, true);
+    //log_message('debug', "sql=$sql");
+    //log_message('debug', "result=$r");
+
+    return $result;
+
+  }
+
+  /**
+   * 部材マスタ取得
+   *  全て取得、buzai_cdでソートのマスタ取得
+   *
+   * 引数:
+   *
+   * @return array
+   */
+  public function getBuzaiMst() {
+    log_message('debug', __METHOD__);
+    $sql= <<<EOF
+SELECT
+    *
+FROM
+  rfs_m_buzai
+ORDER BY
+  shisetsu_kbn
+  , buzai_cd
+EOF;
+    $query = $this->DB_rfs->query($sql);
+    $result = $query->result('array');
+    return $result;
+  }
+
+  /**
+   * 施設健全性マスタ取得
+   *  全て取得、buzai_cdでソートのマスタ取得
+   *
+   * 引数:
+   *
+   * @return array
+   */
+  public function getShisetsuJudgeMst() {
+    log_message('debug', __METHOD__);
+    $sql= <<<EOF
+SELECT
+    *
+FROM
+    rfs_m_shisetsu_judge
+ORDER BY
+    shisetsu_judge_nm
+EOF;
+    $query = $this->DB_rfs->query($sql);
+    $result = $query->result('array');
+    return $result;
+  }
+
 }

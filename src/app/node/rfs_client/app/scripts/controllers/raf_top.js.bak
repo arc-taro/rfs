@@ -45,21 +45,6 @@ class RaftopCtrl extends BaseCtrl {
     this.target_nendo_from = year;
     this.target_nendo_to = year;
 
-    // プルダウンチェックボックス設定
-    this.extraSettings = {
-      externalIdProp: "",
-      buttonClasses: "btn btn-default btn-xs btn-block",
-      scrollable: true,
-      scrollableHeight: "250px",
-    };
-    this.translationTexts = {
-      checkAll: "全て",
-      uncheckAll: "全て外す",
-      buttonDefaultText: "選択",
-      dynamicButtonTextSuffix: "個選択"
-    };
-    this.shisetsu_kbn_dat_model = [];
-
     // ログイン情報
     super.start(this.$http).then(() => {
 
@@ -85,6 +70,7 @@ class RaftopCtrl extends BaseCtrl {
           // this.target_nendo_to = Number(srch_fuzokubutsu.srch_done.srch.target_nendo_to);
         }
       }
+
       return this.$http({
         method: 'GET',
         url: 'api/index.php/RafTopAjax/initRafTop',
@@ -135,10 +121,6 @@ class RaftopCtrl extends BaseCtrl {
 
       // 施設区分
       this.shisetsu_kbns = json.shisetsu_kbns;
-
-      // 施設区分(選択プルダウン用)
-      this.shisetsu_kbn_dat = JSON.parse(json.shisetsu_kbns_multi.shisetsu_kbn_row);
-
       // 集計用
       this.sum_select = "";
 
@@ -334,30 +316,6 @@ class RaftopCtrl extends BaseCtrl {
       this.location('/main');
     });
   }
-
-  // 全施設＆点検データ作成
-  async createShisetsuAndCheckAll() {
-
-    // 全て必須
-    if (this.shisetsu_kbn_dat_model.length == 0) {
-      this.alert('入力エラー', '全施設附属物リストを出力する際は、「施設」が必須です');
-      return;
-    }
-    var sel_nendo = 0;
-    if (this.sum_nendo2) {
-      sel_nendo = this.sum_nendo2;
-    }
-    await this.$http({
-      method: 'POST',
-      url: 'api/index.php/SumHuzokubutsuController/requestCreateCsv',
-      data: {
-        nendo: sel_nendo,
-        sel_shisetsu_kbns: this.shisetsu_kbn_dat_model
-      }
-    });
-    this.alert('作成依頼', 'CSV作成依頼を行いました。進捗はリスト確認で行ってください。');
-  }
-
 }
 
 

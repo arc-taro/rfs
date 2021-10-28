@@ -80,7 +80,7 @@
       </div>
     </div>
     <div class="row" ng-show="raftop.ath_syozoku_cd==1">
-      <div class="col-sm-9">
+      <div class="col-sm-12">
         <div class="form-group input-append text-left" style="padding-left:170px;">
           <div class="form-inline">
             <div class="form-group">
@@ -90,21 +90,22 @@
                 <option value="">---</option>
               </select>
               <span>&nbsp;</span>
-              <div class="form-group input-append text-left zidx1000" style="margin-right:10px;">
+              <div class="form-group input-append text-left zidx1000">
                 <div>
                   <div ng-dropdown-multiselect="" options="raftop.shisetsu_kbn_dat.shisetsu_kbn_info"
                     selected-model="raftop.shisetsu_kbn_dat_model" translation-texts="raftop.translationTexts"
-                    extra-settings="raftop.extraSettings" style="height:26px; width:8em; text-align: left"
-                    class="btn-group-justified"></div>
+                    extra-settings="raftop.extraSettings" style="width:8em;" class="btn-group-justified"></div>
                 </div>
               </div>
               <span>&nbsp;</span>
-              <input type="text" class="form-control input-sm" ng-model="raftop.mail_address" />
-              <span>&nbsp;</span>
-
               <div class="form-group input-append text-center" style="margin-left:15px;">
-                <button type="button" class="btn btn-xs btn-info btn-sm" ng-click="raftop.createShisetsuAndCheckAll()">
+                <button type="button" class="btn btn-sm btn-info text-center"
+                  ng-click="raftop.createShisetsuAndCheckAll()">
                   <span class="glyphicon glyphicon-file"></span>&nbsp;全施設附属物リスト作成</button>
+              </div>
+              <span>&nbsp;</span>
+              <div class="form-group input-append text-center" style="margin-left:15px;">
+                <a ng-href="#/csv_list" type="button" class="btn btn-sm btn-success text-center">リスト確認</a>
               </div>
             </div>
           </div>
@@ -323,7 +324,7 @@
       </div>
 
     </div>
-    <div class="col-sm-12" style="padding-left:151px; padding-top: 10px;">
+    <div class="col-sm-12" style="padding-left:151px; padding-top: 10px;margin-bottom: 50px;">
       <div class="col-sm-6" style="margin-top:20px">
         <h3 style="font-weight: bold"> 5. スノーポール&nbsp;&nbsp;&nbsp;&nbsp;
           <a ng-click="raftop.linkMain(raftop.sum_yh[0].shisetsu_kbn,0,0);"
@@ -376,7 +377,7 @@
         </div>
       </div>
 
-      <div class="col-sm-6" style="margin-top:20px">
+      <!-- <div class="col-sm-6" style="margin-top:20px">
         <h3 style="font-weight: bold"> 6. 冠水警報表示&nbsp;&nbsp;&nbsp;&nbsp;
           <a ng-click="raftop.linkMain(raftop.sum_kk[0].shisetsu_kbn,0,0);"
             style="cursor:pointer;">{{raftop.sum_kk[5].cnt}}施設</a>
@@ -482,67 +483,68 @@
           </div>
         </div>
       </div>
-    </div>
+    </div> -->
 
-    <!--</div>-->
+      <!--</div>-->
 
-    <div style="top:42px;left:0px;z-index:1000; width:151px;" class="sidebar-nav affix container-fluid background"
-      role="complementary">
-      <div class="form-group row" style="margin:10px 0 10px 0;">
-        <label class=" form-control-label margin">
-          <p class="label3">建設管理部</p>
-        </label>
-        <select class="form-control input-sm" ng-model="raftop.dogen"
-          ng-options="row as row.dogen_mei for row in raftop.dogen_syucchoujo_dat.dogen_info"
-          ng-change="raftop.chgDogen()" required>
-        </select>
-      </div>
-      <div class="form-group row" style="margin:0 0 20px 0;">
-        <label class=" form-control-label margin">
-          <p class="label3">管理区域（出張所）</p>
-        </label>
-        <select ng-show="raftop.ath_syozoku_cd==1 || raftop.ath_syozoku_cd==2 || raftop.ath_syozoku_cd==10001"
-          class="form-control input-sm" ng-model="raftop.syucchoujo"
-          ng-options="row as row.syucchoujo_mei for row in raftop.dogen.syucchoujo_row.syucchoujo_info"
-          ng-change="raftop.chgSyucchoujo()" required>
-          <option value="">全て</option>
-        </select>
-        <select ng-show="raftop.ath_syozoku_cd==3 || raftop.ath_syozoku_cd==4" class="form-control input-sm"
-          ng-model="raftop.syucchoujo"
-          ng-options="row as row.syucchoujo_mei for row in raftop.dogen.syucchoujo_row.syucchoujo_info"
-          ng-change="raftop.chgSyucchoujo()" required>
-        </select>
-      </div>
+      <div style="top:42px;left:0px;z-index:1000; width:151px;" class="sidebar-nav affix container-fluid background"
+        role="complementary">
+        <div class="form-group row" style="margin:10px 0 10px 0;">
+          <label class=" form-control-label margin">
+            <p class="label3">建設管理部</p>
+          </label>
+          <select class="form-control input-sm" ng-model="raftop.dogen"
+            ng-options="row as row.dogen_mei for row in raftop.dogen_syucchoujo_dat.dogen_info"
+            ng-change="raftop.chgDogen()" required>
+          </select>
+        </div>
+        <div class="form-group row" style="margin:0 0 20px 0;">
+          <label class=" form-control-label margin">
+            <p class="label3">管理区域（出張所）</p>
+          </label>
+          <select ng-show="raftop.ath_syozoku_cd==1 || raftop.ath_syozoku_cd==2 || raftop.ath_syozoku_cd==10001"
+            class="form-control input-sm" ng-model="raftop.syucchoujo"
+            ng-options="row as row.syucchoujo_mei for row in raftop.dogen.syucchoujo_row.syucchoujo_info"
+            ng-change="raftop.chgSyucchoujo()" required>
+            <option value="">全て</option>
+          </select>
+          <select ng-show="raftop.ath_syozoku_cd==3 || raftop.ath_syozoku_cd==4" class="form-control input-sm"
+            ng-model="raftop.syucchoujo"
+            ng-options="row as row.syucchoujo_mei for row in raftop.dogen.syucchoujo_row.syucchoujo_info"
+            ng-change="raftop.chgSyucchoujo()" required>
+          </select>
+        </div>
 
-      <div style="margin:20px 0 10px 0;">
-        <a ng-href="#/kenzen_sum" class="sys_btn">健全性
-          <br>集計</a>
-      </div>
-    </div>
-  </div>
-
-  <div id="footerdamy">
-  </div>
-  <div id="footerArea2">
-    <div class="row" style="margin-top : 8px">
-      <div class="col-sm-3" style="text-align:center;">
-        <a ng-href="#/sys_top" type="button" class="btn btn-xs btn-inverse btn-sm">
-          <span class="glyphicon glyphicon-arrow-left"></span>&nbsp;道路施設管理システムTOPに戻る</a>
-      </div>
-      <div class="col-sm-2" style="text-align:center;"
-        ng-show="raftop.ath_syozoku_cd <= 2 || raftop.ath_syozoku_cd == 10001 || (raftop.ath_syozoku_cd == 3 && (raftop.ath_syucchoujo_cd==raftop.mng_syucchoujo_cd))">
-        <a ng-href="#/raf_target" type="button" class="btn btn-xs btn-warning btn-sm">【点検対象施設登録】</a>
+        <!-- <div style="margin:20px 0 10px 0;">
+          <a ng-href="#/kenzen_sum" class="sys_btn">健全性
+            <br>集計</a>
+        </div> -->
       </div>
     </div>
-  </div>
-</div>
 
-<!-- 読込み中オーバーレイ -->
-<div class="waitOverlay " ng-show="raftop.waitLoadOverlay ">
-  <div style="width:100vw;height:100vh;font-size:60px;display: table-cell;text-align: center;vertical-align: middle; ">
-    <i class="fa fa-spinner fa-spin fa-3x fa-fw "></i>
-    <br>
-    <span>集計中です。
-      <br />しばらくお待ちください。</span>
+    <div id="footerdamy">
+    </div>
+    <div id="footerArea2">
+      <div class="row" style="margin-top : 8px">
+        <div class="col-sm-3" style="text-align:center;">
+          <a ng-href="#/sys_top" type="button" class="btn btn-xs btn-inverse btn-sm">
+            <span class="glyphicon glyphicon-arrow-left"></span>&nbsp;道路施設管理システムTOPに戻る</a>
+        </div>
+        <div class="col-sm-2" style="text-align:center;"
+          ng-show="raftop.ath_syozoku_cd <= 2 || raftop.ath_syozoku_cd == 10001 || (raftop.ath_syozoku_cd == 3 && (raftop.ath_syucchoujo_cd==raftop.mng_syucchoujo_cd))">
+          <a ng-href="#/raf_target" type="button" class="btn btn-xs btn-warning btn-sm">【点検対象施設登録】</a>
+        </div>
+      </div>
+    </div>
   </div>
-</div>
+
+  <!-- 読込み中オーバーレイ -->
+  <div class="waitOverlay " ng-show="raftop.waitLoadOverlay ">
+    <div
+      style="width:100vw;height:100vh;font-size:60px;display: table-cell;text-align: center;vertical-align: middle; ">
+      <i class="fa fa-spinner fa-spin fa-3x fa-fw "></i>
+      <br>
+      <span>集計中です。
+        <br />しばらくお待ちください。</span>
+    </div>
+  </div>

@@ -1,5 +1,5 @@
 <?php
-
+ini_set('memory_limit', '5000M');
 function getForOutDataYH($db,$cd) {
 
   $sql=<<<EOF

@@ -61,4 +61,5 @@ require("./scripts/directives/nextfocus.js");
 require("./scripts/directives/md-checkbox.js");
 require("./scripts/directives/date-time-picker.js");
 require("./scripts/controllers/snow_removal.js");
+require("./scripts/controllers/csv_list.js");
 

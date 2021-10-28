@@ -34,8 +34,6 @@ class SystopCtrl extends BaseCtrl {
     // ログイン情報
     super.start(this.$http).then(() => {
 
-      console.log('ARCテスト05311610');
-
       // session情報を保持
       this.ath_dogen_cd = this.session.ath.dogen_cd;
       this.ath_syucchoujo_cd = this.session.ath.syucchoujo_cd;

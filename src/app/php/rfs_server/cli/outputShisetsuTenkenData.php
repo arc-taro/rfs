@@ -1,128 +1,85 @@
 <?php
-defined('BASEPATH') OR exit('No direct script access allowed');
+require_once 'db.php';
 
-/**
- * H28年度点検集計モデル
- * 該当データを全て取得
- *
- * @access public
- * @package Model
- */
-class SumHuzokubutsuModels extends CI_Model {
+function getHuzokubutsuAll($nendo,$shisetsu_kbn,$DB_rfs){
 
-  protected $DB_rfs;  // rfsコネクション
+  ini_set('memory_limit', '1024M');
 
-  /**
-    * コンストラクタ
-    */
-  public function __construct() {
-    parent::__construct();
-    $this->DB_rfs = $this->load->database('rfs',TRUE);
-    if ($this->DB_rfs->conn_id === FALSE) {
-      log_message('debug', 'データベースに接続されていません');
-      return;
-    }
+  // 施設区分判定
+  // SQL条件追加
+  if ($shisetsu_kbn==4) {
+    // 防雪柵
+    $where="AND c.struct_idx > 0";
+  } else {
+    // 防雪柵以外
+    $where="";
   }
 
-  /***
-   * 点検データを取得する。
-   * 1行1施設とし、点検データ(部材以下)がJSON形式でぶら下がる。
-   *
-   * 引数:$get
-   *      shisetsu_kbn 施設区分
-   *      nendo 選択年度
-   *
-   * 戻り値 $ret 取得データ配列
-   ***/
-  public function getHuzokubutsuAll($get){
-
-    ini_set('memory_limit', '1024M');
-
-    // 施設区分判定
-    // SQL条件追加
-    if ($get['shisetsu_kbn']==4) {
-      // 防雪柵
-      $where="AND c.struct_idx > 0";
-//      $where="AND c.struct_idx = 0";
-} else {
-      // 防雪柵以外
-      $where="";
-    }
-
-/*     $nendo=$get['nendo'];
-    $nendo_plus = $nendo+1;
-    $shisetsu_kbn=$get['shisetsu_kbn'];
- */
-
-$shisetsu_kbn=$get['shisetsu_kbn'];
 // ********************************************************************
 // 20190109
 // 点検が増えてきたため年度を復帰
 // また、本庁権限でのみ使用する機能なため、全道分出力することとする
 // ********************************************************************
-if ($get['nendo']) {
-  $nendo=$get['nendo'];
-  $nendo_plus = $nendo+1;
-  $target_start_dt = "{$nendo}-04-01";
-  $target_end_dt = "{$nendo_plus}-04-01";
-  $where_range=" AND (c.target_dt >= '{$target_start_dt}' AND c.target_dt < '{$target_end_dt}')";
+if ($nendo > 0) {
+$nendo_plus = $nendo+1;
+$target_start_dt = "{$nendo}-04-01";
+$target_end_dt = "{$nendo_plus}-04-01";
+$where_range=" AND (c.target_dt >= '{$target_start_dt}' AND c.target_dt < '{$target_end_dt}')";
 } else {
-  $where_range=" AND c.target_dt < '2016-04-01'";
+//$where_range=" AND c.target_dt < '2016-04-01'";
+$where_range="";
 }
-//$where_range="";
-
 // 年度を外し、出張所が選択されている場合は出張所単位
 // 出張所が全ての場合建管単位で取るように修正
-$where_hani = "";
-if ($get['shisetsu_kbn']==4) { // 一時的に防雪柵の場合に建管を
-  if ($this->session['mngarea']['syucchoujo_cd']==0) {
-    $where_hani = "AND dogen_cd = ".$this->session['mngarea']['dogen_cd'];
-  } else{
-    $where_hani = "AND syucchoujo_cd = ".$this->session['mngarea']['syucchoujo_cd'];
-  }
+/* $where_range = "";
+if ($this->session['mngarea']['syucchoujo_cd']==0) {
+$where_range = "AND dogen_cd = ".$this->session['mngarea']['dogen_cd'];
+} else{
+$where_range = "AND syucchoujo_cd = ".$this->session['mngarea']['syucchoujo_cd'];
 }
+*/
 
 $sql= <<<EOF
-  WITH shisetsu AS (
-    SELECT
-        *
-    FROM
-      rfs_m_shisetsu
-    WHERE
-      shisetsu_kbn = $shisetsu_kbn
-      AND (haishi is null OR haishi = '')
-      $where_hani
-  )
-  --, shisetsu AS (
-  --  SELECT
-  --      s_tmp1.*
-  --  FROM
-  --    s_tmp s_tmp1 JOIN (
-  --      SELECT
-  --          sno
-  --        , max(shisetsu_ver) shisetsu_ver
-  --      FROM
-  --        s_tmp
-  --      GROUP BY
-  --        sno
-  --    ) s_tmp2
-  --      ON s_tmp1.sno = s_tmp2.sno
-  --      AND s_tmp1.shisetsu_ver = s_tmp2.shisetsu_ver
-  --)
-  
-  
-  --, c_tmp_narrow AS (
-  --  SELECT
-  --      c.*
-  --  FROM
-  --    rfs_t_chk_main c JOIN shisetsu s
-  --      ON c.sno = s.sno
-  --  WHERE
-  --    '$nendo-04-01' <= c.target_dt
-  --    AND c.target_dt < '$nendo_plus-04-01'
-  --    $where
-  --)
-  
+WITH shisetsu AS (
+  SELECT
+      *
+  FROM
+    rfs_m_shisetsu
+  WHERE
+    shisetsu_kbn = $shisetsu_kbn
+    AND (haishi is null OR haishi = '')
+--    $where_range
+)
+--, shisetsu AS (
+--  SELECT
+--      s_tmp1.*
+--  FROM
+--    s_tmp s_tmp1 JOIN (
+--      SELECT
+--          sno
+--        , max(shisetsu_ver) shisetsu_ver
+--      FROM
+--        s_tmp
+--      GROUP BY
+--        sno
+--    ) s_tmp2
+--      ON s_tmp1.sno = s_tmp2.sno
+--      AND s_tmp1.shisetsu_ver = s_tmp2.shisetsu_ver
+--)
+
+
+--, c_tmp_narrow AS (
+--  SELECT
+--      c.*
+--  FROM
+--    rfs_t_chk_main c JOIN shisetsu s
+--      ON c.sno = s.sno
+--  WHERE
+--    '$nendo-04-01' <= c.target_dt
+--    AND c.target_dt < '$nendo_plus-04-01'
+--    $where
+--)
+
 --  , c_tmp_narrow AS ( 
 --    SELECT
 --        c.* 
@@ -132,650 +89,480 @@ $sql= <<<EOF
 --        AND c.chk_times=0
 --  ) 
 , c_only_narrow AS ( 
-  SELECT
-      c.* 
-  FROM
-    shisetsu s JOIN rfs_t_chk_main c 
-      ON s.sno = c.sno
-  WHERE TRUE
-    $where_range
-    $where
+SELECT
+    c.* 
+FROM
+  shisetsu s JOIN rfs_t_chk_main c 
+    ON s.sno = c.sno
+WHERE TRUE
+  $where_range
+  
 ) 
 , c_tmp_narrow AS ( 
-  SELECT
-      c_tmp1.* 
-  FROM
-    c_only_narrow c_tmp1 JOIN ( 
-      SELECT
-          sno
-        , max(chk_times) chk_times 
-      FROM
-        c_only_narrow 
-      GROUP BY
-        sno
-    ) c_tmp2 
-      ON c_tmp1.sno = c_tmp2.sno 
-      AND c_tmp1.chk_times = c_tmp2.chk_times
-) 
-  , h_tmp_narrow AS (
-    SELECT 
-      * 
-    FROM 
-      rfs_t_chk_huzokubutsu 
---    WHERE 
---      phase IN (2,3,5)
-  )
-  , c_h_join AS (
-    SELECT
-        h.*
-    FROM
-    h_tmp_narrow h
-      INNER JOIN c_tmp_narrow
-        ON h.chk_mng_no = c_tmp_narrow.chk_mng_no
-  )
-  , c_b_join AS (
-    SELECT
-        b.*
-    FROM
-      rfs_t_chk_buzai b
-      INNER JOIN c_tmp_narrow
-        ON b.chk_mng_no = c_tmp_narrow.chk_mng_no
-  )
-  , c_tk_join AS (
-    SELECT
-        tk.*
-    FROM
-      rfs_t_chk_tenken_kasyo tk
-      INNER JOIN c_tmp_narrow
-        ON tk.chk_mng_no = c_tmp_narrow.chk_mng_no
-  )
-  , c_sn_join AS (
-    SELECT
-        sn.*
-    FROM
-      rfs_t_chk_sonsyou sn
-      INNER JOIN c_tmp_narrow
-        ON sn.chk_mng_no = c_tmp_narrow.chk_mng_no
-  )
-  , c_pct_join AS (
-    SELECT
-        pct.*
-    FROM
-      rfs_t_chk_picture pct
-      INNER JOIN c_tmp_narrow
-        ON pct.chk_mng_no = c_tmp_narrow.chk_mng_no
-  )
-  , h_tmp AS (
-    SELECT
-        h_tmp1.*
-    FROM
-      c_h_join h_tmp1 JOIN (
-        SELECT
-            chk_mng_no
-          , max(rireki_no) rireki_no
-        FROM
-          c_h_join
-        GROUP BY
-          chk_mng_no
-      ) h_tmp2
-        ON h_tmp1.chk_mng_no = h_tmp2.chk_mng_no
-        AND h_tmp1.rireki_no = h_tmp2.rireki_no
-  )
-  , b_tmp AS (
-    SELECT
-        b_tmp1.*
-      , CASE
-        WHEN b_tmp1.necessity_measures = 2
-        THEN '否'
-        ELSE '要'
-        END necessity_measures_str
-      , sj1.shisetsu_judge_nm check_buzai_judge_nm
-      , sj1.shisetsu_judge_nm check_buzai_judge_nm2
-      , sj2.shisetsu_judge_nm measures_buzai_judge_nm
-    FROM
-      c_b_join b_tmp1 JOIN (
-        SELECT
-            chk_mng_no
-          , max(rireki_no) rireki_no
-        FROM
-          c_b_join
-        GROUP BY
-          chk_mng_no
-      ) b_tmp2
-        ON b_tmp1.chk_mng_no = b_tmp2.chk_mng_no
-        AND b_tmp1.rireki_no = b_tmp2.rireki_no
-      LEFT JOIN rfs_m_shisetsu_judge sj1
-        ON b_tmp1.check_buzai_judge = sj1.shisetsu_judge
-      LEFT JOIN rfs_m_shisetsu_judge sj2
-        ON b_tmp1.measures_buzai_judge = sj2.shisetsu_judge
-  )
-  , tk_tmp AS (
-    SELECT
-        tk_tmp1.*
-    FROM
-      c_tk_join tk_tmp1 JOIN (
-        SELECT
-            chk_mng_no
-          , max(rireki_no) rireki_no
-        FROM
-          c_tk_join
-        GROUP BY
-          chk_mng_no
-      ) tk_tmp2
-        ON tk_tmp1.chk_mng_no = tk_tmp2.chk_mng_no
-        AND tk_tmp1.rireki_no = tk_tmp2.rireki_no
-  )
-  , sn_tmp_before AS (
-    SELECT
-        sn_tmp1.*
-    FROM
-      c_sn_join sn_tmp1 JOIN (
-        SELECT
-            chk_mng_no
-          , max(rireki_no) rireki_no
-        FROM
-          c_sn_join
-        GROUP BY
-          chk_mng_no
-      ) sn_tmp2
-        ON sn_tmp1.chk_mng_no = sn_tmp2.chk_mng_no
-        AND sn_tmp1.rireki_no = sn_tmp2.rireki_no
-  )
-  , sn_tmp AS (
-    SELECT
-        sn_row.chk_mng_no
-      , jsonb_agg(
-        ARRAY [ buzai_cd :: text , buzai_detail_cd ::text , tenken_kasyo_cd :: text , sonsyou_naiyou_cd :: text , CASE WHEN check_before = 0 THEN '未' WHEN check_before = 1 THEN 'a' WHEN check_before = 2 THEN 'c' WHEN check_before = 3 THEN 'e' ELSE '-' END , CASE WHEN measures_after = 0 THEN '未' WHEN measures_after = 1 THEN 'a' WHEN measures_after = 2 THEN 'c' WHEN measures_after = 3 THEN 'e' ELSE '-' END ]
-        ORDER BY
-          sn_row.chk_mng_no
-          , sn_row.buzai_cd
-          , sn_row.buzai_detail_cd
-          , sn_row.tenken_kasyo_cd
-          , sn_row.sonsyou_naiyou_cd
-      ) sn_tmp_list
-    FROM
-      sn_tmp_before sn_row
-    GROUP BY
-      sn_row.chk_mng_no
-  )
-  , pic_tmp_1 AS (
-    SELECT
-        pic_tmp1.*
-    FROM
-      c_pct_join pic_tmp1 JOIN (
-        SELECT
-            chk_mng_no
-          , buzai_cd
-          , buzai_detail_cd
-          , tenken_kasyo_cd
-          , max(picture_cd) picture_cd
-        FROM
-          c_pct_join
-        GROUP BY
-          chk_mng_no
-          , buzai_cd
-          , buzai_detail_cd
-          , tenken_kasyo_cd
-      ) pic_tmp2
-        ON pic_tmp1.chk_mng_no = pic_tmp2.chk_mng_no
-        AND pic_tmp1.buzai_cd = pic_tmp2.buzai_cd
-        AND pic_tmp1.buzai_detail_cd = pic_tmp2.buzai_detail_cd
-        AND pic_tmp1.tenken_kasyo_cd = pic_tmp2.tenken_kasyo_cd
-        AND pic_tmp1.picture_cd = pic_tmp2.picture_cd
-    WHERE
-      status = 0
-  )
-  , pic_tmp_2 AS (
-    SELECT
-        pic_tmp1.*
-    FROM
-      c_pct_join pic_tmp1 JOIN (
-        SELECT
-            chk_mng_no
-          , buzai_cd
-          , buzai_detail_cd
-          , tenken_kasyo_cd
-          , max(picture_cd) picture_cd
-        FROM
-          c_pct_join
-        GROUP BY
-          chk_mng_no
-          , buzai_cd
-          , buzai_detail_cd
-          , tenken_kasyo_cd
-      ) pic_tmp2
-        ON pic_tmp1.chk_mng_no = pic_tmp2.chk_mng_no
-        AND pic_tmp1.buzai_cd = pic_tmp2.buzai_cd
-        AND pic_tmp1.buzai_detail_cd = pic_tmp2.buzai_detail_cd
-        AND pic_tmp1.tenken_kasyo_cd = pic_tmp2.tenken_kasyo_cd
-        AND pic_tmp1.picture_cd = pic_tmp2.picture_cd
-    WHERE
-      status = 1
-  )
-  , c_tmp AS (
-    SELECT
-        c_tmp_narrow.*
-      , sn_tmp.sn_tmp_list sn_list
-    FROM
-      c_tmp_narrow LEFT JOIN sn_tmp
-        ON c_tmp_narrow.chk_mng_no = sn_tmp.chk_mng_no
-  )
-  , tk_sn AS (
-    SELECT
-        tk_sn_tmp.chk_mng_no
-      , tk_sn_tmp.buzai_cd
-      , json_agg(tk_sn_tmp) tk_sn_list
-    FROM
-      (
-        SELECT
-            tk.*
-          , CASE
-            WHEN tk.taisyou_umu = 0
-            THEN '有'
-            ELSE '無'
-            END taisyou_umu_str
-          , CASE
-            WHEN tk.check_status = 1
-            THEN '済'
-            ELSE '未'
-            END check_status_str
-          , sj1.shisetsu_judge_nm check_judge_nm
-          , sj2.shisetsu_judge_nm measures_judge_nm
-          , msn.sonsyou_naiyou_nm
-          , p1.PATH path1
-          , p2.PATH path2
-          , p1.picture_nm picture_nm1
-          , p2.picture_nm picture_nm2
-        FROM
-          tk_tmp tk
-          LEFT JOIN pic_tmp_1 p1
-            ON tk.chk_mng_no = p1.chk_mng_no
-            AND tk.buzai_cd = p1.buzai_cd
-            AND tk.buzai_detail_cd = p1.buzai_detail_cd
-            AND tk.tenken_kasyo_cd = p1.tenken_kasyo_cd
-          LEFT JOIN pic_tmp_2 p2
-            ON tk.chk_mng_no = p2.chk_mng_no
-            AND tk.buzai_cd = p2.buzai_cd
-            AND tk.buzai_detail_cd = p2.buzai_detail_cd
-            AND tk.tenken_kasyo_cd = p2.tenken_kasyo_cd
-          LEFT JOIN rfs_m_sonsyou_naiyou msn
-            ON tk.sonsyou_naiyou_cd = msn.sonsyou_naiyou_cd
-          LEFT JOIN rfs_m_shisetsu_judge sj1
-            ON tk.check_judge = sj1.shisetsu_judge
-          LEFT JOIN rfs_m_shisetsu_judge sj2
-            ON tk.measures_judge = sj2.shisetsu_judge
-        ORDER BY
-          tk.chk_mng_no
-          , tk.buzai_cd
-          , tk.buzai_detail_cd
-          , tk.tenken_kasyo_cd
-      ) tk_sn_tmp
-    GROUP BY
-      tk_sn_tmp.chk_mng_no
-      , tk_sn_tmp.buzai_cd
-  )
-  , b_tk_sn AS (
-    SELECT
-        b_tk_sn_tmp.chk_mng_no
-      , json_agg(b_tk_sn_tmp) b_tk_sn_tmp_list
-    FROM
-      (
-        SELECT
-            b_tmp.*
-          , tk_sn.tk_sn_list
-        FROM
-          b_tmp
-          LEFT JOIN tk_sn
-            ON b_tmp.chk_mng_no = tk_sn.chk_mng_no
-            AND b_tmp.buzai_cd = tk_sn.buzai_cd
-        ORDER BY
-          b_tmp.chk_mng_no
-          , b_tmp.buzai_cd
-      ) b_tk_sn_tmp
-    GROUP BY
-      b_tk_sn_tmp.chk_mng_no
-  --  ORDER BY
-  --    b_tk_sn_tmp.chk_mng_no
-  )
-  , bs_cnt AS (
+SELECT
+    c_tmp1.* 
+FROM
+  c_only_narrow c_tmp1 JOIN ( 
     SELECT
         sno
-      , count(*) - 1 bscnt
+      , max(chk_times) chk_times 
     FROM
-      rfs_m_bousetsusaku_shichu
+      c_only_narrow 
     GROUP BY
       sno
-  --  ORDER BY
-  --    sno
-  )
+  ) c_tmp2 
+    ON c_tmp1.sno = c_tmp2.sno 
+    AND c_tmp1.chk_times = c_tmp2.chk_times
+) 
+, h_tmp_narrow AS (
+  SELECT 
+    * 
+  FROM 
+    rfs_t_chk_huzokubutsu 
+--    WHERE 
+--      phase IN (2,3,5)
+)
+, c_h_join AS (
   SELECT
-      s.*
-    , sk.shisetsu_kbn_nm
-    , skei.shisetsu_keishiki_nm
-    , d.dogen_mei
-    , syu.syucchoujo_mei
-    , r.rosen_nm
-    , CASE
-      WHEN s.lr = 0
-      THEN 'L'
-      WHEN s.lr = 1
-      THEN 'R'
-      WHEN s.lr = 2
-      THEN 'C'
-      WHEN s.lr = 3
-      THEN 'LR'
-      END lr_str
-    , CASE
-      WHEN s.substitute_road = 0
-      THEN '有'
-      WHEN s.substitute_road = 1
-      THEN '無'
-      ELSE '-'
-      END substitute_road_str
-    , CASE
-      WHEN s.emergency_road = 1
-      THEN '第1次'
-      WHEN s.emergency_road = 2
-      THEN '第2次'
-      WHEN s.emergency_road = 3
-      THEN '第3次'
-      ELSE '-'
-      END emergency_road_str
-    , CASE
-      WHEN s.motorway = 0
-      THEN '自専道'
-      WHEN s.motorway = 1
-      THEN '一般道'
-      ELSE '-'
-      END motorway_str
-    , c.chk_mng_no
-    , c.chk_times
-    , c.struct_idx
-    , c.target_dt
-    , c.sn_list
-    , h.chk_mng_no h_chk_mng_no
-    , h.chk_dt
-    , h.chk_company
-    , h.chk_person
-    , h.investigate_dt
-    , h.investigate_company
-    , h.investigate_person
-    , h.surface
-    , CASE
-      WHEN h.surface = 1
-      THEN '亜鉛メッキ'
-      WHEN h.surface = 2
-      THEN '亜鉛メッキ＋塗装'
-      WHEN h.surface = 3
-      THEN 'さび止め＋塗装'
-      END surface_str
-    , h.part_notable_chk
-    , h.reason_notable_chk
-    , h.special_report
-    , h.phase
-    , h.check_shisetsu_judge
-    , sj1.shisetsu_judge_nm check_shisetsu_judge_nm
-    , sj1.shisetsu_judge_nm check_shisetsu_judge_nm2
-    , h.syoken
-    , h.update_dt
-    , h.measures_shisetsu_judge
-    , sj2.shisetsu_judge_nm measures_shisetsu_judge_nm
-    , h.create_account
-    , bs.struct_no_s
-    , bs.struct_no_e
-    , bs_c.bscnt
-    , b_tk_sn.b_tk_sn_tmp_list b_tk_sn_list
+      h.*
   FROM
-    shisetsu s JOIN c_tmp c
-      ON s.sno = c.sno LEFT JOIN h_tmp h
-        ON c.chk_mng_no = h.chk_mng_no LEFT JOIN b_tk_sn
-          ON h.chk_mng_no = b_tk_sn.chk_mng_no
-    LEFT JOIN rfs_m_shisetsu_kbn sk
-      ON s.shisetsu_kbn = sk.shisetsu_kbn
-    LEFT JOIN rfs_m_shisetsu_keishiki skei
-      ON s.shisetsu_kbn = skei.shisetsu_kbn
-      AND s.shisetsu_keishiki_cd = skei.shisetsu_keishiki_cd
-    LEFT JOIN rfs_m_dogen d
-      ON s.dogen_cd = d.dogen_cd
-    LEFT JOIN rfs_m_syucchoujo syu
-      ON s.syucchoujo_cd = syu.syucchoujo_cd
-    LEFT JOIN rfs_m_rosen r
-      ON s.rosen_cd = r.rosen_cd
+  h_tmp_narrow h
+    INNER JOIN c_tmp_narrow
+      ON h.chk_mng_no = c_tmp_narrow.chk_mng_no
+)
+, c_b_join AS (
+  SELECT
+      b.*
+  FROM
+    rfs_t_chk_buzai b
+    INNER JOIN c_tmp_narrow
+      ON b.chk_mng_no = c_tmp_narrow.chk_mng_no
+)
+, c_tk_join AS (
+  SELECT
+      tk.*
+  FROM
+    rfs_t_chk_tenken_kasyo tk
+    INNER JOIN c_tmp_narrow
+      ON tk.chk_mng_no = c_tmp_narrow.chk_mng_no
+)
+, c_sn_join AS (
+  SELECT
+      sn.*
+  FROM
+    rfs_t_chk_sonsyou sn
+    INNER JOIN c_tmp_narrow
+      ON sn.chk_mng_no = c_tmp_narrow.chk_mng_no
+)
+, c_pct_join AS (
+  SELECT
+      pct.*
+  FROM
+    rfs_t_chk_picture pct
+    INNER JOIN c_tmp_narrow
+      ON pct.chk_mng_no = c_tmp_narrow.chk_mng_no
+)
+, h_tmp AS (
+  SELECT
+      h_tmp1.*
+  FROM
+    c_h_join h_tmp1 JOIN (
+      SELECT
+          chk_mng_no
+        , max(rireki_no) rireki_no
+      FROM
+        c_h_join
+      GROUP BY
+        chk_mng_no
+    ) h_tmp2
+      ON h_tmp1.chk_mng_no = h_tmp2.chk_mng_no
+      AND h_tmp1.rireki_no = h_tmp2.rireki_no
+)
+, b_tmp AS (
+  SELECT
+      b_tmp1.*
+    , CASE
+      WHEN b_tmp1.necessity_measures = 2
+      THEN '否'
+      ELSE '要'
+      END necessity_measures_str
+    , sj1.shisetsu_judge_nm check_buzai_judge_nm
+    , sj1.shisetsu_judge_nm check_buzai_judge_nm2
+    , sj2.shisetsu_judge_nm measures_buzai_judge_nm
+  FROM
+    c_b_join b_tmp1 JOIN (
+      SELECT
+          chk_mng_no
+        , max(rireki_no) rireki_no
+      FROM
+        c_b_join
+      GROUP BY
+        chk_mng_no
+    ) b_tmp2
+      ON b_tmp1.chk_mng_no = b_tmp2.chk_mng_no
+      AND b_tmp1.rireki_no = b_tmp2.rireki_no
     LEFT JOIN rfs_m_shisetsu_judge sj1
-      ON h.check_shisetsu_judge = sj1.shisetsu_judge
+      ON b_tmp1.check_buzai_judge = sj1.shisetsu_judge
     LEFT JOIN rfs_m_shisetsu_judge sj2
-      ON h.measures_shisetsu_judge = sj2.shisetsu_judge
-    LEFT JOIN rfs_m_bousetsusaku_shichu bs
-      ON c.sno = bs.sno
-      AND c.struct_idx = bs.struct_idx
-    LEFT JOIN bs_cnt bs_c
-      ON c.sno = bs_c.sno                           --ORDER BY
-                                                    --  s.syucchoujo_cd
-                                                    --  , s.shisetsu_cd
-                                                    --  , c.struct_idx
+      ON b_tmp1.measures_buzai_judge = sj2.shisetsu_judge
+)
+, tk_tmp AS (
+  SELECT
+      tk_tmp1.*
+  FROM
+    c_tk_join tk_tmp1 JOIN (
+      SELECT
+          chk_mng_no
+        , max(rireki_no) rireki_no
+      FROM
+        c_tk_join
+      GROUP BY
+        chk_mng_no
+    ) tk_tmp2
+      ON tk_tmp1.chk_mng_no = tk_tmp2.chk_mng_no
+      AND tk_tmp1.rireki_no = tk_tmp2.rireki_no
+)
+, sn_tmp_before AS (
+  SELECT
+      sn_tmp1.*
+  FROM
+    c_sn_join sn_tmp1 JOIN (
+      SELECT
+          chk_mng_no
+        , max(rireki_no) rireki_no
+      FROM
+        c_sn_join
+      GROUP BY
+        chk_mng_no
+    ) sn_tmp2
+      ON sn_tmp1.chk_mng_no = sn_tmp2.chk_mng_no
+      AND sn_tmp1.rireki_no = sn_tmp2.rireki_no
+)
+, sn_tmp AS (
+  SELECT
+      sn_row.chk_mng_no
+    , jsonb_agg(
+      ARRAY [ buzai_cd :: text , buzai_detail_cd ::text , tenken_kasyo_cd :: text , sonsyou_naiyou_cd :: text , CASE WHEN check_before = 0 THEN '未' WHEN check_before = 1 THEN 'a' WHEN check_before = 2 THEN 'c' WHEN check_before = 3 THEN 'e' ELSE '-' END , CASE WHEN measures_after = 0 THEN '未' WHEN measures_after = 1 THEN 'a' WHEN measures_after = 2 THEN 'c' WHEN measures_after = 3 THEN 'e' ELSE '-' END ]
+      ORDER BY
+        sn_row.chk_mng_no
+        , sn_row.buzai_cd
+        , sn_row.buzai_detail_cd
+        , sn_row.tenken_kasyo_cd
+        , sn_row.sonsyou_naiyou_cd
+    ) sn_tmp_list
+  FROM
+    sn_tmp_before sn_row
+  GROUP BY
+    sn_row.chk_mng_no
+)
+, pic_tmp_1 AS (
+  SELECT
+      pic_tmp1.*
+  FROM
+    c_pct_join pic_tmp1 JOIN (
+      SELECT
+          chk_mng_no
+        , buzai_cd
+        , buzai_detail_cd
+        , tenken_kasyo_cd
+        , max(picture_cd) picture_cd
+      FROM
+        c_pct_join
+      GROUP BY
+        chk_mng_no
+        , buzai_cd
+        , buzai_detail_cd
+        , tenken_kasyo_cd
+    ) pic_tmp2
+      ON pic_tmp1.chk_mng_no = pic_tmp2.chk_mng_no
+      AND pic_tmp1.buzai_cd = pic_tmp2.buzai_cd
+      AND pic_tmp1.buzai_detail_cd = pic_tmp2.buzai_detail_cd
+      AND pic_tmp1.tenken_kasyo_cd = pic_tmp2.tenken_kasyo_cd
+      AND pic_tmp1.picture_cd = pic_tmp2.picture_cd
+  WHERE
+    status = 0
+)
+, pic_tmp_2 AS (
+  SELECT
+      pic_tmp1.*
+  FROM
+    c_pct_join pic_tmp1 JOIN (
+      SELECT
+          chk_mng_no
+        , buzai_cd
+        , buzai_detail_cd
+        , tenken_kasyo_cd
+        , max(picture_cd) picture_cd
+      FROM
+        c_pct_join
+      GROUP BY
+        chk_mng_no
+        , buzai_cd
+        , buzai_detail_cd
+        , tenken_kasyo_cd
+    ) pic_tmp2
+      ON pic_tmp1.chk_mng_no = pic_tmp2.chk_mng_no
+      AND pic_tmp1.buzai_cd = pic_tmp2.buzai_cd
+      AND pic_tmp1.buzai_detail_cd = pic_tmp2.buzai_detail_cd
+      AND pic_tmp1.tenken_kasyo_cd = pic_tmp2.tenken_kasyo_cd
+      AND pic_tmp1.picture_cd = pic_tmp2.picture_cd
+  WHERE
+    status = 1
+)
+, c_tmp AS (
+  SELECT
+      c_tmp_narrow.*
+    , sn_tmp.sn_tmp_list sn_list
+  FROM
+    c_tmp_narrow LEFT JOIN sn_tmp
+      ON c_tmp_narrow.chk_mng_no = sn_tmp.chk_mng_no
+)
+, tk_sn AS (
+  SELECT
+      tk_sn_tmp.chk_mng_no
+    , tk_sn_tmp.buzai_cd
+    , json_agg(tk_sn_tmp) tk_sn_list
+  FROM
+    (
+      SELECT
+          tk.*
+        , CASE
+          WHEN tk.taisyou_umu = 0
+          THEN '有'
+          ELSE '無'
+          END taisyou_umu_str
+        , CASE
+          WHEN tk.check_status = 1
+          THEN '済'
+          ELSE '未'
+          END check_status_str
+        , sj1.shisetsu_judge_nm check_judge_nm
+        , sj2.shisetsu_judge_nm measures_judge_nm
+        , msn.sonsyou_naiyou_nm
+        , p1.PATH path1
+        , p2.PATH path2
+        , p1.picture_nm picture_nm1
+        , p2.picture_nm picture_nm2
+      FROM
+        tk_tmp tk
+        LEFT JOIN pic_tmp_1 p1
+          ON tk.chk_mng_no = p1.chk_mng_no
+          AND tk.buzai_cd = p1.buzai_cd
+          AND tk.buzai_detail_cd = p1.buzai_detail_cd
+          AND tk.tenken_kasyo_cd = p1.tenken_kasyo_cd
+        LEFT JOIN pic_tmp_2 p2
+          ON tk.chk_mng_no = p2.chk_mng_no
+          AND tk.buzai_cd = p2.buzai_cd
+          AND tk.buzai_detail_cd = p2.buzai_detail_cd
+          AND tk.tenken_kasyo_cd = p2.tenken_kasyo_cd
+        LEFT JOIN rfs_m_sonsyou_naiyou msn
+          ON tk.sonsyou_naiyou_cd = msn.sonsyou_naiyou_cd
+        LEFT JOIN rfs_m_shisetsu_judge sj1
+          ON tk.check_judge = sj1.shisetsu_judge
+        LEFT JOIN rfs_m_shisetsu_judge sj2
+          ON tk.measures_judge = sj2.shisetsu_judge
+      ORDER BY
+        tk.chk_mng_no
+        , tk.buzai_cd
+        , tk.buzai_detail_cd
+        , tk.tenken_kasyo_cd
+    ) tk_sn_tmp
+  GROUP BY
+    tk_sn_tmp.chk_mng_no
+    , tk_sn_tmp.buzai_cd
+)
+, b_tk_sn AS (
+  SELECT
+      b_tk_sn_tmp.chk_mng_no
+    , json_agg(b_tk_sn_tmp) b_tk_sn_tmp_list
+  FROM
+    (
+      SELECT
+          b_tmp.*
+        , tk_sn.tk_sn_list
+      FROM
+        b_tmp
+        LEFT JOIN tk_sn
+          ON b_tmp.chk_mng_no = tk_sn.chk_mng_no
+          AND b_tmp.buzai_cd = tk_sn.buzai_cd
+      ORDER BY
+        b_tmp.chk_mng_no
+        , b_tmp.buzai_cd
+    ) b_tk_sn_tmp
+  GROUP BY
+    b_tk_sn_tmp.chk_mng_no
+--  ORDER BY
+--    b_tk_sn_tmp.chk_mng_no
+)
+, bs_cnt AS (
+  SELECT
+      sno
+    , count(*) - 1 bscnt
+  FROM
+    rfs_m_bousetsusaku_shichu
+  GROUP BY
+    sno
+--  ORDER BY
+--    sno
+)
+SELECT
+    s.*
+  , sk.shisetsu_kbn_nm
+  , skei.shisetsu_keishiki_nm
+  , d.dogen_mei
+  , syu.syucchoujo_mei
+  , r.rosen_nm
+  , CASE
+    WHEN s.lr = 0
+    THEN 'L'
+    WHEN s.lr = 1
+    THEN 'R'
+    WHEN s.lr = 2
+    THEN 'C'
+    WHEN s.lr = 3
+    THEN 'LR'
+    END lr_str
+  , CASE
+    WHEN s.substitute_road = 0
+    THEN '有'
+    WHEN s.substitute_road = 1
+    THEN '無'
+    ELSE '-'
+    END substitute_road_str
+  , CASE
+    WHEN s.emergency_road = 1
+    THEN '第1次'
+    WHEN s.emergency_road = 2
+    THEN '第2次'
+    WHEN s.emergency_road = 3
+    THEN '第3次'
+    ELSE '-'
+    END emergency_road_str
+  , CASE
+    WHEN s.motorway = 0
+    THEN '自専道'
+    WHEN s.motorway = 1
+    THEN '一般道'
+    ELSE '-'
+    END motorway_str
+  , c.chk_mng_no
+  , c.chk_times
+  , c.struct_idx
+  , c.target_dt
+  , c.sn_list
+  , h.chk_mng_no h_chk_mng_no
+  , h.chk_dt
+  , h.chk_company
+  , h.chk_person
+  , h.investigate_dt
+  , h.investigate_company
+  , h.investigate_person
+  , h.surface
+  , CASE
+    WHEN h.surface = 1
+    THEN '亜鉛メッキ'
+    WHEN h.surface = 2
+    THEN '亜鉛メッキ＋塗装'
+    WHEN h.surface = 3
+    THEN 'さび止め＋塗装'
+    END surface_str
+  , h.part_notable_chk
+  , h.reason_notable_chk
+  , h.special_report
+  , h.phase
+  , h.check_shisetsu_judge
+  , sj1.shisetsu_judge_nm check_shisetsu_judge_nm
+  , sj1.shisetsu_judge_nm check_shisetsu_judge_nm2
+  , h.syoken
+  , h.update_dt
+  , h.measures_shisetsu_judge
+  , sj2.shisetsu_judge_nm measures_shisetsu_judge_nm
+  , h.create_account
+  , bs.struct_no_s
+  , bs.struct_no_e
+  , bs_c.bscnt
+  , b_tk_sn.b_tk_sn_tmp_list b_tk_sn_list
+FROM
+  shisetsu s JOIN c_tmp c
+    ON s.sno = c.sno LEFT JOIN h_tmp h
+      ON c.chk_mng_no = h.chk_mng_no LEFT JOIN b_tk_sn
+        ON h.chk_mng_no = b_tk_sn.chk_mng_no
+  LEFT JOIN rfs_m_shisetsu_kbn sk
+    ON s.shisetsu_kbn = sk.shisetsu_kbn
+  LEFT JOIN rfs_m_shisetsu_keishiki skei
+    ON s.shisetsu_kbn = skei.shisetsu_kbn
+    AND s.shisetsu_keishiki_cd = skei.shisetsu_keishiki_cd
+  LEFT JOIN rfs_m_dogen d
+    ON s.dogen_cd = d.dogen_cd
+  LEFT JOIN rfs_m_syucchoujo syu
+    ON s.syucchoujo_cd = syu.syucchoujo_cd
+  LEFT JOIN rfs_m_rosen r
+    ON s.rosen_cd = r.rosen_cd
+  LEFT JOIN rfs_m_shisetsu_judge sj1
+    ON h.check_shisetsu_judge = sj1.shisetsu_judge
+  LEFT JOIN rfs_m_shisetsu_judge sj2
+    ON h.measures_shisetsu_judge = sj2.shisetsu_judge
+  LEFT JOIN rfs_m_bousetsusaku_shichu bs
+    ON c.sno = bs.sno
+    AND c.struct_idx = bs.struct_idx
+  LEFT JOIN bs_cnt bs_c
+    ON c.sno = bs_c.sno                           --ORDER BY
+                                                  --  s.syucchoujo_cd
+                                                  --  , s.shisetsu_cd
+                                                  --  , c.struct_idx
 EOF;
 //log_message("debug",$sql);
-    $query = $this->DB_rfs->query($sql);
-    $result = $query->result('array');
-    return $result;
+  $result = $DB_rfs->query($sql);
+  //$result = $query->result('array');
+  //print_r($result);
+  return $result;
+}
+
+function getJsonTenken($data){
+  $json_data = [];
+  foreach($data as $row){
+    $sno = $row['sno'];
+    $struct_idx = $row['struct_idx'];
+    array_push($json_data , array('sno'=>$sno , 'struct_idx'=>$struct_idx , 'shisetsu_json'=>json_encode($row)));
   }
+  return $json_data;
+}
 
-  /***
-   * 点検データの整形
-   * 1施設の点検データをNDS提供EXCELの仕様に合わせ整形する。
-   * 引数:$shisetsu_row
-   *      含まれるデータ:施設基本情報
-   *                  点検管理main情報
-   *                  点検 施設情報
-   *                  点検 部材以下の情報(JSON形式)
-   * 戻り値 1行の配列データ
-   ***/
-  public function shapePerShisetsu($shisetsu_row) {
-    //log_message("debug","shapePerShisetsu");
-
-    $res = array();
-    // データの展開
-    foreach ($shisetsu_row as $key => $val) {
-      // 部材以下のJSON形式データを配列化
-      if ($key=="b_tk_sn_list") {
-        $b_tk_sn=json_decode($val,true,JSON_NUMERIC_CHECK);
-        //log_message("debug", print_r($b_tk_sn,true));
-        if ($b_tk_sn){
-          $this->setOrLaterBuzai($b_tk_sn, $res);
-        }
-      // 点検にぶら下がる全損傷
-      } else if ($key=="sn_list") {
-        $tenken_kasyo_all_sonsyou=json_decode($val,true);
-        if ($tenken_kasyo_all_sonsyou) {
-          $this->setAllSonsyou($tenken_kasyo_all_sonsyou, $res);
-        }
-      } else {
-        // 施設と1対1の情報についてはこちらで保持
-        $res[$key]=$val;
-      }
-    }
-//確認用
-    //log_message("debug", print_r($res,true));
-    return $res;
+function insertTmp($json_data,$DB_rfs){
+  foreach($json_data as $item){
+    $sno = $item['sno'];
+    $struct_idx = $item['struct_idx'];
+    $shisetsu_json = $item['shisetsu_json'];
+    $sql=<<<EOD
+            insert into
+              rfs_t_output_csv_tenken_tmp(
+                    sno
+                    , struct_idx
+                    , shisetsu_json
+                )
+                values(
+                    $sno
+                    , $struct_idx
+                    , '$shisetsu_json'
+                );
+EOD;
+    $DB_rfs->query($sql);
   }
+}
 
-  /***
-   * 部材以下データの整形
-   * 1施設にぶら下がる部材以下データ配列をNDS提供EXCELの仕様に合わせ整形する。
-   *
-   * 引数:$data
-   *      含まれるデータ:部材情報
-   *                  部材にぶら下がる点検箇所配列
-   *     $arr
-   *      戻す値 NDS提供EXCELに合わせセットする
-   *      整形した1行の配列データ
-   ***/
-  protected function setOrLaterBuzai($data, &$arr) {
-    //log_message("debug","setOrLaterBuzai");
-
-    // 部材ループ
-    foreach ($data as $buzai) {
-      $buzai_cd = $buzai['buzai_cd']; // 部材コード保持
-//      log_message("debug","------------------------------------>部材コード:".$buzai_cd);
-
-      // 部材内
-      foreach ($buzai as $key => $val) {
-        // 点検箇所配列
-        if ($key=="tk_sn_list") {
-          $this->setTenkenKasyo($val, $arr);
-        } else {
-          // 部材の情報
-          $arr["${key}_${buzai_cd}"]=$val;
-        }
-      }
-    }
-  }
-
-  /***
-   * 全損傷データの整形
-   * 1施設にぶら下がる全損傷データ配列をNDS提供EXCELの仕様に合わせ整形する。
-   *
-   * 引数:$data
-   *      含まれるデータ:全損傷情報
-   *     $arr
-   *      戻す値 NDS提供EXCELに合わせセットする
-   *      整形した1行の配列データ
-   ***/
-  protected function setAllSonsyou($data, &$arr){
-    //log_message("debug","setAllSonsyou");
-    foreach ($data as $item) {
-//      $buzai_cd=$item['buzai_cd'];
-//      $buzai_detail_cd=$item['buzai_detail_cd'];
-//      $tenken_kasyo_cd=$item['tenken_kasyo_cd'];
-//      $sonsyou_naiyou_cd=$item['sonsyou_naiyou_cd'];
-//      $arr["check_before_str_${buzai_cd}_${buzai_detail_cd}_${tenken_kasyo_cd}_${sonsyou_naiyou_cd}"]=$item['check_before_str'];
-//      $arr["measures_after_str_${buzai_cd}_${buzai_detail_cd}_${tenken_kasyo_cd}_${sonsyou_naiyou_cd}"]=$item['measures_after_str'];
-      $buzai_cd=$item[0];
-      $buzai_detail_cd=$item[1];
-      $tenken_kasyo_cd=$item[2];
-      $sonsyou_naiyou_cd=$item[3];
-      $arr["check_before_str_${buzai_cd}_${buzai_detail_cd}_${tenken_kasyo_cd}_${sonsyou_naiyou_cd}"]=$item[4];
-      $arr["measures_after_str_${buzai_cd}_${buzai_detail_cd}_${tenken_kasyo_cd}_${sonsyou_naiyou_cd}"]=$item[5];
-    }
-  }
-
-  /***
-   * 点検箇所および損傷データの整形
-   * 1施設にぶら下がる点検箇所データ配列と全損傷をNDS提供EXCELの仕様に合わせ整形する。
-   *
-   * 引数:$data
-   *      含まれるデータ:点検箇所情報
-   *                  点検箇所毎の全損傷情報
-   *     $arr
-   *      戻す値 NDS提供EXCELに合わせセットする
-   *      整形した1行の配列データ
-   ***/
-  protected function setTenkenKasyo($data, &$arr){
-
-    $chk_sonsyou = "";        // 点検時健全性Ⅱ以上の損傷を保持
-    $measure_sonsyou = "";    // 措置後健全性Ⅱ以上の損傷を保持
-    $chk_pic_nm = "";         // 点検時健全性Ⅱ以上の写真名(番号のみ)を保持
-    $measure_pic_nm = "";     // 措置後健全性Ⅱ以上の写真名(番号のみ)を保持
-
-    // 損傷と写真は部材毎に集計
-    $chk_sonsyous=array();
-    $chk_pictures=array();
-    $measure_sonsyous=array();
-    $chk_sonsyou="";
-    $chk_picture="";
-    $measure_sonsyou="";
-    $last_measures_dt = null;
-
-    // 点検箇所ループ
-    foreach ($data as $tenken_kasyo) {
-
-      $buzai_cd=$tenken_kasyo['buzai_cd'];
-      $buzai_detail_cd=$tenken_kasyo['buzai_detail_cd'];
-      $tenken_kasyo_cd=$tenken_kasyo['tenken_kasyo_cd'];
-
-      /*** 点検 ***/
-      // 損傷・写真は健全性Ⅱ以上を列挙する(部材単位)
-      if ($tenken_kasyo["check_judge"] >= 2) {
-        $chk_sonsyou=$tenken_kasyo["sonsyou_naiyou_nm"];
-        $chk_picture=$tenken_kasyo["picture_nm1"];
-        // 保持配列に無ければセットする
-        if (array_search($chk_sonsyou, $chk_sonsyous) === false) {
-          array_push($chk_sonsyous,$chk_sonsyou);
-        }
-        if (array_search($chk_picture, $chk_pictures) === false) {
-          array_push($chk_pictures,$chk_picture);
-        }
-      }
-      /*** 措置後 ***/
-      if ($tenken_kasyo["measures_judge"] >= 2) {
-        $measure_sonsyou=$tenken_kasyo["sonsyou_naiyou_nm"];
-        // 保持配列に無ければセットする
-        if (array_search($measure_sonsyou, $measure_sonsyous) === false) {
-          array_push($measure_sonsyous,$measure_sonsyou);
-        }
-      }
-      /*** 措置日 ***/ // 最新を保持
-      if ($tenken_kasyo["measures_dt"] && $tenken_kasyo["measures_dt"] > $last_measures_dt) {
-        $last_measures_dt = $tenken_kasyo["measures_dt"];
-      }
-      // 点検箇所内ループ
-      foreach ($tenken_kasyo as $key => $val) {
-        $arr["${key}_${buzai_cd}_${buzai_detail_cd}_${tenken_kasyo_cd}"]=$val;
-      }
-    }
-
-    // 損傷と写真番号について1絡むに「、」区切りでセット
-    /*** 点検時損傷内容 ***/
-    $tmp="";
-    foreach ($chk_sonsyous as $chk_sonsyou) {
-      if ($tmp!="") {
-        $tmp.="、";
-      }
-      $tmp.=$chk_sonsyou;
-    }
-    $arr["check_sonsyou_naiyou_nm_${buzai_cd}"]=$tmp;
-    //log_message("debug", print_r($tmp,true));
-    /*** 点検時写真番号 ***/
-    $tmp="";
-    foreach ($chk_pictures as $chk_picture) {
-      if ($tmp!="") {
-        $tmp.="、";
-      }
-      $tmp.=$chk_picture;
-    }
-    $arr["picture_nm_${buzai_cd}"]=$tmp;
-    //log_message("debug", print_r($tmp,true));
-    /*** 措置後損傷内容 ***/
-    $tmp="";
-    foreach ($measure_sonsyous as $measure_sonsyou) {
-      if ($tmp!="") {
-        $tmp.="、";
-      }
-      $tmp.=$measure_sonsyou;
-    }
-    $arr["measures_sonsyou_naiyou_nm_${buzai_cd}"]=$tmp;
-    //log_message("debug", print_r($tmp,true));
-    /*** 最新の措置日 ***/
-    $arr["measures_dt_${buzai_cd}"]=$last_measures_dt;
-    //log_message("debug", print_r($tmp,true));
-  }
-
-  /**
-   * CSVを出力する
-   *
-   * @param array $outarr
-   */
-  public function outputListCsvHead($file,$shisetsu_kbn) {
-    log_message('debug', __METHOD__);
-    $fields = [];
-    try {
-      // ヘッダー
+/**
+ * CSVヘッダ取得
+ */
+function getTenkenCsvHead($shisetsu_kbn){
+// ヘッダー
       // 基本情報
       if ($shisetsu_kbn == 4) {
         // 防雪柵の場合は支柱番号を追加
-        $export_csv_title_kihon = array('シリアル番号','施設名','形式','管理番号','No.○/総記録枚数','開始','～','終了','路線番号','路線名','市町村','字番','緯度','経度','測点','横断区分','代替路の有無','緊急輸送道路','自専道or一般道','占用物件(名称)','建設管理部','出張所','点検実施年月日','点検員 会社名','点検員 氏名','調査実施年月日','調査員 会社名','調査員 氏名');
+        //$export_csv_title_kihon = array('施設名','形式','管理番号','No.○/総記録枚数','開始','～','終了','路線番号','路線名','市町村','字番','緯度','経度','測点','横断区分','代替路の有無','緊急輸送道路','自専道or一般道','占用物件(名称)','建設管理部','出張所','点検実施年月日','点検員 会社名','点検員 氏名','調査実施年月日','調査員 会社名','調査員 氏名');
+        $export_csv_title_kihon = array('No.○/総記録枚数','開始','～','終了','点検実施年月日','点検員 会社名','点検員 氏名','調査実施年月日','調査員 会社名','調査員 氏名');
       } else {
-        $export_csv_title_kihon = array('シリアル番号','施設名','形式','管理番号','路線番号','路線名','市町村','字番','緯度','経度','測点','横断区分','代替路の有無','緊急輸送道路','自専道or一般道','占用物件(名称)','建設管理部','出張所','点検実施年月日','点検員 会社名','点検員 氏名','調査実施年月日','調査員 会社名','調査員 氏名');
+        // $export_csv_title_kihon = array('施設名','形式','管理番号','路線番号','路線名','市町村','字番','緯度','経度','測点','横断区分','代替路の有無','緊急輸送道路','自専道or一般道','占用物件(名称)','建設管理部','出張所','点検実施年月日','点検員 会社名','点検員 氏名','調査実施年月日','調査員 会社名','調査員 氏名');
+        $export_csv_title_kihon = array('点検実施年月日','点検員 会社名','点検員 氏名','調査実施年月日','調査員 会社名','調査員 氏名');
       }
 
       // 損傷情報
@@ -796,38 +583,56 @@ EOF;
       }
 
         $export_csv_title = array_merge($export_csv_title_kihon, $export_csv_title_sonsyou);
+
       foreach( $export_csv_title as $key => $val ){
         $export_csv_title_arr[] = mb_convert_encoding($val, 'SJIS', 'UTF-8');
       }
-      //$csv_out .= implode(",",$export_csv_title_arr)."\n";
-      fputcsv($file, $export_csv_title_arr);
+      return $export_csv_title_arr;
+}
 
+/**
+   * CSV項目名取得
+   *
+   * @param array $outarr
+   */
+  function getTenkenCsvFields($shisetsu_kbn,$db) {
+    $fields = [];
+    try {
       // 出力する項目
       // 基本情報
       if ($shisetsu_kbn == 4) {
         // 防雪柵の場合は支柱インデックスを追加
-        $fields_kihon = array('sno',
-							                'shisetsu_kbn_nm',
-                              'shisetsu_keishiki_nm',
-                              'shisetsu_cd',
-                              'struct_idx/bscnt',
+        // $fields_kihon = array('shisetsu_kbn_nm',
+        //                       'shisetsu_keishiki_nm',
+        //                       'shisetsu_cd',
+        //                       'struct_idx/bscnt',
+        //                       'struct_no_s',
+        //                       '～',
+        //                       'struct_no_e',
+        //                       'rosen_cd',
+        //                       'rosen_nm',
+        //                       'shityouson',
+        //                       'azaban',
+        //                       'lat',
+        //                       'lon',
+        //                       'sp',
+        //                       'lr_str',
+        //                       'substitute_road_str',
+        //                       'emergency_road_str',
+        //                       'motorway_str',
+        //                       'senyou',
+        //                       'dogen_mei',
+        //                       'syucchoujo_mei',
+        //                       'chk_dt',
+        //                       'chk_company',
+        //                       'chk_person',
+        //                       'investigate_dt',
+        //                       'investigate_company',
+        //                       'investigate_person');
+        $fields_kihon = array('struct_idx/bscnt',
                               'struct_no_s',
                               '～',
                               'struct_no_e',
-                              'rosen_cd',
-                              'rosen_nm',
-                              'shityouson',
-                              'azaban',
-                              'lat',
-                              'lon',
-                              'sp',
-                              'lr_str',
-                              'substitute_road_str',
-                              'emergency_road_str',
-                              'motorway_str',
-                              'senyou',
-                              'dogen_mei',
-                              'syucchoujo_mei',
                               'chk_dt',
                               'chk_company',
                               'chk_person',
@@ -835,30 +640,35 @@ EOF;
                               'investigate_company',
                               'investigate_person');
       } else {
-      $fields_kihon = array('sno',
-							              'shisetsu_kbn_nm',
-                            'shisetsu_keishiki_nm',
-                            'shisetsu_cd',
-                            'rosen_cd',
-                            'rosen_nm',
-                            'shityouson',
-                            'azaban',
-                            'lat',
-                            'lon',
-                            'sp',
-                            'lr_str',
-                            'substitute_road_str',
-                            'emergency_road_str',
-                            'motorway_str',
-                            'senyou',
-                            'dogen_mei',
-                            'syucchoujo_mei',
-                            'chk_dt',
-                            'chk_company',
-                            'chk_person',
-                            'investigate_dt',
-                            'investigate_company',
-                            'investigate_person');
+      // $fields_kihon = array('shisetsu_kbn_nm',
+      //                       'shisetsu_keishiki_nm',
+      //                       'shisetsu_cd',
+      //                       'rosen_cd',
+      //                       'rosen_nm',
+      //                       'shityouson',
+      //                       'azaban',
+      //                       'lat',
+      //                       'lon',
+      //                       'sp',
+      //                       'lr_str',
+      //                       'substitute_road_str',
+      //                       'emergency_road_str',
+      //                       'motorway_str',
+      //                       'senyou',
+      //                       'dogen_mei',
+      //                       'syucchoujo_mei',
+      //                       'chk_dt',
+      //                       'chk_company',
+      //                       'chk_person',
+      //                       'investigate_dt',
+      //                       'investigate_company',
+      //                       'investigate_person');
+        $fields_kihon = array('chk_dt',
+                              'chk_company',
+                              'chk_person',
+                              'investigate_dt',
+                              'investigate_company',
+                              'investigate_person');
       }
       // 附属物毎の健全性の診断
       $fields_huzokubutsu = array('check_shisetsu_judge_nm',
@@ -876,7 +686,7 @@ EOF;
                              'reason_notable_chk',
                              'special_report');
       // 損傷情報
-      $result = $this->getSonsyouCd($shisetsu_kbn);
+      $result = getSonsyouCd($shisetsu_kbn,$db);
 
       $fields_buzai_default = array('check_buzai_judge_nm_' => 1,
                             'check_sonsyou_naiyou_nm_' => 1,
@@ -966,24 +776,6 @@ EOF;
     return $fields;
   }
 
-
-  public function outputListCsvRowData($file,$fields,$item){
-    $export_arr = array();
-    foreach( $fields as $field ) {
-      if($field == 'struct_idx/bscnt') {
-        $export_arr[$field] = mb_convert_encoding($item['struct_idx'] . '/' . $item['bscnt'], 'SJIS', 'UTF-8');
-      } else if($field == '～') {
-        $export_arr[$field] = mb_convert_encoding('～', 'SJIS', 'UTF-8');
-      } else if( !isset($item[$field]) ){
-        $export_arr[$field]="";
-      } else if( preg_match('/judge/',$field) ){
-        $export_arr[$field] = mb_convert_encoding($item[$field], 'SJIS-WIN', 'UTF-8');
-      } else {
-        $export_arr[$field] = mb_convert_encoding($item[$field], 'SJIS', 'UTF-8');
-      }
-    }
-    fputcsv($file, $export_arr);
-  }
   /**
     * 部材コード、部材詳細コード、点検箇所コード、損傷内容コードの取得
     *   引数のshisetsu_kbnから各コードを取得する。
@@ -991,8 +783,7 @@ EOF;
     * @param integer shisetsu_kbn
     * @return array 各コード情報
   */
-  protected function getSonsyouCd($shisetsu_kbn){
-    log_message('debug', __METHOD__);
+  function getSonsyouCd($shisetsu_kbn,$db){
 
     $sql= <<<EOF
 SELECT
@@ -1065,58 +856,6 @@ ORDER BY
   shisetsu_kbn
 EOF;
 
-    $query = $this->DB_rfs->query($sql);
-    $result = $query->result('array');
+    $result = $db->query($sql);
     return json_decode($result[0]['buzai_info'],true);
   }
-
-  // CSV作成依頼処理
-  public function requestCreateCsv($post) {
-    log_message('debug', __METHOD__);
-    log_message('debug', print_r($post,true));
-
-    $nendo=$post['nendo'];
-    $shisetsu_kbn_arr=$post['sel_shisetsu_kbns'];
-    $request_group = $this->getRequestGroup();
-
-    // 施設区分毎に登録
-    for ($i=0;$i<count($shisetsu_kbn_arr);$i++) {
-      $shisetsu_kbn=$shisetsu_kbn_arr[$i]['id'];
-      $sql= <<<SQL
-          insert into rfs_t_management_create_csv (
-            request_group
-            ,syurui_kbn
-            , nendo
-            , shisetsu_kbn
-            , request_dt
-            , file_exec_dt
-            , zip_dt
-            , zip_file_nm
-          )
-          values(
-            $request_group
-            , 1
-            , $nendo
-            , $shisetsu_kbn
-            , NOW()
-            , NULL
-            , NULL
-            , NULL
-          );
-SQL;
-      $this->DB_rfs->query($sql);
-    }
-  }
-  
-  protected function getRequestGroup(){
-    log_message('debug', __METHOD__);
-    $sql= <<<EOF
-        SELECT NEXTVAL('rfs_t_management_create_csv_request_group_seq') request_group;
-EOF;
-    $query = $this->DB_rfs->query($sql);
-    $result = $query->result('array');
-    return $result[0]['request_group'];
-  }
-
-}
-

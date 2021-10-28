@@ -96,6 +96,11 @@ module.exports.angApp = angular
         controller: 'SrCsvCtrl',
         controllerAs: 'srcsv'
       })
+      .when('/csv_list', {
+        templateUrl: 'views/csv_list.html',
+        controller: 'CsvListCtrl',
+        controllerAs: 'csvlst'
+      })
       .otherwise({
         redirectTo: '/'
       });

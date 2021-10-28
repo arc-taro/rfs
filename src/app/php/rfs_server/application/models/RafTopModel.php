@@ -394,14 +394,26 @@ EOF;
     public function getShisetsuKbnFormulti() {
       log_message('debug', __METHOD__);
       $sql= <<<EOF
-select
-  jsonb_set(
-  '{}'
-  , '{shisetsu_kbn_info}'
-  , jsonb_agg(to_jsonb(s) - 'sort_no' )
-) AS shisetsu_kbn_row
-from
-(select shisetsu_kbn as id, shisetsu_kbn_nm as label, shisetsu_kbn, sort_no from rfs_m_shisetsu_kbn order by sort_no) s
+      SELECT
+      jsonb_set( 
+      '{}'
+      , '{shisetsu_kbn_info}'
+      , jsonb_agg(to_jsonb(s) - 'sort_no')
+    )         AS shisetsu_kbn_row 
+  FROM
+    ( 
+      SELECT
+            shisetsu_kbn    AS id
+          , shisetsu_kbn_nm AS label
+          , shisetsu_kbn
+          , sort_no 
+        FROM
+          rfs_m_shisetsu_kbn 
+        WHERE
+          shisetsu_kbn <= 5 
+        ORDER BY
+          sort_no
+    ) s;
 EOF;
       $query = $this->DB_rfs->query($sql);
       $result = $query->result('array');

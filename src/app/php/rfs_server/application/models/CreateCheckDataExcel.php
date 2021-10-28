@@ -11,6 +11,11 @@ require_once __DIR__ . '/../libraries/phpExcel/MultisheetExcelWrapper.php';
  * @property SchCheck $SchCheck
  */
 class CreateCheckDataExcel extends CI_Model {
+
+    // サーバー側に変更
+    const DIR_EXCEL_TMP = APPPATH . 'libraries/phpExcel/results/';
+    const FONT = __DIR__ . "/../libraries/fonts/VL-Gothic-Regular.ttf";
+
     const OUTPUT_XLS = 0;
     const OUTPUT_XLSX = 1;
     const PICTURE_STATUS_CHECK = 0;
@@ -38,7 +43,7 @@ class CreateCheckDataExcel extends CI_Model {
      * @var string
      */
     public $picture_root;
-    public $included_sheets = ['basic', 'photo', 'damage', 'figure'];
+    public $included_sheets = ['basic', 'photo', 'damage', 'figure' ,'sankou'];
     /**
      * 防雪柵の最初の支柱のみ出力（開発用）
      * @var bool
@@ -705,6 +710,7 @@ EOF;
     protected function edit_check_data($sno, $chk_mng_no, $struct_idx, $is_base_info_only = false) {
         log_message('debug', __METHOD__);
         $excluded_sheets = array_diff(['basic', 'photo', 'damage', 'figure'], $this->included_sheets);
+        //$excluded_sheets = array_diff(['basic', 'photo', 'damage', 'figure' ,'sankou'], $this->included_sheets);
         if ($excluded_sheets) {
             log_message('info', '除外されている様式があります: ' . implode(', ', $excluded_sheets));
         }
@@ -847,6 +853,10 @@ EOF;
 //                log_message('debug', 'struct_idx='.$shichu['struct_idx']);
                 $this->edit_bosetsusaku_figure_sheet($shichu + $base_info_child);
             }
+//            if (in_array('sankou', $this->included_sheets)) {
+//                $this->sheet_num = 1;
+//                $this->edit_sankou_photo_sheet($shichu + $base_info_child,$shichu_check_data);
+//            }
         } else {
             // 防雪柵以外
             // 各様式の出力
@@ -865,6 +875,10 @@ EOF;
                 $this->sheet_num = 1;
                 $this->edit_figure_sheet($base_info);
             }
+//            if (in_array('sankou', $this->included_sheets)) {
+//                $this->sheet_num = 1;
+//                $this->edit_sankou_photo_sheet($base_info,$check_data);
+//            }
         }
     }
 
@@ -919,7 +933,7 @@ EOF;
 
 // ---> そのインデックスの点検回数ではなく、この施設の最大の点検回数で無いとNG
 // ---> インデックスすら関係なくその施設の最大の点検回数で無いとNG
-  $sql = <<<EOF
+          $sql = <<<EOF
 WITH chk_main AS (SELECT
     *
 FROM
@@ -2841,6 +2855,107 @@ EOF;
         }
         $this->xl->renderSheet($params, '点検箇所特定附図' . $this->sheet_num++);
     }
+
+    /**
+     * 参考写真のシート
+     *
+     * @param array $base_info
+     */
+    protected function edit_sankou_photo_sheet(array $base_info,  array $check_data) {
+      log_message('debug', __METHOD__);
+
+      // 参考写真
+      $this->load->model('PictureModel');
+      $picture_list = $this->PictureModel->get_sankou_photo("RFS_CHECK_PHOTO_" . $base_info['chk_mng_no']);
+
+      // log_message("debug","--------------------------------------------------");
+      // log_message("debug",print_r($picture_list,true));
+      if (count($picture_list) > 0) {
+          $this->xl->setTemplateSheet('参考写真');
+          $params = array();
+          $index = 1;
+          $page = 1;
+          for ($i = 0; $i < count($picture_list); $i++) {
+              $params["exif_dt$index"] = $picture_list[$i]['exif_dt'];
+              $params["description$index"] = $picture_list[$i]['description'];
+              $params["x_picture$index"] = $this->getImage($picture_list[$i]);
+
+              log_message("debug", var_export($params, true));
+              if ($index == 3) {
+                  $this->xl->renderSheet($params, '参考写真' . $page);
+                  $params = array();
+                  $index = 0;
+                  $page++;
+              }
+              $index++;
+          }
+          if ($index != 1) {
+              $this->xl->renderSheet($params, '参考写真' . $page);
+          }
+      }
+
+  }
+
+  /**
+   * t_pictureからのレコードから撮影日時つきの写真を出力する
+   * @param array $photo t_pictureと同じレコード
+   */
+  protected function getImage($photo) {
+      $www_path = $this->config->config['www_path'];
+
+      if (!$photo['exif_out']) {
+          return $www_path . $photo['path']; // 写真
+      }
+
+      $file_name = $www_path . $photo['path']; // 写真
+      $tmp_file_name = self::DIR_EXCEL_TMP . date('YmdHis') . '_temp_photo_' . uniqid() . '.jpg';
+
+      // 画像情報取得
+      $result = getimagesize($file_name);
+      list($orig_width, $orig_height, $image_type) = $result;
+
+      // 画像をコピー
+      switch ($image_type) {
+          // 1 IMAGETYPE_GIF
+          // 2 IMAGETYPE_JPEG
+          // 3 IMAGETYPE_PNG
+          case 1:$im = imagecreatefromgif($file_name);
+          break;
+          case 2:$im = imagecreatefromjpeg($file_name);
+          break;
+          case 3:$im = imagecreatefrompng($file_name);
+          break;
+          default: //エラー処理
+          return null;
+      }
+      // 画像をリサイズする
+      /* リサイズの計算 */
+      $resize_width = 480; // 幅の最低サイズ
+      $resize_height = 480; // 高さの最低サイズ
+
+      if ($orig_width >= $orig_height) { //横長の場合
+      $resize_height = $orig_height * ($resize_width / $orig_width);
+      } else if ($width < $height) { //縦長の場合
+      $resize_width = $orig_width * ($resize_height / $orig_height);
+      }
+      $canvas = imagecreatetruecolor($resize_width, $resize_height);
+      imagecopyresampled($canvas, $im, 0, 0, 0, 0, $resize_width, $resize_height, $orig_width, $orig_height);
+
+      // Allocate A Color For The Text
+      $color = imagecolorallocate($canvas, 229, 134, 64);
+      // Set Text to Be Printed On Image
+      $text = $photo["exif_dt"];
+
+      // Print Text On Image
+      imagettftext($canvas, 15, 0, 25, $resize_height - 25, $color, self::FONT, $text);
+
+      imagejpeg($canvas, $tmp_file_name);
+
+      log_message('debug', $tmp_file_name);
+      return $tmp_file_name;
+  }
+
+
     // ====================================================================
     protected function get_format($excel_ver) {
         if ($excel_ver == self::OUTPUT_XLSX) {
