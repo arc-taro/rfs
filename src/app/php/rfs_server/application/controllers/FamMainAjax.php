@@ -316,9 +316,11 @@ class FamMainAjax extends BaseController {
     if (isset($srch['shisetsu_cd'])) {
       $ret['shisetsu_cd'] = $srch['shisetsu_cd']; // 施設コード
     }
+    // CESさんの方では||だったが、条件が間違えているため&&に修正
     if (isset($srch['secchi_nendo_from']) && $srch['secchi_nendo_from']) {
       $ret['secchi_from'] = $srch['secchi_nendo_from']; // 設置年度FROM
     }
+    // CESさんの方では||だったが、条件が間違えているため&&に修正
     if (isset($srch['secchi_nendo_to']) && $srch['secchi_nendo_to']) {
       $ret['secchi_to'] = $srch['secchi_nendo_to']; // 設置年度TO
     }

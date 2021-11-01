@@ -1078,4 +1078,32 @@ EOF;
     return $result;
   }
 
+    /**
+   * 和暦のリストを取得する。
+   * 
+   * 現行のプルダウンに使用するため、項目を合わせる必要があった。
+   * year:西暦
+   * gengou:表記和暦
+   * 
+   */
+  public function getWarekiListFuture($from,$to,$jun="ASC") {
+    log_message('debug', __METHOD__);
+    $sql= <<<EOF
+    SELECT
+    seireki as year
+  , wareki_ryaku
+  , wareki_ryaku || '年' gengou 
+FROM
+  v_wareki_seireki_future 
+WHERE
+  seireki >= $from 
+  AND seireki <= $to
+ORDER BY 
+  seireki $jun
+EOF;
+    $query = $this->DB_rfs->query($sql);
+    $result = $query->result('array');
+    return $result;
+  }
+
 }

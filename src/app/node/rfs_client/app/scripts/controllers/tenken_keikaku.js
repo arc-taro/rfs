@@ -90,63 +90,73 @@ class TenkenKeikakuCtrl extends BaseCtrl {
       .then(data => {
         const json = data.data;
 
-        this.keikaku_list = [
-          {
-            sno: 1,
-            shisetsu_kbn_nm: "橋梁",
-            shisetsu_cd: "11111-010",
-            rosen_cd: "1001",
-            rosen_nm: "小樽定山渓線",
-            lr_str: "区分1",
-            sp: "9000",
-            latest_teiki_pat: {
-              wareki_ryaku: "R3",
-              umu_str: "無"
-            },
-            latest_huzokubutsu: {
-              w_chk_dt: "R1",
-              check_shisetsu_judge_nm: "II"
-            },
-            houtei_nendo: "",
-            houtei_shisetsu_judge: "",
-            teiki_pat_nendo: "R4",
-            teiki_pat_ijou_umu: "無",
-            plans: [
-            {
-              target_dt: "2022-04-01",
-              nendo: "R4",
-              planned: false,
-            },
-            {
-              target_dt: "2023-04-01",
-              nendo: "R5",
-              planned: true,
-            },
-            {
-              target_dt: "2024-04-01",
-              nendo: "R6",
-              planned: false,
-            },
-            {
-              target_dt: "2025-04-01",
-              nendo: "R7",
-              planned: false,
-            },
-            {
-              target_dt: "2026-04-01",
-              nendo: "R8",
-              planned: false,
-            },
-            ]
-          }
-        ];
-        if (this.keikaku_list.length > 0) {
-          // チェックボックスのデータを利用してヘッダを取得する
-          this.keikaku_nendo_headers = this.keikaku_list[0].plans.map(plan => plan.nendo);
-        }
+        // this.keikaku_list = [
+        //   {
+        //     sno: 1,
+        //     shisetsu_kbn_nm: "橋梁",
+        //     shisetsu_cd: "11111-010",
+        //     rosen_cd: "1001",
+        //     rosen_nm: "小樽定山渓線",
+        //     lr_str: "区分1",
+        //     sp: "9000",
+        //     latest_teiki_pat: {
+        //       wareki_ryaku: "R3",
+        //       umu_str: "無"
+        //     },
+        //     latest_huzokubutsu: {
+        //       w_chk_dt: "R1",
+        //       check_shisetsu_judge_nm: "II"
+        //     },
+        //     houtei_nendo: "",
+        //     houtei_shisetsu_judge: "",
+        //     teiki_pat_nendo: "R4",
+        //     teiki_pat_ijou_umu: "無",
+        //     houtei_plans: [
+        //     {
+        //       target_dt: "2022-04-01",
+        //       nendo: "R4",
+        //       planned: false,
+        //     },
+        //     {
+        //       target_dt: "2023-04-01",
+        //       nendo: "R5",
+        //       planned: true,
+        //     },
+        //     {
+        //       target_dt: "2024-04-01",
+        //       nendo: "R6",
+        //       planned: false,
+        //     },
+        //     {
+        //       target_dt: "2025-04-01",
+        //       nendo: "R7",
+        //       planned: false,
+        //     },
+        //     {
+        //       target_dt: "2026-04-01",
+        //       nendo: "R8",
+        //       planned: false,
+        //     },
+        //     ]
+        //   }
+        // ];
 
         // 和暦リスト
         this.secchi_nendo = json.wareki_list;
+
+        // 10年後まで含めた和暦リスト（secchi_nendoと別用途なので分ける）
+        this.wareki_List_future = json.wareki_list_future;
+        this.tenken_keikaku_year_span = json.tenken_keikaku_year_span;
+
+        // 初期表示用のヘッダーを設定
+        this.keikaku_nendo_headers = [];
+        // 今年の西暦
+        const thisYear = moment().year();
+        for (let i = 0; i < this.tenken_keikaku_year_span; i++) {
+          // 今年から10年分、1年毎に和暦リストから取得してヘッダーの表示値とする
+          const wareki = this.wareki_List_future.find(wareki => wareki.year == (thisYear + i));
+          this.keikaku_nendo_headers.push(wareki.wareki_ryaku);
+        }
 
         // 点検計画のヘッダー部分（初期表示分は5年分生成しておく）
         this.patrol_plan_headers = [];
@@ -330,6 +340,12 @@ class TenkenKeikakuCtrl extends BaseCtrl {
       // ["-syucchoujo_mei", "seq_no"]
     ];
 
+    this.keikaku_nendo_headers = [];
+
+    // 点検計画のヘッダーのcolspanを設定するための値
+    // 一旦ここで設定するが、最終的にはinit時にサーバー側から取得する
+    this.tenken_keikaku_year_span = 10;
+
     setTimeout(() => {
       $("#sync-table2").on("scroll", evt => {
         $("#sync-table1").scrollTop($(evt.target).scrollTop());
@@ -401,6 +417,36 @@ class TenkenKeikakuCtrl extends BaseCtrl {
           return this.alert("検索", message);
         } else {
           this.keikaku_list = json.shisetsu_info;
+          
+          // ng-repeatする要素（各行とチェックボックスのマス）には一意の値が必要なので振る
+          // HACK: Lodashを使えばもう少しシンプルに書けそう
+          for (let iRow = 0; iRow < this.keikaku_list.length; iRow++) {
+            const keikaku = this.keikaku_list[iRow];
+            // 行のID
+            this.keikaku_list[iRow].id = "row_" + keikaku.sno + "_" + keikaku.struct_idx;
+            if (keikaku.houtei_plans) {
+              // 法定点検の各マスのID
+              for (let iHoutei = 0; iHoutei < keikaku.houtei_plans.length; iHoutei++) {
+                const plan = keikaku.houtei_plans[iHoutei];
+                this.keikaku_list[iRow].houtei_plans[iHoutei].id = "chkbox_" + keikaku.sno + "_" + keikaku.struct_idx + "_houtei_" + plan.year;
+              }
+            }
+            if (keikaku.huzokubutsu_plans) {
+              // 附属物点検の各マスのID
+              for (let iHuzokubutsu = 0; iHuzokubutsu < keikaku.huzokubutsu_plans.length; iHuzokubutsu++) {
+                const plan = keikaku.huzokubutsu_plans[iHuzokubutsu];
+                this.keikaku_list[iRow].huzokubutsu_plans[iHuzokubutsu].id = "chkbox_" + keikaku.sno + "_" + keikaku.struct_idx + "_huzokubutsu_" + plan.year;
+              }
+            }
+            if (keikaku.teiki_pat_plans) {
+              // 定期パトの各マスのID
+              for (let iTeiki = 0; iTeiki < keikaku.teiki_pat_plans.length; iTeiki++) {
+                const plan = keikaku.teiki_pat_plans[iTeiki];
+                this.keikaku_list[iRow].teiki_pat_plans[iTeiki].id = "chkbox_" + keikaku.sno + "_" + keikaku.struct_idx + "_teiki_pat_" + plan.year;
+              }
+            }
+          }
+
           this.srch_cnt = srch_cnt;
           this.changeNumItem(); // 数値項目を数値化
 
@@ -422,6 +468,55 @@ class TenkenKeikakuCtrl extends BaseCtrl {
       .finally(() => {
         this.waitLoadOverlay = false;
       });
+  }
+
+  // onHouteiPlanChangedメソッドなどでチェックボックスの値を更新する際に使用するmapの関数を生成する
+  // arrayKey（houtei_plans or huzokubutsu_plans or teiki_pat_plans）以外は共通なので定義
+  generateCheckBoxMapFunction(arrayKey, sno, structIdx, year, newValue) {
+    const func = keikaku => {
+      if (keikaku.sno == sno && keikaku.struct_idx == structIdx) {
+        // snoとstruct_idxが一致する行のみを変更し、それ以外の行は何もしない
+        keikaku[arrayKey] = _.map(keikaku[arrayKey], plan => {
+          // 年が一致するもののみを変更する
+          if (plan.year == year) {
+            // チェックボックスの逆の値をセットする
+            plan.planned = !newValue;
+          }
+          return plan; 
+        });
+      }
+      return keikaku;
+    }
+    return func;
+  }
+
+  // 法定点検のチェックボックスを操作した際に呼ばれる。法定点検をtrue/falseにした際に対となる定期パトをfalse/trueにする
+  onHouteiPlanChanged(keikaku, year, newValue) {
+    if (!keikaku.teiki_pat_flag) {
+      // 定期パトを実行しない施設の場合は何もしない
+      return;
+    }
+    // teiki_pat_plansに対して対象のデータを見つけ出してチェックボックスの値をセットする関数を実行する
+    this.keikaku_list = _.map(this.keikaku_list, this.generateCheckBoxMapFunction('teiki_pat_plans', keikaku.sno, keikaku.struct_idx, year, newValue));
+  }
+  // 点検計画のチェックボックスを操作した際に呼ばれる。附属物点検をtrue/falseにした際に対となる定期パトをfalse/trueにする
+  onHuzokubutsuPlanChanged(keikaku, year, newValue) {
+    if (!keikaku.teiki_pat_flag) {
+      // 定期パトを実行しない施設の場合は何もしない
+      return;
+    }
+    // teiki_pat_plansに対して対象のデータを見つけ出してチェックボックスの値をセットする関数を実行する
+    this.keikaku_list = _.map(this.keikaku_list, this.generateCheckBoxMapFunction('teiki_pat_plans', keikaku.sno, keikaku.struct_idx, year, newValue));
+  }
+  // 点検計画のチェックボックスを操作した際に呼ばれる。附属物点検をtrue/falseにした際に対となる定期パトをfalse/trueにする
+  onTeikiPatPlanChanged(keikaku, year, newValue) {
+    if (keikaku.houtei_flag) {
+      // 法定点検を実施する施設の場合はhoutei_plansに対して対象のデータを見つけ出してチェックボックスの値をセットする関数を実行する
+      this.keikaku_list = _.map(this.keikaku_list, this.generateCheckBoxMapFunction('houtei_plans', keikaku.sno, keikaku.struct_idx, year, newValue));
+    } else if (keikaku.huzokubutsu_flag) {
+      // 附属物点検を実施する施設の場合はhuzokubutsu_plansに対して対象のデータを見つけ出してチェックボックスの値をセットする関数を実行する
+      this.keikaku_list = _.map(this.keikaku_list, this.generateCheckBoxMapFunction('huzokubutsu_plans', keikaku.sno, keikaku.struct_idx, year, newValue));
+    }
   }
 
   // 選択建管/出張所でフィルタ

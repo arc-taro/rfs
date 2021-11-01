@@ -133,7 +133,7 @@
       <div uib-collapse="tenkenkeikaku.naiyoukensaku">
         <div class="row">
           <div class="col-sm-12">
-            <div id="sync-table1" style="overflow:hidden;height: calc(100vh - 500px);width:auto;max-width:40%;overflow-x: scroll;float:left;">
+            <div id="sync-table1" style="overflow:hidden;height: calc(100vh - 400px);width:auto;max-width:40%;overflow-x: scroll;float:left;">
               <table class="sys table-bordered">
                 <thead>
                   <tr style="height: 31px;">
@@ -163,20 +163,24 @@
                 </tbody>
               </table>
             </div>
-            <div id="sync-table2" style="height: calc(100vh - 500px);width:auto;overflow-x: scroll;">
+            <div id="sync-table2" style="height: calc(100vh - 400px);width:auto;overflow-x: scroll;">
               <table class="sys table-bordered">
                 <thead>
                   <tr>
                     <th colspan="4">直近の点検結果</th>
                     <th colspan="4">点検結果</th>
-                    <th colspan="5" style="min-width: 148px;">附属物点検計画</th>
-                    <th colspan="5" style="min-width: 148px;">道路定期パト計画</th>
+                    <th colspan="{{tenkenkeikaku.tenken_keikaku_year_span}}" style="min-width: 148px;">法定点検計画</th>
+                    <th colspan="{{tenkenkeikaku.tenken_keikaku_year_span}}" style="min-width: 148px;">附属物点検計画</th>
+                    <th colspan="{{tenkenkeikaku.tenken_keikaku_year_span}}" style="min-width: 148px;">道路定期パト計画</th>
                   </tr>
                   <tr>
                     <th colspan="2">附属物点検</th>
                     <th colspan="2">道路定期パト</th>
                     <th colspan="2">附属物点検</th>
                     <th colspan="2">道路定期パト</th>
+                    <th rowspan="2" style="max-width: 40px;" ng-repeat="header in tenkenkeikaku.keikaku_nendo_headers">
+                      {{header}}
+                    </th>
                     <th rowspan="2" style="max-width: 40px;" ng-repeat="header in tenkenkeikaku.keikaku_nendo_headers">
                       {{header}}
                     </th>
@@ -196,7 +200,7 @@
                   </tr>
                 </thead>
                 <tbody>
-                  <tr ng-repeat="keikaku in tenkenkeikaku.keikaku_list track by keikaku.sno">
+                  <tr ng-repeat="keikaku in tenkenkeikaku.keikaku_list track by keikaku.id">
                     <td style="min-height: 44px; max-height: 44px;">{{ keikaku.latest_huzokubutsu && keikaku.latest_huzokubutsu.w_chk_dt ? keikaku.latest_huzokubutsu.w_chk_dt : '' }}</td>
                     <td style="min-height: 44px; max-height: 44px;" ng-style="keikaku.latest_huzokubutsu ? tenkenkeikaku.getCheckShisetsuJudgeCellStyle(keikaku.latest_huzokubutsu.check_shisetsu_judge) : {}">{{ keikaku.latest_huzokubutsu && keikaku.latest_huzokubutsu.check_shisetsu_judge_nm ? keikaku.latest_huzokubutsu.check_shisetsu_judge_nm : '' }}</td>
                     <td style="min-height: 44px; max-height: 44px;">{{ keikaku.latest_teiki_pat && keikaku.latest_teiki_pat.wareki_ryaku ? keikaku.latest_teiki_pat.wareki_ryaku : '' }}</td>
@@ -205,20 +209,26 @@
                     <td style="min-height: 44px; max-height: 44px;">{{ keikaku.houtei_shisetsu_judge }}</td>
                     <td style="min-height: 44px; max-height: 44px;">{{ keikaku.teiki_pat_nendo }}</td>
                     <td style="min-height: 44px; max-height: 44px;">{{ keikaku.teiki_pat_ijou_umu }}</td>
-                    <!-- 法定点検/附属物点検計画入力のチェックボックス -->
-                    <td ng-repeat="plan in keikaku.plans track by plan.target_dt" style="min-height: 44px; max-height: 44px;">
+                    <!-- 法定点検計画入力のチェックボックス -->
+                    <td ng-repeat="plan in keikaku.houtei_plans track by plan.id" style="min-height: 44px; max-height: 44px;" ng-style="keikaku.houtei_flag ? {} : {backgroundColor: '#F2F2F2'}">
                       <input type="checkbox"
+                        ng-change="tenkenkeikaku.onHouteiPlanChanged(keikaku, plan.year, plan.planned)"
+                        ng-disabled="!keikaku.houtei_flag"
+                        ng-model="plan.planned"/>
+                    </td>
+                    <!-- 附属物点検計画入力のチェックボックス -->
+                    <td ng-repeat="plan in keikaku.huzokubutsu_plans track by plan.id" style="min-height: 44px; max-height: 44px;" ng-style="keikaku.huzokubutsu_flag ? {} : {backgroundColor: '#F2F2F2'}">
+                      <input type="checkbox"
+                        ng-change="tenkenkeikaku.onHuzokubutsuPlanChanged(keikaku, plan.year, plan.planned)"
+                        ng-disabled="!keikaku.huzokubutsu_flag"
                         ng-model="plan.planned"/>
                     </td>
                     <!-- 道路定期パト計画入力のチェックボックス -->
-                    <!-- 法定点検/附属物点検を行う場合は定期パトは行わない（逆も同様）仕様のため、 -->
-                    <!-- 法定点検/附属物点検の値を反転させる（チェックボックスも連動させる） -->
-                    <td ng-repeat="plan in keikaku.plans track by plan.target_dt" style="min-height: 44px; max-height: 44px;">
+                    <td ng-repeat="plan in keikaku.teiki_pat_plans track by plan.id" style="min-height: 44px; max-height: 44px;" ng-style="keikaku.teiki_pat_flag ? {} : {backgroundColor: '#F2F2F2'}">
                       <input type="checkbox"
-                        ng-model="plan.planned"
-                        ng-true-value="false"
-                        ng-false-value="true"
-                        />
+                        ng-change="tenkenkeikaku.onTeikiPatPlanChanged(keikaku, plan.year, plan.planned)"
+                        ng-disabled="!keikaku.teiki_pat_flag"
+                        ng-model="plan.planned"/>
                     </td>
                   </tr>
                 </tbody>

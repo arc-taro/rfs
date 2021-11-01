@@ -12,6 +12,12 @@ class TenkenKeikakuModel extends CI_Model {
 
   protected $DB_rfs;  // rfsコネクション
 
+  // rfs_t_patrol_planのcategoryの値
+  const CATEGORY_HUZOKUBUTSU = 1;
+  const CATEGORY_HOUTEI = 2;
+  const CATEGORY_TEIKI_PAT = 3;
+
+
   /**
     * コンストラクタ
     */
@@ -306,9 +312,10 @@ EOF;
      */
     // 今年度
     $this_business_year = date('Y', strtotime('-3 month'));
-    $start_date = (new DateTime())->setDate($this_business_year + 1, 4, 1)->setTime(0,0,0);
-    $end_date = (new DateTime())->setDate($this_business_year + 10, 4, 1)->setTime(0,0,0);
-    $houtei_end_date = (new DateTime())->setDate($this_business_year + 5, 4, 1)->setTime(0,0,0);
+    $this->config->load('config');
+    $year_span = $this->config->config['tenken_keikaku_year_span'];
+    $start_date = (new DateTime())->setDate($this_business_year, 4, 1)->setTime(0,0,0);
+    $end_date = (new DateTime())->setDate($this_business_year + $year_span - 1, 4, 1)->setTime(0,0,0);
     $start_date_str = date_format($start_date, 'Y-m-d');
     $end_date_str = date_format($end_date, 'Y-m-d');
 
@@ -319,6 +326,7 @@ $sql= <<<EOF
 WITH patrol_plan AS (
   SELECT
     rtpp.sno
+    , rtpp.struct_idx 
     , json_agg(rtpp) json
   FROM
   rfs_t_patrol_plan rtpp
@@ -326,10 +334,14 @@ WITH patrol_plan AS (
     rtpp.target_dt BETWEEN '$start_date_str' AND '$end_date_str'
   GROUP BY
     rtpp.sno
+    , rtpp.struct_idx
 )
 , shisetsu AS (
+  -- 防雪柵は支柱インデックスごとに表示するので、防雪柵とそれ以外で分けて取得する
+  -- 防雪柵以外
   SELECT
       s1.*
+      ,-1 as struct_idx 
   FROM
     rfs_m_shisetsu s1 JOIN (
       SELECT
@@ -345,6 +357,37 @@ WITH patrol_plan AS (
   WHERE
   -- 廃止施設を読み込まないようにする
   ((TRIM(s1.haishi) = '' OR s1.haishi IS NULL) AND s1.haishi_yyyy IS NULL)
+  AND s1.shisetsu_kbn <> 4
+  $where_dogen_cd
+  $where_syucchoujo_cd
+  $where_shisetsu_cd
+  $where_sp
+  $where_shisetsu_kbn
+  $where_rosen
+  UNION
+  -- 防雪柵
+  SELECT
+      s1.*
+      ,rmbs.struct_idx as struct_idx
+  FROM
+    rfs_m_shisetsu s1 JOIN (
+      SELECT
+          shisetsu_cd
+        , max(shisetsu_ver) shisetsu_ver
+      FROM
+        rfs_m_shisetsu
+      GROUP BY
+        shisetsu_cd
+    ) s2
+      ON s1.shisetsu_cd = s2.shisetsu_cd
+      AND s1.shisetsu_ver = s2.shisetsu_ver
+  LEFT JOIN
+    rfs_m_bousetsusaku_shichu rmbs
+    ON rmbs.sno = s1.sno
+  WHERE
+  -- 廃止施設を読み込まないようにする
+  ((TRIM(s1.haishi) = '' OR s1.haishi IS NULL) AND s1.haishi_yyyy IS NULL)
+  AND s1.shisetsu_kbn = 4
   $where_dogen_cd
   $where_syucchoujo_cd
   $where_shisetsu_cd
@@ -356,6 +399,7 @@ SELECT
     s.sno
   , s.shisetsu_kbn
   , sk.shisetsu_kbn_nm
+  , s.struct_idx
   , s.shisetsu_keishiki_cd
   , s.name
   , s.shisetsu_cd
@@ -378,9 +422,15 @@ SELECT
   , s.syucchoujo_cd
   , s.keishiki_kubun_cd1
   , s.keishiki_kubun_cd2
-  , pp.json teiki_pat_plans
+  , pp.json patrol_plans
+  , rmpt.houtei_flag
+  , rmpt.huzokubutsu_flag
+  , rmpt.teiki_pat_flag
 FROM
   shisetsu s
+  INNER JOIN
+    rfs_m_patrol_type rmpt
+    ON rmpt.shisetsu_kbn = s.shisetsu_kbn
   LEFT JOIN rfs_m_shisetsu_kbn sk
     ON s.shisetsu_kbn = sk.shisetsu_kbn
   LEFT JOIN rfs_m_rosen r
@@ -409,39 +459,46 @@ log_message('debug', "sql=$sql");
     $query = $this->DB_rfs->query($sql);
     $result = $query->result('array');
 
-    $result = array_map(function($row) use($houtei_end_date, $this_business_year) {
-      // teiki_pat_plansはJSON文字列なので連想配列に戻す
-      $row['teiki_pat_plans'] = is_null($row['teiki_pat_plans']) ? [] : json_decode($row['teiki_pat_plans'], true);
-      
-      if ($row['shisetsu_kbn'] > 5) {
-        // 法定点検は5年分なので5年分のみに絞り込む
-        log_message('debug', print_r($row['teiki_pat_plans'], true));
-        $row['teiki_pat_plans'] = array_filter($row['teiki_pat_plans'], function($plan) use($houtei_end_date) {
-          return (new DateTime($plan['target_dt']) <= $houtei_end_date);
-        });
-      }
+    $result = array_map(function($row) use($year_span, $this_business_year) {
+      // Postgresのbool型はt/fで取得されてしまうので変換する
+      $row['houtei_flag'] = $row['houtei_flag'] == 't' ? true : false;
+      $row['huzokubutsu_flag'] = $row['huzokubutsu_flag'] == 't' ? true : false;
+      $row['teiki_pat_flag'] = $row['teiki_pat_flag'] == 't' ? true : false;
+
+      // patrol_plansはJSON文字列なので連想配列に戻す
+      $row['patrol_plans'] = is_null($row['patrol_plans']) ? [] : json_decode($row['patrol_plans'], true);
 
       // チェックボックスに対応するデータを作成する
-      $row['plan_list'] = [];
-      // 施設区分が5以下のものは附属物点検を行うので10年分、それ以外は法定点検なので5年分データを作成する
-      $patrol_years = $row['shisetsu_kbn'] > 5 ? 5 : 10;
-      for ($i = 0; $i < $patrol_years; $i++) {
+      $row['teiki_pat_plans'] = [];
+      $row['houtei_plans'] = [];
+      $row['huzokubutsu_plans'] = [];
+      for ($i = 0; $i < $year_span; $i++) {
         // 1年毎の処理
-        $target_year = $this_business_year + $i + 1;
-        $row['plan_list'][$i]['year'] = $target_year;
-        $row['plan_list'][$i]['teiki_pat_planned'] = false;
+        $target_year = $this_business_year + $i;
+        $row['teiki_pat_plans'][$i]['year'] = $target_year;
+        $row['teiki_pat_plans'][$i]['planned'] = false;
+        $row['houtei_plans'][$i]['year'] = $target_year;
+        $row['houtei_plans'][$i]['planned'] = false;
+        $row['huzokubutsu_plans'][$i]['year'] = $target_year;
+        $row['huzokubutsu_plans'][$i]['planned'] = false;
         // teiki_pat_plansにこの年のデータがあるかどうか探す。あれば定期パトを実施する。無ければ法定/附属物点検を行う。
-        foreach ($row['teiki_pat_plans'] as $plan) {
+        foreach ($row['patrol_plans'] as $plan) {
           $planned_year = (new DateTime($plan['target_dt']))->format('Y');
+          $category = $plan['category'];
           if ($planned_year == $target_year) {
-            $row['plan_list'][$i]['teiki_pat_planned'] = true;
+            if ($category == self::CATEGORY_HUZOKUBUTSU) {
+              $row['huzokubutsu_plans'][$i]['planned'] = true;
+            } else if ($category == self::CATEGORY_HOUTEI) {
+              $row['houtei_plans'][$i]['planned'] = true;
+            } else if ($category == self::CATEGORY_TEIKI_PAT) {
+              $row['teiki_pat_plans'][$i]['planned'] = true;
+            }
           }
         }
       }
 
       return $row;
     }, $result);
-
 
     //    log_message('debug', "sql=$sql");
     //    $r = print_r($result, true);

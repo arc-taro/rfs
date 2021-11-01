@@ -36,6 +36,10 @@ class TenkenKeikakuAjax extends BaseController {
     $yyyy=date("Y");
     $wareki_list = $this->SchCommon->getWarekiList(1975,$yyyy,"desc");
     $result['wareki_list']=$wareki_list;
+    $wareki_list_future = $this->SchCommon->getWarekiListFuture(1975,$yyyy + $this->config->config['tenken_keikaku_year_span'],"desc");
+    $result['wareki_list_future']=$wareki_list_future;
+    $this->config->load('config');
+    $result['tenken_keikaku_year_span'] = $this->config->config['tenken_keikaku_year_span'];
 
     // 戻り値に設定
     $result['dogen_syucchoujo']=$dogen_syucchoujo;
