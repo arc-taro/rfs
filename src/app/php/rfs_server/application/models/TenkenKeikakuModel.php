@@ -259,7 +259,7 @@ EOF;
 
       // 今年度点検を実施済みかどうかをチェックして保持しておく
       // HACK: もう少しまとめられないか?
-      if (isset($result[$i_row]['latest_houtei']['target_dt']) && $result[$i_row]['latest_houtei']['target_dt']) {
+      if (isset($result[$i_row]['latest_houtei']['target_dt_year']) && $result[$i_row]['latest_houtei']['target_dt_year']) {
         $target_dt_year = $result[$i_row]['latest_houtei']['target_dt_year'];
         $target_dt_month = $result[$i_row]['latest_houtei']['target_dt_month'];
         $target_dt_day = $result[$i_row]['latest_houtei']['target_dt_day'];
@@ -269,20 +269,20 @@ EOF;
           $result[$i_row]['houtei_plans'][0]['patrol_done'] = true;
         }
       }
-      if (isset($result[$i_row]['latest_huzokubutsu']['target_dt']) && $result[$i_row]['latest_huzokubutsu']['target_dt']) {
-        $target_dt_year = $result[$i_row]['latest_houtei']['target_dt_year'];
-        $target_dt_month = $result[$i_row]['latest_houtei']['target_dt_month'];
-        $target_dt_day = $result[$i_row]['latest_houtei']['target_dt_day'];
+      if (isset($result[$i_row]['latest_huzokubutsu']['target_dt_year']) && $result[$i_row]['latest_huzokubutsu']['target_dt_year']) {
+        $target_dt_year = $result[$i_row]['latest_huzokubutsu']['target_dt_year'];
+        $target_dt_month = $result[$i_row]['latest_huzokubutsu']['target_dt_month'];
+        $target_dt_day = $result[$i_row]['latest_huzokubutsu']['target_dt_day'];
         $latest_patrol_obj = (new DateTime())->setDate($target_dt_year, $target_dt_month, $target_dt_day);
         if ($this_year_obj <= $latest_patrol_obj && $latest_patrol_obj < $next_year_obj) {
           // 今年度は配列の1個目に入る
           $result[$i_row]['huzokubutsu_plans'][0]['patrol_done'] = true;
         }
       }
-      if (isset($result[$i_row]['latest_teiki_pat']['target_dt']) && $result[$i_row]['latest_teiki_pat']['target_dt']) {
-        $target_dt_year = $result[$i_row]['latest_houtei']['target_dt_year'];
-        $target_dt_month = $result[$i_row]['latest_houtei']['target_dt_month'];
-        $target_dt_day = $result[$i_row]['latest_houtei']['target_dt_day'];
+      if (isset($result[$i_row]['latest_teiki_pat']['target_dt_year']) && $result[$i_row]['latest_teiki_pat']['target_dt_year']) {
+        $target_dt_year = $result[$i_row]['latest_teiki_pat']['target_dt_year'];
+        $target_dt_month = $result[$i_row]['latest_teiki_pat']['target_dt_month'];
+        $target_dt_day = $result[$i_row]['latest_teiki_pat']['target_dt_day'];
         $latest_patrol_obj = (new DateTime())->setDate($target_dt_year, $target_dt_month, $target_dt_day);
         if ($this_year_obj <= $latest_patrol_obj && $latest_patrol_obj < $next_year_obj) {
           // 今年度は配列の1個目に入る
@@ -628,34 +628,43 @@ log_message('debug', "sql=$sql");
     log_message('info', __METHOD__);
 
     $sql= <<<EOF
-WITH teiki_patlol_result AS (
+WITH max_tenken_detail AS (
   SELECT 
-    tld.sno,
-    tls.deliveried_at,
-    wareki_to_char(tls.deliveried_at, 'ggLL')  wareki_ryaku, -- 直近年度
-    tld.ijyou_umu_flg,
-    CASE
-      WHEN tld.ijyou_umu_flg = 0
-      THEN '無'
-      WHEN tld.ijyou_umu_flg = 1
-      THEN '有'
-      ELSE ''
-    END umu_str -- 直近異常有無
-  FROM
-    teiki_patrol.tenken_lists tls
-  INNER JOIN teiki_patrol.tenken_list_details  tld
-    ON tls.tenken_list_cd = tld.tenken_list_cd
-  LEFT JOIN v_wareki_seireki_future wf
-    ON EXTRACT(YEAR FROM tls.deliveried_at) = wf.seireki
+    tenken_list_cd
+    ,max(zenkei_image_at) max_zenkei_image_at
+  FROM 
+    teiki_patrol.tenken_list_details
   WHERE
-    sno = $sno
+    zenkei_image_1 IS NOT NULL
+  GROUP BY
+    tenken_list_cd
 )
-SELECT *
-FROM teiki_patlol_result
-WHERE deliveried_at = (
-  SELECT max(deliveried_at) 
-  FROM teiki_patlol_result
-)
+SELECT
+  tld.sno
+  ,tl.deliveried_at
+  ,wareki_to_char(tl.deliveried_at, 'ggLL')  wareki_ryaku -- 直近年度
+  ,tld.ijyou_umu_flg
+  ,CASE
+    WHEN tld.ijyou_umu_flg = 0
+      THEN '無'
+    WHEN tld.ijyou_umu_flg = 1
+      THEN '有'
+    ELSE ''
+  END umu_str -- 直近異常有無
+  -- PHP側で日付を正確に指定するために年月日を分けて取得
+  ,to_char(tld.zenkei_image_at, 'YYYY') as target_dt_year
+  ,to_char(tld.zenkei_image_at, 'MM') as target_dt_month
+  ,to_char(tld.zenkei_image_at, 'MM') as target_dt_day
+FROM
+  teiki_patrol.tenken_lists tl
+INNER JOIN
+  teiki_patrol.tenken_list_details tld
+  ON tl.tenken_list_cd = tld.tenken_list_cd
+INNER JOIN 
+  max_tenken_detail mtd
+  ON tld.zenkei_image_at = mtd.max_zenkei_image_at
+WHERE
+  tld.sno = $sno
 EOF;
     $query = $this->DB_rfs->query($sql);
     $result = $query->result('array');
@@ -683,42 +692,52 @@ EOF;
     }
 
     $sql= <<<EOF
-WITH huzoku_tenken_result AS (
+WITH max_main AS (
   SELECT
-      c.chk_mng_no
-    , c.sno
-    , h.chk_dt
-    , c.struct_idx
-    , wareki_to_char(h.chk_dt, 'ggLL') w_chk_dt  -- 直近年度
-    , h.check_shisetsu_judge
-    , sj1.shisetsu_judge_nm check_shisetsu_judge_nm  -- 直近の健全性
+    sno
+    ,max(chk_times) AS max_chk_times
   FROM
-    (SELECT * FROM rfs_t_chk_main WHERE sno = $sno $where_struct_idx) c JOIN (
-      SELECT
-        h1.*
-      FROM
-        rfs_t_chk_huzokubutsu h1 JOIN (
-          SELECT
-            chk_mng_no
-            , MAX(rireki_no) rireki_no
-          FROM
-            rfs_t_chk_huzokubutsu
-          GROUP BY
-            chk_mng_no
-        ) h2
-        ON h1.chk_mng_no = h2.chk_mng_no
-        AND h1.rireki_no = h2.rireki_no
-    ) h
-    ON c.chk_mng_no = h.chk_mng_no
-    LEFT JOIN rfs_m_shisetsu_judge sj1
-    ON h.check_shisetsu_judge = sj1.shisetsu_judge
+    rfs_t_chk_main
+  GROUP BY
+    sno
+),
+max_huzokubutsu as (
+  SELECT
+    chk_mng_no 
+    ,max(rireki_no) AS max_rireki_no
+  FROM
+    rfs_t_chk_huzokubutsu
+  GROUP BY
+    chk_mng_no
 )
-SELECT *
-FROM huzoku_tenken_result
-WHERE chk_dt = (
-  SELECT max(chk_dt) 
-  FROM huzoku_tenken_result
-)
+select
+  rtcm.chk_mng_no
+  , rtcm.sno
+  , rtch.chk_dt
+  , rtcm.struct_idx
+  , wareki_to_char(rtch.chk_dt, 'ggLL') w_chk_dt  -- 直近年度
+  , rtch.check_shisetsu_judge
+  , rmsj.shisetsu_judge_nm check_shisetsu_judge_nm  -- 直近の健全性
+  -- PHP側で日付を正確に指定するために年月日を分けて取得
+  ,to_char(rtcm.target_dt, 'YYYY') as target_dt_year
+  ,to_char(rtcm.target_dt, 'MM') as target_dt_month
+  ,to_char(rtcm.target_dt, 'MM') as target_dt_day
+FROM
+  rfs_t_chk_main rtcm
+INNER JOIN
+  max_main mm
+  ON rtcm.sno = mm.sno AND rtcm.chk_times = mm.max_chk_times
+inner JOIN
+  rfs_t_chk_huzokubutsu rtch
+  on rtcm.chk_mng_no = rtch.chk_mng_no 
+inner join 
+  max_huzokubutsu mh
+  on rtch.chk_mng_no = mh.chk_mng_no and rtch.rireki_no = mh.max_rireki_no
+LEFT JOIN rfs_m_shisetsu_judge rmsj
+  ON rtch.check_shisetsu_judge = rmsj.shisetsu_judge
+WHERE
+  rtcm.sno = $sno
+  $where_struct_idx
 EOF;
     $query = $this->DB_rfs->query($sql);
     $result = $query->result('array');
