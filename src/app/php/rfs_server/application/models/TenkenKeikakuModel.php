@@ -46,7 +46,7 @@ class TenkenKeikakuModel extends CI_Model {
    * 戻り値：施設データarray
    */
   public function srchTenkenShisetsuNum($condition) {
-    log_message('debug', 'srchTenkenShisetsuNum');
+    log_message('info', __METHOD__);
 
     // 条件を作成
     $where_dogen_cd="";
@@ -137,9 +137,14 @@ class TenkenKeikakuModel extends CI_Model {
     /*************************/
 
 $sql= <<<EOF
+-- srchTenkenShisetsuMain内SQLのpatrol_planはshisetsuの
+-- 1レコードに対して常に1件のため件数に影響を与えないので、ここでは含めない
 WITH shisetsu AS (
+  -- 防雪柵は支柱インデックスごとに表示するので、防雪柵とそれ以外で分けて取得する
+  -- 防雪柵以外
   SELECT
-      s1.*
+    s1.*
+    ,-1 as struct_idx
   FROM
     rfs_m_shisetsu s1 JOIN (
       SELECT
@@ -155,10 +160,42 @@ WITH shisetsu AS (
   WHERE
   -- 廃止施設を読み込まないようにする
   ((TRIM(s1.haishi) = '' OR s1.haishi IS NULL) AND s1.haishi_yyyy IS NULL)
+  AND s1.shisetsu_kbn <> 4
   $where_dogen_cd
   $where_syucchoujo_cd
   $where_shisetsu_cd
   $where_sp
+  $where_shisetsu_kbn
+  $where_rosen
+  UNION
+  -- 防雪柵
+  SELECT
+      s1.*
+      ,rmbs.struct_idx as struct_idx
+  FROM
+    rfs_m_shisetsu s1 JOIN (
+      SELECT
+          shisetsu_cd
+        , max(shisetsu_ver) shisetsu_ver
+      FROM
+        rfs_m_shisetsu
+      GROUP BY
+        shisetsu_cd
+    ) s2
+      ON s1.shisetsu_cd = s2.shisetsu_cd
+      AND s1.shisetsu_ver = s2.shisetsu_ver
+  LEFT JOIN
+    rfs_m_bousetsusaku_shichu rmbs
+    ON rmbs.sno = s1.sno
+  WHERE
+  -- 廃止施設を読み込まないようにする
+  ((TRIM(s1.haishi) = '' OR s1.haishi IS NULL) AND s1.haishi_yyyy IS NULL)
+  AND s1.shisetsu_kbn = 4
+  $where_dogen_cd
+  $where_syucchoujo_cd
+  $where_shisetsu_cd
+  $where_sp
+  $where_shisetsu_kbn
   $where_rosen
 )
 SELECT 
@@ -175,6 +212,7 @@ EOF;
   }
 
   public function srchTenkenShisetsu($condition) {
+    log_message('info', __METHOD__);
     // 施設データを検索
     $result = $this->srchTenkenShisetsuMain($condition);
     
@@ -322,7 +360,7 @@ EOF;
    * 戻り値：施設データarray
    */
   private function srchTenkenShisetsuMain($condition) {
-    log_message('debug', 'srchTenkenShisetsuMain');
+    log_message('info', __METHOD__);
 
     // 条件を作成
     $where_dogen_cd="";
@@ -410,8 +448,7 @@ EOF;
     }
 
     /***
-     * 点検計画の取得期間（翌年から10年後まで）
-     * 法定点検か附属物点検かによって5年か10年かが変わるので、一旦10年分取得して法定点検のものは6年後以降を削除する
+     * 点検計画の取得期間（今年から10年後まで）
      */
     // 今年度
     $this_business_year = date('Y', strtotime('-3 month'));
@@ -443,8 +480,8 @@ WITH patrol_plan AS (
   -- 防雪柵は支柱インデックスごとに表示するので、防雪柵とそれ以外で分けて取得する
   -- 防雪柵以外
   SELECT
-      s1.*
-      ,-1 as struct_idx 
+    s1.*
+    ,-1 as struct_idx 
   FROM
     rfs_m_shisetsu s1 JOIN (
       SELECT
@@ -588,7 +625,7 @@ log_message('debug', "sql=$sql");
    *
    ***/
   protected function getTeikiPatrolLatestData($sno){
-    log_message('info', 'getTeikiPatrolLatestData');
+    log_message('info', __METHOD__);
 
     $sql= <<<EOF
 WITH teiki_patlol_result AS (
@@ -633,7 +670,7 @@ EOF;
    *
    ***/
   protected function getChkMainMaxData($sno, $shisetsu_kbn){
-    log_message('info', 'getChkMainMaxData');
+    log_message('info', __METHOD__);
 
     // 防雪柵の場合は親はいらない
     // それ以外はstruct_idx=0
@@ -696,7 +733,7 @@ EOF;
    *
    ***/
   protected function getChkHouteiMaxData($sno){
-    log_message('info', 'getChkHouteiMaxData');
+    log_message('info', __METHOD__);
 
     $sql= <<<EOF
 WITH max_houtei AS (
