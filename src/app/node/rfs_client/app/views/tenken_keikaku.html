@@ -133,11 +133,11 @@
       <div uib-collapse="tenkenkeikaku.naiyoukensaku">
         <div class="row">
           <div class="col-sm-12">
-            <div id="sync-table1" style="overflow:hidden;height: calc(100vh - 450px);width:auto;max-width:40%;overflow-x: scroll;float:left;">
+            <div id="sync-table1" style="overflow:hidden;height: calc(100vh - 450px);width:auto;max-width:32%;overflow-x: scroll;float:left;">
               <table class="sys table-bordered">
                 <thead>
                   <tr style="height: 31px;">
-                    <th rowspan="3" style="min-width: 120px;">施設名</th>
+                    <th rowspan="3" style="width: 300px;">施設名</th>
                     <th rowspan="3" style="min-width: 120px;">施設管理番号</th>
                     <th rowspan="3" style="min-width: 70px;"><div>路線</div><div>コード</div></th>
                     <th rowspan="3" style="min-width: 100px;">路線名</th>
@@ -153,7 +153,7 @@
                 </thead>
                 <tbody>
                   <tr ng-repeat="keikaku in tenkenkeikaku.keikaku_list track by keikaku.sno">
-                    <td style="min-width: 120px; min-height: 44px; max-height: 44px;">{{ keikaku.shisetsu_kbn_nm }}</td>
+                    <td style="width: 300px; min-height: 44px; max-height: 44px;text-overflow: ellipsis; white-space: nowrap;">{{ keikaku.shisetsu_kbn_nm }}</td>
                     <td style="min-width: 120px; min-height: 44px; max-height: 44px;">{{ keikaku.shisetsu_cd }}</td>
                     <td style="min-width: 70px; min-height: 44px; max-height: 44px;">{{ keikaku.rosen_cd }}</td>
                     <td style="min-width: 100px; min-height: 44px; max-height: 44px;">{{ keikaku.rosen_nm }}</td>
