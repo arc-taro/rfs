@@ -133,7 +133,7 @@
       <div uib-collapse="tenkenkeikaku.naiyoukensaku">
         <div class="row">
           <div class="col-sm-12">
-            <div id="sync-table1" style="overflow:hidden;height: calc(100vh - 400px);width:auto;max-width:40%;overflow-x: scroll;float:left;">
+            <div id="sync-table1" style="overflow:hidden;height: calc(100vh - 450px);width:auto;max-width:40%;overflow-x: scroll;float:left;">
               <table class="sys table-bordered">
                 <thead>
                   <tr style="height: 31px;">
@@ -163,12 +163,11 @@
                 </tbody>
               </table>
             </div>
-            <div id="sync-table2" style="height: calc(100vh - 400px);width:auto;overflow-x: scroll;">
+            <div id="sync-table2" style="height: calc(100vh - 450px);width:auto;overflow-x: scroll;">
               <table class="sys table-bordered">
                 <thead>
                   <tr>
                     <th colspan="4">直近の点検結果</th>
-                    <th colspan="4">点検結果</th>
                     <th colspan="{{tenkenkeikaku.tenken_keikaku_year_span}}" style="min-width: 148px;">法定点検計画</th>
                     <th colspan="{{tenkenkeikaku.tenken_keikaku_year_span}}" style="min-width: 148px;">附属物点検計画</th>
                     <th colspan="{{tenkenkeikaku.tenken_keikaku_year_span}}" style="min-width: 148px;">道路定期パト計画</th>
@@ -176,25 +175,19 @@
                   <tr>
                     <th colspan="2">附属物点検</th>
                     <th colspan="2">道路定期パト</th>
-                    <th colspan="2">附属物点検</th>
-                    <th colspan="2">道路定期パト</th>
-                    <th rowspan="2" style="max-width: 40px;" ng-repeat="header in tenkenkeikaku.keikaku_nendo_headers">
+                    <th rowspan="2" style="min-width: 40px; max-width: 40px;" ng-repeat="header in tenkenkeikaku.keikaku_nendo_headers">
                       {{header}}
                     </th>
-                    <th rowspan="2" style="max-width: 40px;" ng-repeat="header in tenkenkeikaku.keikaku_nendo_headers">
+                    <th rowspan="2" style="min-width: 40px; max-width: 40px;" ng-repeat="header in tenkenkeikaku.keikaku_nendo_headers">
                       {{header}}
                     </th>
-                    <th rowspan="2" style="max-width: 40px;" ng-repeat="header in tenkenkeikaku.keikaku_nendo_headers">
+                    <th rowspan="2" style="min-width: 40px; max-width: 40px;" ng-repeat="header in tenkenkeikaku.keikaku_nendo_headers">
                       {{header}}
                     </th>
                   </tr>
                   <tr>
                     <th style="min-width: 30px; padding-left: 0; padding-right: 0;">年度</th>
-                    <th style="min-width: 45px; padding-left: 0; padding-right: 0;">健全性</th>
-                    <th style="min-width: 30px; padding-left: 0; padding-right: 0;">年度</th>
-                    <th style="min-width: 60px; padding-left: 0; padding-right: 0;">異常有無</th>
-                    <th style="min-width: 30px; padding-left: 0; padding-right: 0;">年度</th>
-                    <th style="min-width: 45px; padding-left: 0; padding-right: 0;">健全性</th>
+                    <th style="min-width: 50px; padding-left: 0; padding-right: 0;">健全性</th>
                     <th style="min-width: 30px; padding-left: 0; padding-right: 0;">年度</th>
                     <th style="min-width: 60px; padding-left: 0; padding-right: 0;">異常有無</th>
                   </tr>
@@ -205,30 +198,41 @@
                     <td style="min-height: 44px; max-height: 44px;" ng-style="keikaku.latest_huzokubutsu ? tenkenkeikaku.getCheckShisetsuJudgeCellStyle(keikaku.latest_huzokubutsu.check_shisetsu_judge) : {}">{{ keikaku.latest_huzokubutsu && keikaku.latest_huzokubutsu.check_shisetsu_judge_nm ? keikaku.latest_huzokubutsu.check_shisetsu_judge_nm : '' }}</td>
                     <td style="min-height: 44px; max-height: 44px;">{{ keikaku.latest_teiki_pat && keikaku.latest_teiki_pat.wareki_ryaku ? keikaku.latest_teiki_pat.wareki_ryaku : '' }}</td>
                     <td style="min-height: 44px; max-height: 44px;" ng-style="keikaku.latest_teiki_pat ? tenkenkeikaku.getIjouUmuCellStyle(keikaku.latest_teiki_pat.ijyou_umu_flg) : {}">{{ keikaku.latest_teiki_pat && keikaku.latest_teiki_pat.umu_str ? keikaku.latest_teiki_pat.umu_str : ''  }}</td>
-                    <td style="min-height: 44px; max-height: 44px;">{{ keikaku.houtei_nendo }}</td>
-                    <td style="min-height: 44px; max-height: 44px;">{{ keikaku.houtei_shisetsu_judge }}</td>
-                    <td style="min-height: 44px; max-height: 44px;">{{ keikaku.teiki_pat_nendo }}</td>
-                    <td style="min-height: 44px; max-height: 44px;">{{ keikaku.teiki_pat_ijou_umu }}</td>
                     <!-- 法定点検計画入力のチェックボックス -->
-                    <td ng-repeat="plan in keikaku.houtei_plans track by plan.id" style="min-height: 44px; max-height: 44px;" ng-style="keikaku.houtei_flag ? {} : {backgroundColor: '#F2F2F2'}">
-                      <input type="checkbox"
-                        ng-change="tenkenkeikaku.onHouteiPlanChanged(keikaku, plan.year, plan.planned)"
-                        ng-disabled="!keikaku.houtei_flag"
-                        ng-model="plan.planned"/>
+                    <td ng-repeat="plan in keikaku.houtei_plans track by plan.id" style="min-width: 40px; max-width: 40px; min-height: 44px; max-height: 44px; padding: 0;" ng-style="keikaku.houtei_flag && !plan.patrol_done ? {} : {backgroundColor: '#F2F2F2'}">
+                      <label style="display: block; width: 100%; height: 100%; margin-bottom: 0; ">
+                        <input
+                          type="checkbox"
+                          ng-change="tenkenkeikaku.onHouteiPlanChanged(keikaku, plan.year, plan.planned)"
+                          ng-disabled="!keikaku.houtei_flag || plan.patrol_done"
+                          ng-model="plan.planned"
+                          style="vertical-align: middle;"
+                        />
+                      </label>
                     </td>
                     <!-- 附属物点検計画入力のチェックボックス -->
-                    <td ng-repeat="plan in keikaku.huzokubutsu_plans track by plan.id" style="min-height: 44px; max-height: 44px;" ng-style="keikaku.huzokubutsu_flag ? {} : {backgroundColor: '#F2F2F2'}">
-                      <input type="checkbox"
-                        ng-change="tenkenkeikaku.onHuzokubutsuPlanChanged(keikaku, plan.year, plan.planned)"
-                        ng-disabled="!keikaku.huzokubutsu_flag"
-                        ng-model="plan.planned"/>
+                    <td ng-repeat="plan in keikaku.huzokubutsu_plans track by plan.id" style="min-width: 40px; max-width: 40px; min-height: 44px; max-height: 44px; padding: 0;" ng-style="keikaku.huzokubutsu_flag && !plan.patrol_done ? {} : {backgroundColor: '#F2F2F2'}">
+                      <label style="display: block; width: 100%; height: 100%; margin-bottom: 0; ">
+                        <input
+                          type="checkbox"
+                          ng-change="tenkenkeikaku.onHuzokubutsuPlanChanged(keikaku, plan.year, plan.planned)"
+                          ng-disabled="!keikaku.huzokubutsu_flag || plan.patrol_done"
+                          ng-model="plan.planned"
+                          style="vertical-align: middle;"
+                        />
+                      </label>
                     </td>
                     <!-- 道路定期パト計画入力のチェックボックス -->
-                    <td ng-repeat="plan in keikaku.teiki_pat_plans track by plan.id" style="min-height: 44px; max-height: 44px;" ng-style="keikaku.teiki_pat_flag ? {} : {backgroundColor: '#F2F2F2'}">
-                      <input type="checkbox"
-                        ng-change="tenkenkeikaku.onTeikiPatPlanChanged(keikaku, plan.year, plan.planned)"
-                        ng-disabled="!keikaku.teiki_pat_flag"
-                        ng-model="plan.planned"/>
+                    <td ng-repeat="plan in keikaku.teiki_pat_plans track by plan.id" style="min-width: 40px; max-width: 40px; min-height: 44px; max-height: 44px; padding: 0;" ng-style="keikaku.teiki_pat_flag && !plan.patrol_done ? {} : {backgroundColor: '#F2F2F2'}">
+                      <label style="display: block; width: 100%; height: 100%; margin-bottom: 0; ">
+                        <input
+                          type="checkbox"
+                          ng-change="tenkenkeikaku.onTeikiPatPlanChanged(keikaku, plan.year, plan.planned)"
+                          ng-disabled="!keikaku.teiki_pat_flag || plan.patrol_done"
+                          ng-model="plan.planned"
+                          style="vertical-align: middle;"
+                        />
+                      </label>
                     </td>
                   </tr>
                 </tbody>
@@ -237,9 +241,13 @@
           </div>
         </div>
       </div>
-      <div class="row" style="margin-left:10px;width:99%;">
+      <div class="row" style="margin-top: 10px;margin-left:10px;width:99%;">
+        <div class="col-xs-11">
+        </div>
+        <div class="col-xs-1">
+          <button ng-click="tenkenkeikaku.saveKeikaku()" ng-disabled="!tenkenkeikaku.keikaku_list || tenkenkeikaku.keikaku_list.length == 0" class="btn btn-success" style="width: 100px;">保存</button>
+        </div>
       </div>
-      <div id="footerdamy"></div>
     </div>
     <div style="top:42px;left:0px;z-index:1000; width:165px;"
       class="sidebar sidebar-nav affix container-fluid background2" role="complementary">
@@ -377,11 +385,11 @@
         <a ng-href="#/raf_top" class="sys_btn">道路附属物
           <br>施設点検</a>
       </div>
-      <div style="margin:10px 0 20px 0;">
+      <div style="margin:10px 0 10px 0;">
         <a ng-href="{{tenkenkeikaku.ele_url}}" class="sys_btn2">電気通信
           <br>施設点検</a>
       </div>
-      <div style="margin:20px 0 10px 0;">
+      <div style="margin:10px 0 10px 0;">
         <a ng-href="#/tenken_keikaku" class="sys_btn3">点検結果/計画
           <br>入力・出力</a>
       </div>
@@ -394,69 +402,6 @@
         <a ng-href="#/sys_top" type="button" class="btn btn-xs btn-inverse btn-sm">
           <span class="glyphicon glyphicon-arrow-left"></span>&nbsp;道路施設管理システムTOPに戻る</a>
       </div>
-      <div ng-show="tenkenkeikaku.ath_syozoku_cd <= 2 || tenkenkeikaku.ath_syozoku_cd == 10001 || (tenkenkeikaku.ath_syozoku_cd == 3 && (tenkenkeikaku.ath_syucchoujo_cd==tenkenkeikaku.mng_syucchoujo_cd))"
-        class="col-sm-3" style="text-align:center;">
-        <a ng-click="tenkenkeikaku.editBaseInfo(0, data)" type="button" class="btn btn-xs btn-success btn-sm">
-          <span class="glyphicon glyphicon-list-alt"></span>&nbsp;基本情報登録</a>
-      </div>
-      <!-- List表示タブ選択時のみ表示 -->
-      <div class="col-sm-6" style="text-align:right;display:inline-flex;" ng-show="tenkenkeikaku.srch.default_tab_list == true">
-
-        <!-- 施設台帳を一括で出力 -->
-        <div ng-switch="tenkenkeikaku.checked_data!=null">
-          <!-- 有効なチェックデータがあり、形式未登録のものが選択されていない場合 -->
-          <form ng-switch-when="true" name="excel_new_form" method="POST" action="api/index.php/OutputExcel/outShisetsuDataPack"
-            ng-submit="tenkenkeikaku.submitShisetsuDataToExcel()">
-            <input type="hidden" name="checked_data" ng-value="tenkenkeikaku.post_data.checked_data">
-            <input type="hidden" name="excel_ver" ng-value="0">
-            <button type="submit" class="btn btn-xs btn-info btn-sm">
-              <span class="glyphicon glyphicon-print"></span>&nbsp;施設台帳の一括出力</button>
-          </form>
-          <!-- 有効なチェックデータがない、または形式未登録のものが選択されている場合 -->
-          <form ng-switch-when="false" name="excel_new_form">
-            <button type="button" class="btn btn-xs btn-info btn-sm" ng-click="tenkenkeikaku.submitShisetsuDataToExcel()">
-              <span class="glyphicon glyphicon-print"></span>&nbsp;施設台帳の一括出力</button>
-          </form>
-        </div>&nbsp;
-
-        <!-- Excelリストを出力 -->
-        <div ng-switch="tenkenkeikaku.data==null">
-          <!-- 検索未実行(null)の場合はsubmitしない -->
-          <form ng-switch-when="true" name="excel_list_form">
-            <button class="btn btn-xs btn-info btn-sm" ng-click="tenkenkeikaku.submitList()">
-              <span class="glyphicon glyphicon-print "></span>&nbsp;リストを出力</button>
-          </form>
-          <!-- 検索結果がある場合はsubmit -->
-          <form ng-switch-when="false" name="excel_list_form" method="POST" action="api/index.php/OutputExcel/dlOutShisetsuList"
-            ng-submit="tenkenkeikaku.submitList()">
-            <input type="hidden" name="dogen_cd" value="{{tenkenkeikaku.post_data.dogen_cd}} ">
-            <input type="hidden" name="syucchoujo_cd" value="{{tenkenkeikaku.post_data.syucchoujo_cd}}">
-            <input type="hidden" name="srch" value="{{tenkenkeikaku.post_data.srch}} ">
-            <button type="submit" class="btn btn-xs btn-info btn-sm">
-              <span class="glyphicon glyphicon-print"></span>&nbsp;リストを出力</button>
-          </form>
-        </div>&nbsp;
-
-        <!-- CSVリストを出力 -->
-        <div ng-switch="tenkenkeikaku.data==null">
-          <!-- 検索未実行(null)の場合はsubmitしない -->
-          <form ng-switch-when="true" name="csv_list_form">
-            <button class="btn btn-xs btn-info btn-sm" ng-click="tenkenkeikaku.submitList()">
-              <span class="glyphicon glyphicon-print "></span>&nbsp;CSVリストを出力</button>
-          </form>
-          <!-- 検索結果がある場合はsubmit -->
-          <form ng-switch-when="false" name="csv_list_form" method="POST" action="api/index.php/OutputExcel/dlOutShisetsuCsvList"
-            ng-submit="tenkenkeikaku.submitList()">
-            <input type="hidden" name="dogen_cd" value="{{tenkenkeikaku.post_data.dogen_cd}} ">
-            <input type="hidden" name="syucchoujo_cd" value="{{tenkenkeikaku.post_data.syucchoujo_cd}}">
-            <input type="hidden" name="srch" value="{{tenkenkeikaku.post_data.srch}} ">
-            <button type="submit" class="btn btn-xs btn-info btn-sm">
-              <span class="glyphicon glyphicon-print"></span>&nbsp;CSVリストを出力</button>
-          </form>
-        </div>&nbsp; &nbsp;
-      </div>
-      <div ng-show="tenkenkeikaku.ath_syozoku_cd!=3" class="col-sm-3"></div>
-    </div>
   </div>
 
   <!-- 保存中オーバーレイ -->

@@ -177,28 +177,131 @@ EOF;
   public function srchTenkenShisetsu($condition) {
     // 施設データを検索
     $result = $this->srchTenkenShisetsuMain($condition);
-    for($i = 0; $i < count($result); $i++) {
+    
+    for($i_row = 0; $i_row < count($result); $i_row++) {
       // 直近の定期パトと法定点検/附属物点検のデータを結合
-      $sno = $result[$i]['sno'];
-      $shisetsu_kbn = $result[$i]['shisetsu_kbn'];
+      $sno = $result[$i_row]['sno'];
+      $shisetsu_kbn = $result[$i_row]['shisetsu_kbn'];
 
       // 定期パト
-      $result[$i]['latest_teiki_pat'] = [];
-      $latest_teiki_pat_result = $this->getTeikiPatrolLatestData($sno);
-      if (count($latest_teiki_pat_result) > 0) {
-        $result[$i]['latest_teiki_pat'] = $latest_teiki_pat_result[0];
+      if ($result[$i_row]['teiki_pat_flag']) {
+        $result[$i_row]['latest_teiki_pat'] = [];
+        $latest_teiki_pat_result = $this->getTeikiPatrolLatestData($sno);
+        if (count($latest_teiki_pat_result) > 0) {
+          $result[$i_row]['latest_teiki_pat'] = $latest_teiki_pat_result[0];
+        }
       }
 
-      if (1 <= $shisetsu_kbn && $shisetsu_kbn <= 5) {
-        $result[$i]['latest_huzokubutsu'] = [];
+      if ($result[$i_row]['huzokubutsu_flag']) {
+        $result[$i_row]['latest_huzokubutsu'] = [];
         // 附属物点検
         $latest_huzokubutsu_result = $this->getChkMainMaxData($sno, $shisetsu_kbn);
         if (count($latest_huzokubutsu_result) > 0) {
-          $result[$i]['latest_huzokubutsu'] = $latest_huzokubutsu_result[0];
+          $result[$i_row]['latest_huzokubutsu'] = $latest_huzokubutsu_result[0];
         }
-      } else {
-        // 法定点検
       }
+      if ($result[$i_row]['houtei_flag']) {
+        $result[$i_row]['latest_houtei'] = [];
+        // 法定点検
+        $latest_houtei_result = $this->getChkHouteiMaxData($sno);
+        if (count($latest_houtei_result) > 0) {
+          $result[$i_row]['latest_houtei'] = $latest_houtei_result[0];
+        }
+      }
+
+      // チェックボックスに対応するデータを作成する
+      $result[$i_row]['teiki_pat_plans'] = [];
+      $result[$i_row]['houtei_plans'] = [];
+      $result[$i_row]['huzokubutsu_plans'] = [];
+
+      // 今年度の西暦を取得
+      $this_business_year = date('Y', strtotime('-3 month'));
+      $this_year_obj = (new DateTime())->setDate($this_business_year, 4, 1);
+      $next_year_obj = (new DateTime())->setDate($this_business_year + 1, 4, 1);
+
+      // 今年度点検を実施済みかどうかをチェックして保持しておく
+      // HACK: もう少しまとめられないか?
+      if (isset($result[$i_row]['latest_houtei']['target_dt']) && $result[$i_row]['latest_houtei']['target_dt']) {
+        $target_dt_year = $result[$i_row]['latest_houtei']['target_dt_year'];
+        $target_dt_month = $result[$i_row]['latest_houtei']['target_dt_month'];
+        $target_dt_day = $result[$i_row]['latest_houtei']['target_dt_day'];
+        $latest_patrol_obj = (new DateTime())->setDate($target_dt_year, $target_dt_month, $target_dt_day);
+        if ($this_year_obj <= $latest_patrol_obj && $latest_patrol_obj < $next_year_obj) {
+          // 今年度は配列の1個目に入る
+          $result[$i_row]['houtei_plans'][0]['patrol_done'] = true;
+        }
+      }
+      if (isset($result[$i_row]['latest_huzokubutsu']['target_dt']) && $result[$i_row]['latest_huzokubutsu']['target_dt']) {
+        $target_dt_year = $result[$i_row]['latest_houtei']['target_dt_year'];
+        $target_dt_month = $result[$i_row]['latest_houtei']['target_dt_month'];
+        $target_dt_day = $result[$i_row]['latest_houtei']['target_dt_day'];
+        $latest_patrol_obj = (new DateTime())->setDate($target_dt_year, $target_dt_month, $target_dt_day);
+        if ($this_year_obj <= $latest_patrol_obj && $latest_patrol_obj < $next_year_obj) {
+          // 今年度は配列の1個目に入る
+          $result[$i_row]['huzokubutsu_plans'][0]['patrol_done'] = true;
+        }
+      }
+      if (isset($result[$i_row]['latest_teiki_pat']['target_dt']) && $result[$i_row]['latest_teiki_pat']['target_dt']) {
+        $target_dt_year = $result[$i_row]['latest_houtei']['target_dt_year'];
+        $target_dt_month = $result[$i_row]['latest_houtei']['target_dt_month'];
+        $target_dt_day = $result[$i_row]['latest_houtei']['target_dt_day'];
+        $latest_patrol_obj = (new DateTime())->setDate($target_dt_year, $target_dt_month, $target_dt_day);
+        if ($this_year_obj <= $latest_patrol_obj && $latest_patrol_obj < $next_year_obj) {
+          // 今年度は配列の1個目に入る
+          $result[$i_row]['teiki_pat_plans'][0]['patrol_done'] = true;
+        }
+      }
+
+      $this->config->load('config');
+      $year_span = $this->config->config['tenken_keikaku_year_span'];
+      
+      for ($i_year = 0; $i_year < $year_span; $i_year++) {
+        // 1年毎の処理
+        $target_year = $this_business_year + $i_year;
+        $result[$i_row]['teiki_pat_plans'][$i_year]['year'] = $target_year;
+        $result[$i_row]['teiki_pat_plans'][$i_year]['planned'] = false;
+        if (
+          isset($result[$i_row]['teiki_pat_plans'][$i_year]['patrol_done'])
+          && $result[$i_row]['teiki_pat_plans'][$i_year]['patrol_done']) {
+            // パトロール実施済みの場合はtrueにする
+            $result[$i_row]['teiki_pat_plans'][$i_year]['planned'] = true;
+        }
+
+        $result[$i_row]['houtei_plans'][$i_year]['year'] = $target_year;
+        $result[$i_row]['houtei_plans'][$i_year]['planned'] = false;
+        if (
+          isset($result[$i_row]['houtei_plans'][$i_year]['patrol_done'])
+          && $result[$i_row]['houtei_plans'][$i_year]['patrol_done']) {
+            // パトロール実施済みの場合はtrueにする
+            $result[$i_row]['houtei_plans'][$i_year]['planned'] = true;
+        }
+        
+        $result[$i_row]['huzokubutsu_plans'][$i_year]['year'] = $target_year;
+        $result[$i_row]['huzokubutsu_plans'][$i_year]['planned'] = false;
+        if (
+          isset($result[$i_row]['huzokubutsu_plans'][$i_year]['patrol_done'])
+          && $result[$i_row]['huzokubutsu_plans'][$i_year]['patrol_done']) {
+            // パトロール実施済みの場合はtrueにする
+            $result[$i_row]['huzokubutsu_plans'][$i_year]['planned'] = true;
+        }
+        
+
+        // teiki_pat_plansにこの年のデータがあるかどうか探す。
+        foreach ($result[$i_row]['patrol_plans'] as $plan) {
+          $planned_year = (new DateTime($plan['target_dt']))->format('Y');
+          $category = $plan['category'];
+          if ($planned_year == $target_year) {
+            if ($category == self::CATEGORY_HUZOKUBUTSU) {
+              $result[$i_row]['huzokubutsu_plans'][$i_year]['planned'] = true;
+            } else if ($category == self::CATEGORY_HOUTEI) {
+              $result[$i_row]['houtei_plans'][$i_year]['planned'] = true;
+            } else if ($category == self::CATEGORY_TEIKI_PAT) {
+              $result[$i_row]['teiki_pat_plans'][$i_year]['planned'] = true;
+            }
+          }
+        }
+      }
+
     }
     return $result;
   }
@@ -468,35 +571,6 @@ log_message('debug', "sql=$sql");
       // patrol_plansはJSON文字列なので連想配列に戻す
       $row['patrol_plans'] = is_null($row['patrol_plans']) ? [] : json_decode($row['patrol_plans'], true);
 
-      // チェックボックスに対応するデータを作成する
-      $row['teiki_pat_plans'] = [];
-      $row['houtei_plans'] = [];
-      $row['huzokubutsu_plans'] = [];
-      for ($i = 0; $i < $year_span; $i++) {
-        // 1年毎の処理
-        $target_year = $this_business_year + $i;
-        $row['teiki_pat_plans'][$i]['year'] = $target_year;
-        $row['teiki_pat_plans'][$i]['planned'] = false;
-        $row['houtei_plans'][$i]['year'] = $target_year;
-        $row['houtei_plans'][$i]['planned'] = false;
-        $row['huzokubutsu_plans'][$i]['year'] = $target_year;
-        $row['huzokubutsu_plans'][$i]['planned'] = false;
-        // teiki_pat_plansにこの年のデータがあるかどうか探す。あれば定期パトを実施する。無ければ法定/附属物点検を行う。
-        foreach ($row['patrol_plans'] as $plan) {
-          $planned_year = (new DateTime($plan['target_dt']))->format('Y');
-          $category = $plan['category'];
-          if ($planned_year == $target_year) {
-            if ($category == self::CATEGORY_HUZOKUBUTSU) {
-              $row['huzokubutsu_plans'][$i]['planned'] = true;
-            } else if ($category == self::CATEGORY_HOUTEI) {
-              $row['houtei_plans'][$i]['planned'] = true;
-            } else if ($category == self::CATEGORY_TEIKI_PAT) {
-              $row['teiki_pat_plans'][$i]['planned'] = true;
-            }
-          }
-        }
-      }
-
       return $row;
     }, $result);
 
@@ -551,7 +625,7 @@ EOF;
     return $result;
   }
 
-    /***
+  /***
    * 附属物点検の直近データを取得する。
    *
    * 引数:$sno sno
@@ -612,6 +686,159 @@ EOF;
     $query = $this->DB_rfs->query($sql);
     $result = $query->result('array');
     return $result;
+  }
+
+  /***
+   * 法定点検の直近データを取得する。
+   *
+   * 引数:$sno sno
+   * 　　:$shisetsu_kbn 施設区分
+   *
+   ***/
+  protected function getChkHouteiMaxData($sno){
+    log_message('info', 'getChkHouteiMaxData');
+
+    $sql= <<<EOF
+WITH max_houtei AS (
+  SELECT
+    sno
+    ,max(chk_times) AS max_chk_times
+  FROM
+    rfs_t_chk_houtei rtch2 
+  GROUP BY
+    sno
+)
+SELECT
+rtch.*
+-- PHP側で日付を正確に指定するために年月日を分けて取得
+,to_char(rtch.target_dt, 'YYYY') as target_dt_year
+,to_char(rtch.target_dt, 'MM') as target_dt_month
+,to_char(rtch.target_dt, 'MM') as target_dt_day
+FROM
+  rfs_t_chk_houtei rtch 
+INNER JOIN
+  max_houtei
+ON rtch.sno = max_houtei.sno AND rtch.chk_times = max_houtei.max_chk_times
+WHERE
+  rtch.sno = $sno
+EOF;
+    $query = $this->DB_rfs->query($sql);
+    $result = $query->result('array');
+    return $result;
+  }
+
+  public function deleteOldTenkenKeikaku($shisetsu_list, $start_year, $end_year) {
+    log_message('info', __METHOD__);
+    if (count($shisetsu_list) == 0) {
+      return;
+    }
+
+    $start_date_obj = (new DateTime())->setDate($start_year, 4, 1);
+    $start_date = $start_date_obj->format('Y-m-d');
+    $end_date_obj = (new DateTime())->setDate($end_year, 4, 1);
+    $end_date = $end_date_obj->format('Y-m-d');
+
+    // snoとstuct_idxが一致するものを全て削除
+    // shisetsu_kbnが4以外のものはstruct_idxがnullなので分けて削除する（nullの場合in句が使えないため）
+    $shisetsu_kbn_4 = [];
+    $shisetsu_kbn_others = [];
+    foreach($shisetsu_list as $shisetsu) {
+      if ($shisetsu['shisetsu_kbn'] == 4) {
+        array_push($shisetsu_kbn_4, $shisetsu);
+      } else {
+        array_push($shisetsu_kbn_others, $shisetsu);
+      }
+    }
+
+
+    $in_kbn_4 = 'AND (sno,struct_idx) in (';
+    if (count($shisetsu_kbn_4) > 0) {
+      for ($i = 0; $i < count($shisetsu_kbn_4); $i++) {
+        $sno = $shisetsu_kbn_4[$i]['sno'];
+        $struct_idx = $shisetsu_kbn_4[$i]['struct_idx'];
+        $in_kbn_4 .= "($sno, $struct_idx)";
+        if ($i < count($shisetsu_kbn_4) - 1) {
+          $in_kbn_4 .= ', ';
+        } else {
+          $in_kbn_4 .= ')';
+        }
+      }
+      $sql = <<<EOF
+DELETE
+FROM
+  public.rfs_t_patrol_plan
+WHERE
+  target_dt BETWEEN '${start_date}' AND '${end_date}'
+  ${in_kbn_4}
+EOF;
+
+      log_message('debug', $sql);
+      $this->DB_rfs->query($sql);
+    }
+
+    $in_kbn_others = 'AND sno in (';
+    if (count($shisetsu_kbn_others) > 0) {
+      for ($i = 0; $i < count($shisetsu_kbn_others); $i++) {
+        $sno = $shisetsu_kbn_others[$i]['sno'];
+        $in_kbn_others .= $sno;
+        if ($i < count($shisetsu_kbn_others) - 1) {
+          $in_kbn_others .= ', ';
+        } else {
+          $in_kbn_others .= ')';
+        }
+      }
+      $sql = <<<EOF
+DELETE
+FROM
+  public.rfs_t_patrol_plan
+WHERE
+  target_dt BETWEEN '${start_date}' AND '${end_date}'
+  ${in_kbn_others}
+EOF;
+      log_message('debug', $sql);
+      $this->DB_rfs->query($sql);
+    }
+    return;
+  }
+
+  private function insertTenkenKeikaku($category, $sno, $shisetsu_kbn, $struct_idx, $year) {
+    log_message('info', __METHOD__);
+    $target_dt_obj = (new DateTime())->setDate($year, 4, 1);
+    $target_dt = $target_dt_obj->format('Y-m-d');
+    $struct_idx_nullable = $shisetsu_kbn == 4 ? $struct_idx : 'null';
+
+    $sql = <<<EOF
+INSERT INTO
+public.rfs_t_patrol_plan (
+  sno
+  ,shisetsu_kbn
+  ,target_dt
+  ,category
+  ,struct_idx
+) VALUES (
+  $sno
+  ,$shisetsu_kbn
+  ,'$target_dt'
+  ,$category
+  ,$struct_idx_nullable
+);
+EOF;
+
+    log_message('debug', $sql);
+    $this->DB_rfs->query($sql);
+    return;
+  }
+
+  public function insertHouteiTenkenKeikaku($sno, $shisetsu_kbn, $struct_idx, $year) {
+    $this->insertTenkenKeikaku(self::CATEGORY_HOUTEI, $sno, $shisetsu_kbn, $struct_idx, $year);
+  }
+
+  public function insertHuzokubutsuTenkenKeikaku($sno, $shisetsu_kbn, $struct_idx, $year) {
+    $this->insertTenkenKeikaku(self::CATEGORY_HUZOKUBUTSU, $sno, $shisetsu_kbn, $struct_idx, $year);
+  }
+
+  public function insertTeikiPatTenkenKeikaku($sno, $shisetsu_kbn, $struct_idx, $year) {
+    $this->insertTenkenKeikaku(self::CATEGORY_TEIKI_PAT, $sno, $shisetsu_kbn, $struct_idx, $year);
   }
 
 }

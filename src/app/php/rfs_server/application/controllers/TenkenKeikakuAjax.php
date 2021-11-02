@@ -9,11 +9,19 @@ require("BaseController.php");
 **/
 class TenkenKeikakuAjax extends BaseController {
 
+  protected $DB_rfs;  // rfsコネクション
+
   /**
      * コンストラクタ
      */
   public function __construct() {
     parent::__construct();
+    $this->load->model('TenkenKeikakuModel');
+    $this->DB_rfs = $this->load->database('rfs',TRUE);
+    if ($this->DB_rfs->conn_id === FALSE) {
+      log_message('debug', 'データベースに接続されていません');
+      return;
+    }
   }
 
   /**
@@ -50,155 +58,11 @@ class TenkenKeikakuAjax extends BaseController {
     $dogen_cd=$this->session['mngarea']['dogen_cd']; // 建管コード
     $syucchoujo_cd=$this->session['mngarea']['syucchoujo_cd']; // 出張所コード
 
-    // // GET引数
-    // $srch_kbn=$this->get['srch_kbn']; // 検索区分
-
-    // // 検索
-    // // sysTopから
-    // $shisetsu_info=array();
-    // if ($srch_kbn==1) {
-    //   // srchを作り出す
-    //   $srch=$this->makeSrchFromSysTop($shisetsu_kbn);
-    //   // session書き込み
-    //   $this->rgstSessionSrch($srch,1,1);
-    //   // 施設検索
-    //   $shisetsu_info=$this->srchShisetsuDetail($dogen_cd, $syucchoujo_cd, $srch);
-    //   // 件数が入っている場合は検索しなかった
-    //   if (isset($shisetsu_info['cnt'])) {
-    //     $result['cnt']=$shisetsu_info['cnt']; // 件数を返却
-    //     $shisetsu_info=[];
-    //   }else{
-    //     $result['cnt']=count($shisetsu_info); // 件数を返却
-    //   }
-      // sysTop以外
-//     }else{
-//       if (isset($this->session['srch_shisetsu'])){
-//         // 元検索と同じ検索を行う
-//         $srch=$this->session['srch_shisetsu'];
-// /*
-//         $r = print_r($srch, true);
-//         log_message('debug', "srch:".$r);
-// */
-//         // 施設検索
-//         $shisetsu_info=$this->srchShisetsuDetail($dogen_cd, $syucchoujo_cd, $srch);
-//         // 件数が入っている場合は検索しなかった
-//         if (isset($shisetsu_info['cnt'])) {
-//           $result['cnt']=$shisetsu_info['cnt']; // 件数を返却
-//           $shisetsu_info=[];
-//         }else{
-//           $result['cnt']=count($shisetsu_info); // 件数を返却
-//         }
-//       }
-//     }
-//     $result['shisetsu_info']=$shisetsu_info;
-/*
-    $r = print_r($result['cnt'], true);
-    log_message('debug', "result_cnt・・・・・・・・・・・・・・>".$r."\n");
-*/
     // 検索画面での設定が必要なので返却する
     // $result['srch']=$srch;
     $this->json = json_encode($result);
     $this->output->set_content_type('application/json')->set_output($this->json);
   }
-
-  /***
-   * 検索条件作成 ～sysTopから～
-   *
-   * sysTopから来た場合はGET引数を元に検索を行うため
-   * 検索条件をGET引数から作り出し、検索処理の流れに乗せるために行う処理
-   *
-   * 引数:施設区分情報
-   *
-   * 戻り値:$srch
-   *
-   ***/
-  //  protected function makeSrchFromSysTop($shisetsu_kbn_arr) {
-  //    // GET引数
-  //    $shisetsu_kbn=$this->get['shisetsu_kbn'];
-  //    $secchi_idx=$this->get['secchi_idx'];
-  //    $kyouyou_kbn=$this->get['kyouyou_kbn'];
-
-  //    // 選択プルダウン情報
-  //    $srch['shisetsu_kbn_dat_model']=array();  // 選択された施設区分
-  //    $srch['shisetsu_kbn_all_cnt']=-1;  // 全施設区分件数
-  //    $tmp=array();
-  //    $tmp['id']=$shisetsu_kbn;
-  //    $tmp['shisetsu_kbn']=$shisetsu_kbn;
-  //    for ($i=0;$i<count($shisetsu_kbn_arr);$i++) {
-  //      if ($shisetsu_kbn_arr[$i]['shisetsu_kbn']==$shisetsu_kbn) {
-  //        $tmp['label']=$shisetsu_kbn_arr[$i]['label'];
-  //        $tmp['sort_no']=$shisetsu_kbn_arr[$i]['sort_no'];
-  //        break;
-  //      }
-  //    }
-  //    array_push($srch['shisetsu_kbn_dat_model'], $tmp);
-  //    $srch['substitute_road_dat_model']=array();  // 選択された代替路
-  //    $srch['substitute_road_all_cnt']=-1;  // 全代替路件数
-  //    $srch['emergency_road_dat_model']=array();  // 選択された緊急輸送道路
-  //    $srch['emergency_road_all_cnt']=-1;  // 全緊急輸送道路件数
-  //    $srch['kyouyou_kbn_dat_model']=array();  // 選択された供用区分
-  //    $srch['kyouyou_kbn_all_cnt']=-1;  // 全供用区分件数
-  //    // 供用区分は-1の場合全てなので条件セットなし
-  //    if ($kyouyou_kbn!=-1){
-  //      $tmp=array();
-  //      $tmp['id']=$kyouyou_kbn;
-  //      if ($kyouyou_kbn==0){
-  //        $tmp['label']="休止";
-  //      }else if ($kyouyou_kbn==1) {
-  //        $tmp['label']="供用";
-  //      // 未入力追加=検索時はIS NULLとして検索
-  //      }else if ($kyouyou_kbn==-2) {
-  //        $tmp['label']="未入力";
-  //      }
-  //      //$tmp['label']=$kyouyou_kbn==1 ? "供用" : "休止";
-  //      array_push($srch['kyouyou_kbn_dat_model'], $tmp);
-  //    }
-  //    $srch['rosen_dat_model']=array();  // 選択された路線
-  //    $srch['rosen_all_cnt']=-1;  // 全路線件数
-
-  //   /***
-  //    *    設置年度の範囲を表す
-  //    *    1:20年以上
-  //    *    2:10年以上20年未満
-  //    *    3:5年以上10年未満
-  //    *    4:5年未満
-  //    *    5:設置年度不明
-  //    *    6:計 = 設置年度の条件は付けずに検索
-  //    *
-  //    *    設置年度は
-  //    *      $srch['secchi_nendo_from']
-  //    *      $srch['secchi_nendo_to']
-  //    *      $srch['include_secchi_null']
-  //    *    を作り出す
-  //    ***/
-  //    $now_yyyy = (int)date('Y');
-  //    $now_MM = (int)date('m');
-  //    if ($now_MM<=3) {
-  //      $now_yyyy-=1;
-  //    }
-  //    if ($secchi_idx==1) {
-  //      // secchi_toのみ指定
-  //      $srch['secchi_nendo_to']=strval($now_yyyy - 20);
-  //    }else if($secchi_idx==2) {
-  //      $srch['secchi_nendo_from']=strval($now_yyyy - 10);
-  //      $srch['secchi_nendo_to']=strval(($now_yyyy - 20) + 1);
-  //    }else if($secchi_idx==3) {
-  //      $srch['secchi_nendo_from']=strval($now_yyyy - 5);
-  //      $srch['secchi_nendo_to']=strval(($now_yyyy - 10) + 1);
-  //    }else if($secchi_idx==4) {
-  //      $srch['secchi_nendo_from']=strval(($now_yyyy - 5) + 1);
-  //    }else if($secchi_idx==5) {
-  //      $srch['include_secchi_null']=1;
-  //    }else if($secchi_idx==6) {
-  //      // 指定なし
-  //    }
-
-  //    // mapデフォルト表示
-  //    $srch['default_tab_map']=true;
-  //    $srch['default_tab_list']=false;
-
-  //    return $srch;
-  //  }
 
   /**
     * 施設検索
@@ -254,7 +118,6 @@ class TenkenKeikakuAjax extends BaseController {
     $r = print_r($condition, true);
     log_message('debug', "condition=$r");
 */
-    $this->load->model('TenkenKeikakuModel');
     // 件数を先に取得
     $cnt=$this->TenkenKeikakuModel->srchTenkenShisetsuNum($condition);
     //log_message('debug', "count=$cnt");
@@ -397,6 +260,45 @@ class TenkenKeikakuAjax extends BaseController {
 
     return $ret;
 
+  }
+
+  public function saveTenkenKeikaku() {
+    log_message('info', __METHOD__);
+    $houtei_plans = $this->post['houtei_plans'];
+    $huzokubutsu_plans = $this->post['huzokubutsu_plans'];
+    $teiki_pat_plans = $this->post['teiki_pat_plans'];
+    // 対象となる年度の範囲（DELETE->INSERTするのに必要）
+    $target_year_start = $this->post['target_year_start'];
+    $target_year_end = $this->post['target_year_end'];
+    $shisetsu_list = $this->post['shisetsu_list'];
+    
+    // トランザクション
+    $this->DB_rfs->trans_start();
+
+    $this->TenkenKeikakuModel->deleteOldTenkenKeikaku($shisetsu_list, $target_year_start, $target_year_end);
+
+    foreach($houtei_plans as $plan) {
+      $this->TenkenKeikakuModel->insertHouteiTenkenKeikaku($plan['sno'], $plan['shisetsu_kbn'], $plan['struct_idx'], $plan['year']);
+    }
+
+    foreach($huzokubutsu_plans as $plan) {
+      $this->TenkenKeikakuModel->insertHuzokubutsuTenkenKeikaku($plan['sno'], $plan['shisetsu_kbn'], $plan['struct_idx'], $plan['year']);
+    }
+
+    foreach($teiki_pat_plans as $plan) {
+      $this->TenkenKeikakuModel->insertTeikiPatTenkenKeikaku($plan['sno'], $plan['shisetsu_kbn'], $plan['struct_idx'], $plan['year']);
+    }
+    
+    // トランザクション処理
+    if ($this->DB_rfs->trans_status() === FALSE) {
+      $this->DB_rfs->trans_rollback();
+    } else {
+      $this->DB_rfs->trans_commit();
+    }
+    $result = [];
+    // 返却
+    $this->json = json_encode($result);
+    $this->output->set_content_type('application/json')->set_output($this->json);
   }
 
 }

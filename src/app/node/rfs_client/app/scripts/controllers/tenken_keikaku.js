@@ -150,8 +150,8 @@ class TenkenKeikakuCtrl extends BaseCtrl {
 
         // 初期表示用のヘッダーを設定
         this.keikaku_nendo_headers = [];
-        // 今年の西暦
-        const thisYear = moment().year();
+        // 今年度の西暦
+        const thisYear = moment().add(-3, 'months').year();
         for (let i = 0; i < this.tenken_keikaku_year_span; i++) {
           // 今年から10年分、1年毎に和暦リストから取得してヘッダーの表示値とする
           const wareki = this.wareki_List_future.find(wareki => wareki.year == (thisYear + i));
@@ -477,8 +477,8 @@ class TenkenKeikakuCtrl extends BaseCtrl {
       if (keikaku.sno == sno && keikaku.struct_idx == structIdx) {
         // snoとstruct_idxが一致する行のみを変更し、それ以外の行は何もしない
         keikaku[arrayKey] = _.map(keikaku[arrayKey], plan => {
-          // 年が一致するもののみを変更する
-          if (plan.year == year) {
+          // 年が一致し、パトロール実施済みでないもののみを変更する
+          if (plan.year == year && !plan.patrol_done) {
             // チェックボックスの逆の値をセットする
             plan.planned = !newValue;
           }
@@ -490,8 +490,12 @@ class TenkenKeikakuCtrl extends BaseCtrl {
     return func;
   }
 
-  // 法定点検のチェックボックスを操作した際に呼ばれる。法定点検をtrue/falseにした際に対となる定期パトをfalse/trueにする
+  // 法定点検のチェックボックスを操作した際に呼ばれる。法定点検をtrueにした際に対となる定期パトをfalseにする
   onHouteiPlanChanged(keikaku, year, newValue) {
+    if (!newValue) {
+      // オフにした場合は何もしない
+      return;
+    }
     if (!keikaku.teiki_pat_flag) {
       // 定期パトを実行しない施設の場合は何もしない
       return;
@@ -499,8 +503,12 @@ class TenkenKeikakuCtrl extends BaseCtrl {
     // teiki_pat_plansに対して対象のデータを見つけ出してチェックボックスの値をセットする関数を実行する
     this.keikaku_list = _.map(this.keikaku_list, this.generateCheckBoxMapFunction('teiki_pat_plans', keikaku.sno, keikaku.struct_idx, year, newValue));
   }
-  // 点検計画のチェックボックスを操作した際に呼ばれる。附属物点検をtrue/falseにした際に対となる定期パトをfalse/trueにする
+  // 点検計画のチェックボックスを操作した際に呼ばれる。附属物点検をtrueにした際に対となる定期パトをfalseにする
   onHuzokubutsuPlanChanged(keikaku, year, newValue) {
+    if (!newValue) {
+      // オフにした場合は何もしない
+      return;
+    }
     if (!keikaku.teiki_pat_flag) {
       // 定期パトを実行しない施設の場合は何もしない
       return;
@@ -508,8 +516,12 @@ class TenkenKeikakuCtrl extends BaseCtrl {
     // teiki_pat_plansに対して対象のデータを見つけ出してチェックボックスの値をセットする関数を実行する
     this.keikaku_list = _.map(this.keikaku_list, this.generateCheckBoxMapFunction('teiki_pat_plans', keikaku.sno, keikaku.struct_idx, year, newValue));
   }
-  // 点検計画のチェックボックスを操作した際に呼ばれる。附属物点検をtrue/falseにした際に対となる定期パトをfalse/trueにする
+  // 点検計画のチェックボックスを操作した際に呼ばれる。附属物点検をtrueにした際に対となる定期パトをfalseにする
   onTeikiPatPlanChanged(keikaku, year, newValue) {
+    if (!newValue) {
+      // オフにした場合は何もしない
+      return;
+    }
     if (keikaku.houtei_flag) {
       // 法定点検を実施する施設の場合はhoutei_plansに対して対象のデータを見つけ出してチェックボックスの値をセットする関数を実行する
       this.keikaku_list = _.map(this.keikaku_list, this.generateCheckBoxMapFunction('houtei_plans', keikaku.sno, keikaku.struct_idx, year, newValue));
@@ -517,6 +529,80 @@ class TenkenKeikakuCtrl extends BaseCtrl {
       // 附属物点検を実施する施設の場合はhuzokubutsu_plansに対して対象のデータを見つけ出してチェックボックスの値をセットする関数を実行する
       this.keikaku_list = _.map(this.keikaku_list, this.generateCheckBoxMapFunction('huzokubutsu_plans', keikaku.sno, keikaku.struct_idx, year, newValue));
     }
+  }
+
+  saveKeikaku() {
+    const message = "点検計画を保存してよろしいですか？";
+    this.confirm(message, 0).then(() => {
+
+      // 保存中を出す
+      this.waitOverlay = true;
+
+      const shisetsuList = _(this.keikaku_list)
+        .map(keikaku => {
+          return {
+            sno: keikaku.sno,
+            shisetsu_kbn: keikaku.shisetsu_kbn,
+            struct_idx: keikaku.struct_idx
+          }
+        })
+        .value();
+
+      let savingHouteiPlans = [];
+      let savingHuzokubutsuPlans = [];
+      let savingTeikiPatPlans = [];
+
+      // それぞれの計画について、plannedがtrueのものだけ抜き出す。
+      const convertPlansToSaveData = (keikaku, plans) => {
+        return _(plans)
+          .filter(plan => plan.planned)
+          .map(plan => {
+            return {
+              sno: keikaku.sno,
+              shisetsu_kbn: keikaku.shisetsu_kbn,
+              struct_idx: keikaku.struct_idx,
+              year: plan.year
+            }
+          })
+          .value();
+      }
+
+      for (const keikaku of this.keikaku_list) {
+        const houteiPlans = convertPlansToSaveData(keikaku, keikaku.houtei_plans);
+        savingHouteiPlans = savingHouteiPlans.concat(houteiPlans);
+
+        const huzokubutsuPlans = convertPlansToSaveData(keikaku, keikaku.huzokubutsu_plans);
+        savingHuzokubutsuPlans = savingHuzokubutsuPlans.concat(huzokubutsuPlans);
+
+        const teikiPatPlans = convertPlansToSaveData(keikaku, keikaku.teiki_pat_plans);
+        savingTeikiPatPlans = savingTeikiPatPlans.concat(teikiPatPlans)
+      }
+
+      const targetYearStart = moment().add(-3, 'months').year();
+      const targetYearEnd = targetYearStart + this.tenken_keikaku_year_span - 1;
+      
+      // 点検計画の保存
+      return this.$http({
+        method: 'POST',
+        url: 'api/index.php/TenkenKeikakuAjax/saveTenkenKeikaku',
+        data: {
+          houtei_plans: savingHouteiPlans,
+          huzokubutsu_plans: savingHuzokubutsuPlans,
+          teiki_pat_plans: savingTeikiPatPlans,
+          target_year_start: targetYearStart,
+          target_year_end: targetYearEnd,
+          shisetsu_list: shisetsuList,
+        }
+      }).then((data) => {
+        // 保存中を消す
+        this.waitOverlay = false;
+        return this.alert("完了メッセージ", "点検計画の登録が完了しました");
+      }).then((data) => {
+        // メッセージ非表示
+        this.windowUnlock();
+        this.$window.location.reload(false);
+      });
+    });
   }
 
   // 選択建管/出張所でフィルタ
@@ -573,39 +659,6 @@ class TenkenKeikakuCtrl extends BaseCtrl {
         break;
     }
     return result;
-  }
-
-  // Map表示タブ選択
-  displayMap() {
-    if (!this.dogen) {
-      return;
-    }
-    setTimeout(() => {
-      this.srch.default_tab_map = true;
-      this.srch.default_tab_list = false;
-      this.initMap();
-      this.drawVector();
-      this.$http({
-        method: "GET",
-        url: "api/index.php/InquirySession/updSrchDisp",
-        params: {
-          map_list: "map"
-        }
-      });
-    }, 1000);
-  }
-
-  // Map表示タブ選択
-  displayList() {
-    this.srch.default_tab_map = false;
-    this.srch.default_tab_list = true;
-    this.$http({
-      method: "GET",
-      url: "api/index.php/InquirySession/updSrchDisp",
-      params: {
-        map_list: "list"
-      }
-    });
   }
 
   // 施設検索
