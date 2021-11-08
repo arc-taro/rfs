@@ -638,18 +638,29 @@ WITH max_tenken_detail AS (
     zenkei_image_1 IS NOT NULL
   GROUP BY
     tenken_list_cd
+),
+ijou_list AS (
+  -- tenken_listごとに、tenken_list_detailsに異常有無フラグが1のレコードを集計する
+  -- ここにヒットしないtenken_list_cdは異常有無フラグが全て0かnull
+  SELECT
+    tenken_list_cd
+    , count(tenken_list_cd) AS ijou_list_count
+  FROM 
+    teiki_patrol.tenken_list_details tld
+  WHERE
+    tld.ijyou_umu_flg = 1
+  GROUP BY
+    tenken_list_cd 
 )
 SELECT
   tld.sno
   ,tl.deliveried_at
   ,wareki_to_char(tl.deliveried_at, 'ggLL')  wareki_ryaku -- 直近年度
-  ,tld.ijyou_umu_flg
+  ,il.ijou_list_count
   ,CASE
-    WHEN tld.ijyou_umu_flg = 0
+    WHEN il.ijou_list_count IS NULL
       THEN '無'
-    WHEN tld.ijyou_umu_flg = 1
-      THEN '有'
-    ELSE ''
+    ELSE '有'
   END umu_str -- 直近異常有無
   -- PHP側で日付を正確に指定するために年月日を分けて取得
   ,to_char(tld.zenkei_image_at, 'YYYY') as target_dt_year
@@ -663,6 +674,9 @@ INNER JOIN
 INNER JOIN 
   max_tenken_detail mtd
   ON tld.zenkei_image_at = mtd.max_zenkei_image_at
+LEFT JOIN
+  ijou_list il
+  ON tl.tenken_list_cd = il.tenken_list_cd
 WHERE
   tld.sno = $sno
 EOF;

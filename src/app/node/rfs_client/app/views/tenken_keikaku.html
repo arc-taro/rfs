@@ -197,7 +197,7 @@
                     <td style="min-height: 44px; max-height: 44px;">{{ keikaku.latest_huzokubutsu && keikaku.latest_huzokubutsu.w_chk_dt ? keikaku.latest_huzokubutsu.w_chk_dt : '' }}</td>
                     <td style="min-height: 44px; max-height: 44px;" ng-style="keikaku.latest_huzokubutsu ? tenkenkeikaku.getCheckShisetsuJudgeCellStyle(keikaku.latest_huzokubutsu.check_shisetsu_judge) : {}">{{ keikaku.latest_huzokubutsu && keikaku.latest_huzokubutsu.check_shisetsu_judge_nm ? keikaku.latest_huzokubutsu.check_shisetsu_judge_nm : '' }}</td>
                     <td style="min-height: 44px; max-height: 44px;">{{ keikaku.latest_teiki_pat && keikaku.latest_teiki_pat.wareki_ryaku ? keikaku.latest_teiki_pat.wareki_ryaku : '' }}</td>
-                    <td style="min-height: 44px; max-height: 44px;" ng-style="keikaku.latest_teiki_pat ? tenkenkeikaku.getIjouUmuCellStyle(keikaku.latest_teiki_pat.ijyou_umu_flg) : {}">{{ keikaku.latest_teiki_pat && keikaku.latest_teiki_pat.umu_str ? keikaku.latest_teiki_pat.umu_str : ''  }}</td>
+                    <td style="min-height: 44px; max-height: 44px;" ng-style="keikaku.latest_teiki_pat ? tenkenkeikaku.getIjouUmuCellStyle(keikaku.latest_teiki_pat.ijou_list_count) : {}">{{ keikaku.latest_teiki_pat && keikaku.latest_teiki_pat.umu_str ? keikaku.latest_teiki_pat.umu_str : ''  }}</td>
                     <!-- 法定点検計画入力のチェックボックス -->
                     <td ng-repeat="plan in keikaku.houtei_plans track by plan.id" style="min-width: 40px; max-width: 40px; min-height: 44px; max-height: 44px; padding: 0;" ng-style="keikaku.houtei_flag && !plan.patrol_done ? {} : {backgroundColor: '#F2F2F2'}">
                       <label style="display: block; width: 100%; height: 100%; margin-bottom: 0; ">

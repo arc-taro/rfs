@@ -632,9 +632,9 @@ class TenkenKeikakuCtrl extends BaseCtrl {
   }
 
   // 異常有無欄のセルのスタイルを生成する
-  getIjouUmuCellStyle(ijyou_umu_flg) {
+  getIjouUmuCellStyle(ijou_list_count) {
     const result = {};
-    if (ijyou_umu_flg) {
+    if (ijou_list_count) {
       result['backgroundColor'] = '#FF0000';
       result['color'] = "#FFFFFF";
     }
