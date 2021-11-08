@@ -940,6 +940,8 @@ LEFT JOIN
   ON date_part('year', rtch.target_dt) = vwsf.seireki
 WHERE
   rtch.sno = $sno
+ORDER BY
+  rtch.chk_times DESC
 EOF;
     $query = $this->DB_rfs->query($sql);
     $result = $query->result('array');
