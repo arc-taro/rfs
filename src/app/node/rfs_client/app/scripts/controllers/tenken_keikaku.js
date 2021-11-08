@@ -523,26 +523,6 @@ class TenkenKeikakuCtrl extends BaseCtrl {
     return false;
   }
 
-  // onHouteiPlanChangedメソッドなどでチェックボックスの値を更新する際に使用するmapの関数を生成する
-  // arrayKey（houtei_plans or huzokubutsu_plans or teiki_pat_plans）以外は共通なので定義
-  generateCheckBoxMapFunction(arrayKey, sno, structIdx, year, newValue) {
-    const func = keikaku => {
-      if (keikaku.sno == sno && keikaku.struct_idx == structIdx) {
-        // snoとstruct_idxが一致する行のみを変更し、それ以外の行は何もしない
-        keikaku[arrayKey] = _.map(keikaku[arrayKey], plan => {
-          // 年が一致し、パトロール実施済みでないもののみを変更する
-          if (plan.year == year && !plan.patrol_done) {
-            // チェックボックスの逆の値をセットする
-            plan.planned = !newValue;
-          }
-          return plan; 
-        });
-      }
-      return keikaku;
-    }
-    return func;
-  }
-
   // 法定点検のチェックボックスを操作した際に呼ばれる。法定点検をtrueにした際に対となる定期パトをfalseにする
   onHouteiPlanChanged(keikaku, year, newValue) {
     if (!newValue) {
@@ -553,8 +533,21 @@ class TenkenKeikakuCtrl extends BaseCtrl {
       // 定期パトを実行しない施設の場合は何もしない
       return;
     }
-    // teiki_pat_plansに対して対象のデータを見つけ出してチェックボックスの値をセットする関数を実行する
-    this.keikaku_list = _.map(this.keikaku_list, this.generateCheckBoxMapFunction('teiki_pat_plans', keikaku.sno, keikaku.struct_idx, year, newValue));
+    // teiki_pat_plansから対になるデータを見つけ出してチェックボックスの値をセットする関数を実行する
+    this.keikaku_list = _.map(this.keikaku_list, 
+      eachKeikaku => {
+        if (eachKeikaku.sno == keikaku.sno && eachKeikaku.struct_idx == keikaku.struct_idx) {
+          // snoとstruct_idxが一致する行のみを変更し、それ以外の行は何もしない
+          eachKeikaku.teiki_pat_plans = _.map(eachKeikaku.teiki_pat_plans, plan => {
+            // 年が一致し、パトロール実施済みでないもののみを変更する
+            if (plan.year == year && !plan.patrol_done) {
+              plan.planned = false;
+            }
+            return plan; 
+          });
+        }
+        return eachKeikaku;
+      });
   }
   // 点検計画のチェックボックスを操作した際に呼ばれる。附属物点検をtrueにした際に対となる定期パトをfalseにする
   onHuzokubutsuPlanChanged(keikaku, year, newValue) {
@@ -567,7 +560,34 @@ class TenkenKeikakuCtrl extends BaseCtrl {
       return;
     }
     // teiki_pat_plansに対して対象のデータを見つけ出してチェックボックスの値をセットする関数を実行する
-    this.keikaku_list = _.map(this.keikaku_list, this.generateCheckBoxMapFunction('teiki_pat_plans', keikaku.sno, keikaku.struct_idx, year, newValue));
+    this.keikaku_list = _.map(this.keikaku_list, 
+      eachKeikaku => {
+        if (keikaku.shisetsu_kbn != 4) {
+          // 防雪柵以外の場合は他と同様に同じ行のチェックボックスを対象とする
+          if (eachKeikaku.sno == keikaku.sno && eachKeikaku.struct_idx == keikaku.struct_idx) {
+            // snoとstruct_idxが一致する行のみを変更し、それ以外の行は何もしない
+            eachKeikaku.teiki_pat_plans = _.map(eachKeikaku.teiki_pat_plans, plan => {
+              // 年が一致し、パトロール実施済みでないもののみを変更する
+              if (plan.year == year && !plan.patrol_done) {
+                plan.planned = false;
+              }
+              return plan; 
+            });
+          }
+        } else {
+          // 防雪柵の場合は防雪柵の親データ(struct_idx == -1)を対象とする
+          if (eachKeikaku.sno == keikaku.sno && eachKeikaku.struct_idx == -1) {
+            eachKeikaku.teiki_pat_plans = _.map(eachKeikaku.teiki_pat_plans, plan => {
+              // 年が一致し、パトロール実施済みでないもののみを変更する
+              if (plan.year == year && !plan.patrol_done) {
+                plan.planned = false;
+              }
+              return plan; 
+            });
+          }
+        }
+        return eachKeikaku;
+      });
   }
   // 点検計画のチェックボックスを操作した際に呼ばれる。附属物点検をtrueにした際に対となる定期パトをfalseにする
   onTeikiPatPlanChanged(keikaku, year, newValue) {
@@ -577,10 +597,49 @@ class TenkenKeikakuCtrl extends BaseCtrl {
     }
     if (keikaku.houtei_flag) {
       // 法定点検を実施する施設の場合はhoutei_plansに対して対象のデータを見つけ出してチェックボックスの値をセットする関数を実行する
-      this.keikaku_list = _.map(this.keikaku_list, this.generateCheckBoxMapFunction('houtei_plans', keikaku.sno, keikaku.struct_idx, year, newValue));
+      this.keikaku_list = _.map(this.keikaku_list, eachKeikaku => {
+        if (eachKeikaku.sno == keikaku.sno && eachKeikaku.struct_idx == keikaku.struct_idx) {
+          // snoとstruct_idxが一致する行のみを変更し、それ以外の行は何もしない
+          eachKeikaku.houtei_plans = _.map(eachKeikaku.houtei_plans, plan => {
+            // 年が一致し、パトロール実施済みでないもののみを変更する
+            if (plan.year == year && !plan.patrol_done) {
+              plan.planned = false;
+            }
+            return plan; 
+          });
+        }
+        return eachKeikaku;
+      });
     } else if (keikaku.huzokubutsu_flag) {
       // 附属物点検を実施する施設の場合はhuzokubutsu_plansに対して対象のデータを見つけ出してチェックボックスの値をセットする関数を実行する
-      this.keikaku_list = _.map(this.keikaku_list, this.generateCheckBoxMapFunction('huzokubutsu_plans', keikaku.sno, keikaku.struct_idx, year, newValue));
+      this.keikaku_list = _.map(this.keikaku_list, eachKeikaku => {
+        if (keikaku.shisetsu_kbn != 4) {
+          // 防雪柵以外の場合は他と同様に同じ行のチェックボックスを対象とする
+          if (eachKeikaku.sno == keikaku.sno && eachKeikaku.struct_idx == keikaku.struct_idx) {
+            // snoとstruct_idxが一致する行のみを変更し、それ以外の行は何もしない
+            eachKeikaku.huzokubutsu_plans = _.map(eachKeikaku.huzokubutsu_plans, plan => {
+              // 年が一致し、パトロール実施済みでないもののみを変更する
+              if (plan.year == year && !plan.patrol_done) {
+                plan.planned = false;
+              }
+              return plan; 
+            });
+          }
+        } else {
+          // 防雪柵の場合は附属物点検の同じsnoでstruct_idxが0異常のものを変更する
+          if (eachKeikaku.sno == keikaku.sno && eachKeikaku.struct_idx > -1) {
+            // snoとstruct_idxが一致する行のみを変更し、それ以外の行は何もしない
+            eachKeikaku.huzokubutsu_plans = _.map(eachKeikaku.huzokubutsu_plans, plan => {
+              // 年が一致し、パトロール実施済みでないもののみを変更する
+              if (plan.year == year && !plan.patrol_done) {
+                plan.planned = false;
+              }
+              return plan; 
+            });
+          }
+        }
+        return eachKeikaku;
+      });
     }
   }
 

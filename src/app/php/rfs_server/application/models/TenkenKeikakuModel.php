@@ -217,7 +217,7 @@ WITH shisetsu AS (
   WHERE
   -- 廃止施設を読み込まないようにする
   ((TRIM(s1.haishi) = '' OR s1.haishi IS NULL) AND s1.haishi_yyyy IS NULL)
-  AND s1.shisetsu_kbn <> 4
+  -- AND s1.shisetsu_kbn <> 4
   $where_dogen_cd
   $where_syucchoujo_cd
   $where_shisetsu_cd
@@ -279,6 +279,7 @@ EOF;
       // 直近の定期パトと法定点検/附属物点検のデータを結合
       $sno = $result[$i_row]['sno'];
       $shisetsu_kbn = $result[$i_row]['shisetsu_kbn'];
+      $struct_idx = $result[$i_row]['struct_idx'];
 
       // 定期パト
       if ($result[$i_row]['teiki_pat_flag']) {
@@ -292,7 +293,7 @@ EOF;
       if ($result[$i_row]['huzokubutsu_flag']) {
         $result[$i_row]['latest_huzokubutsu'] = [];
         // 附属物点検
-        $latest_huzokubutsu_result = $this->getChkMainMaxData($sno, $shisetsu_kbn);
+        $latest_huzokubutsu_result = $this->getChkMainMaxData($sno, $shisetsu_kbn, $struct_idx);
         if (count($latest_huzokubutsu_result) > 0) {
           $result[$i_row]['latest_huzokubutsu'] = $latest_huzokubutsu_result[0];
         }
@@ -593,8 +594,8 @@ WITH patrol_plan AS (
     , rtpp.struct_idx
 )
 , shisetsu AS (
-  -- 防雪柵は支柱インデックスごとに表示するので、防雪柵とそれ以外で分けて取得する
-  -- 防雪柵以外
+  -- ※この後ろのUNIONで防雪柵のレコードを別途取得しているが、
+  -- 定期パトの点検計画は防雪柵自体に紐づくので、ここでは防雪柵の施設自体のレコードも取得する
   SELECT
     s1.*
     ,-1 as struct_idx 
@@ -613,7 +614,6 @@ WITH patrol_plan AS (
   WHERE
   -- 廃止施設を読み込まないようにする
   ((TRIM(s1.haishi) = '' OR s1.haishi IS NULL) AND s1.haishi_yyyy IS NULL)
-  AND s1.shisetsu_kbn <> 4
   $where_dogen_cd
   $where_syucchoujo_cd
   $where_shisetsu_cd
@@ -622,7 +622,7 @@ WITH patrol_plan AS (
   $where_shisetsu_kbn
   $where_rosen
   UNION
-  -- 防雪柵
+  -- 防雪柵は支柱インデックスごとに表示するので、防雪柵は支柱インデックスごとのレコードを別途取得する
   SELECT
       s1.*
       ,rmbs.struct_idx as struct_idx
@@ -694,7 +694,12 @@ FROM
   LEFT JOIN rfs_m_rosen r
     ON s.rosen_cd = r.rosen_cd
   LEFT JOIN patrol_plan pp
-    ON s.sno = pp.sno
+    ON s.sno = pp.sno 
+    -- 防雪柵の場合は結合条件に支柱インデックスを追加する
+    AND CASE WHEN s.shisetsu_kbn <> 4
+        THEN TRUE
+        ELSE s.struct_idx = pp.struct_idx
+    END
 WHERE TRUE
 --  s.shisetsu_ver = (
 --    SELECT
@@ -711,6 +716,7 @@ WHERE TRUE
 ORDER BY 
     s.rosen_cd
     ,s.sp
+    ,s.struct_idx
 
 EOF;
 log_message('debug', "sql=$sql");
@@ -810,7 +816,7 @@ EOF;
    * 　　:$shisetsu_kbn 施設区分
    *
    ***/
-  protected function getChkMainMaxData($sno, $shisetsu_kbn){
+  protected function getChkMainMaxData($sno, $shisetsu_kbn, $struct_idx){
     log_message('info', __METHOD__);
 
     // 防雪柵の場合は親はいらない
@@ -818,20 +824,22 @@ EOF;
     $where_struct_idx="";
     if ($shisetsu_kbn == 4) {
       // 防雪柵
-      $where_struct_idx = "AND struct_idx > 0";
+      $where_struct_idx = "AND rtcm.struct_idx = $struct_idx";
     } else {
-      $where_struct_idx = "AND struct_idx = 0";
+      $where_struct_idx = "AND rtcm.struct_idx = 0";
     }
 
     $sql= <<<EOF
 WITH max_main AS (
   SELECT
     sno
+    ,struct_idx
     ,max(chk_times) AS max_chk_times
   FROM
     rfs_t_chk_main
   GROUP BY
     sno
+    ,struct_idx
 ),
 max_huzokubutsu as (
   SELECT
@@ -858,7 +866,10 @@ FROM
   rfs_t_chk_main rtcm
 INNER JOIN
   max_main mm
-  ON rtcm.sno = mm.sno AND rtcm.chk_times = mm.max_chk_times
+  ON
+    rtcm.sno = mm.sno
+    AND rtcm.chk_times = mm.max_chk_times
+    AND rtcm.struct_idx = mm.struct_idx
 inner JOIN
   rfs_t_chk_huzokubutsu rtch
   on rtcm.chk_mng_no = rtch.chk_mng_no 
