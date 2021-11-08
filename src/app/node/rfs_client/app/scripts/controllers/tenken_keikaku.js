@@ -470,6 +470,59 @@ class TenkenKeikakuCtrl extends BaseCtrl {
       });
   }
 
+  // 法定点検のチェックボックスが無効かどうかを返す
+  // @param {string} name - 表示したい名前を指定する。
+  isHouteiDisabled(keikaku, annualPlan) {
+    if (!keikaku.houtei_flag) {
+      // 法定点検を実施しない施設の場合は無効
+      return true;
+    }
+    if (annualPlan.patrol_done) {
+      // パトロール実施済みの場合は無効
+      return true;
+    }
+    return false;
+  }
+
+  // 附属物点検のチェックボックスが無効かどうかを返す
+  isHuzokubutsuDisabled(keikaku, annualPlan) {
+    if (!keikaku.huzokubutsu_flag) {
+      // 附属物点検を実施しない施設の場合は無効
+      return true;
+    }
+    if (annualPlan.patrol_done) {
+      // パトロール実施済みの場合は無効
+      return true;
+    }
+    if (keikaku.shisetsu_kbn == 4) {
+      // 防雪柵の場合
+      if (keikaku.struct_idx == -1) {
+        // 親の行の場合は無効（附属物点検は支柱インデックスごとに設定するため）
+        return true;
+      }
+    }
+    return false;
+  }
+  // 定期パトロールのチェックボックスが無効かどうかを返す
+  isTeikiPatDisabled(keikaku, annualPlan) {
+    if (!keikaku.teiki_pat_flag) {
+      // 定期パトを実施しない施設の場合は無効
+      return true;
+    }
+    if (annualPlan.patrol_done) {
+      // パトロール実施済みの場合は無効
+      return true;
+    }
+    if (keikaku.shisetsu_kbn == 4) {
+      // 防雪柵の場合
+      if (keikaku.struct_idx > -1) {
+        // 支柱インデックスの行の場合は無効（定期パトはまとめて設定するため）
+        return true;
+      }
+    }
+    return false;
+  }
+
   // onHouteiPlanChangedメソッドなどでチェックボックスの値を更新する際に使用するmapの関数を生成する
   // arrayKey（houtei_plans or huzokubutsu_plans or teiki_pat_plans）以外は共通なので定義
   generateCheckBoxMapFunction(arrayKey, sno, structIdx, year, newValue) {

@@ -178,8 +178,8 @@
                   </tr>
                 </thead>
                 <tbody>
-                  <tr ng-repeat="keikaku in tenkenkeikaku.keikaku_list track by keikaku.sno">
-                    <td style="width: 300px; min-height: 44px; max-height: 44px;text-overflow: ellipsis; white-space: nowrap;">{{ keikaku.shisetsu_kbn_nm }}</td>
+                  <tr ng-repeat="keikaku in tenkenkeikaku.keikaku_list track by keikaku.id">
+                    <td style="width: 300px; min-height: 44px; max-height: 44px;text-overflow: ellipsis; white-space: nowrap;">{{ keikaku.shisetsu_kbn_nm }}<span ng-if="keikaku.shisetsu_kbn == 4 && keikaku.struct_idx > -1">({{keikaku.struct_idx}})</span></td>
                     <td style="min-width: 120px; min-height: 44px; max-height: 44px;"><a style="cursor:pointer;" ng-href="#/fam_edit/{{keikaku.sno}}">{{ keikaku.shisetsu_cd }}</a></td>
                     <td style="min-width: 70px; min-height: 44px; max-height: 44px;">{{ keikaku.rosen_cd }}</td>
                     <td style="min-width: 100px; min-height: 44px; max-height: 44px;">{{ keikaku.rosen_nm }}</td>
@@ -225,37 +225,37 @@
                     <td style="min-height: 44px; max-height: 44px;">{{ keikaku.latest_teiki_pat && keikaku.latest_teiki_pat.wareki_ryaku ? keikaku.latest_teiki_pat.wareki_ryaku : '' }}</td>
                     <td style="min-height: 44px; max-height: 44px;" ng-style="keikaku.latest_teiki_pat ? tenkenkeikaku.getIjouUmuCellStyle(keikaku.latest_teiki_pat.ijou_list_count) : {}">{{ keikaku.latest_teiki_pat && keikaku.latest_teiki_pat.umu_str ? keikaku.latest_teiki_pat.umu_str : ''  }}</td>
                     <!-- 法定点検計画入力のチェックボックス -->
-                    <td ng-repeat="plan in keikaku.houtei_plans track by plan.id" style="min-width: 40px; max-width: 40px; min-height: 44px; max-height: 44px; padding: 0;" ng-style="keikaku.houtei_flag && !plan.patrol_done ? {} : {backgroundColor: '#F2F2F2'}">
+                    <td ng-repeat="annualPlan in keikaku.houtei_plans track by annualPlan.id" style="min-width: 40px; max-width: 40px; min-height: 44px; max-height: 44px; padding: 0;" ng-style="tenkenkeikaku.isHouteiDisabled(keikaku, annualPlan) ? {backgroundColor: '#F2F2F2'} : {}">
                       <label style="display: block; width: 100%; height: 100%; margin-bottom: 0; ">
                         <input
                           type="checkbox"
-                          ng-change="tenkenkeikaku.onHouteiPlanChanged(keikaku, plan.year, plan.planned)"
-                          ng-disabled="!keikaku.houtei_flag || plan.patrol_done"
-                          ng-model="plan.planned"
+                          ng-change="tenkenkeikaku.onHouteiPlanChanged(keikaku, annualPlan.year, annualPlan.planned)"
+                          ng-disabled="tenkenkeikaku.isHouteiDisabled(keikaku, annualPlan)"
+                          ng-model="annualPlan.planned"
                           style="vertical-align: middle;"
                         />
                       </label>
                     </td>
                     <!-- 附属物点検計画入力のチェックボックス -->
-                    <td ng-repeat="plan in keikaku.huzokubutsu_plans track by plan.id" style="min-width: 40px; max-width: 40px; min-height: 44px; max-height: 44px; padding: 0;" ng-style="keikaku.huzokubutsu_flag && !plan.patrol_done ? {} : {backgroundColor: '#F2F2F2'}">
+                    <td ng-repeat="annualPlan in keikaku.huzokubutsu_plans track by annualPlan.id" style="min-width: 40px; max-width: 40px; min-height: 44px; max-height: 44px; padding: 0;" ng-style="tenkenkeikaku.isHuzokubutsuDisabled(keikaku, annualPlan) ? {backgroundColor: '#F2F2F2'} : {}">
                       <label style="display: block; width: 100%; height: 100%; margin-bottom: 0; ">
                         <input
                           type="checkbox"
-                          ng-change="tenkenkeikaku.onHuzokubutsuPlanChanged(keikaku, plan.year, plan.planned)"
-                          ng-disabled="!keikaku.huzokubutsu_flag || plan.patrol_done"
-                          ng-model="plan.planned"
+                          ng-change="tenkenkeikaku.onHuzokubutsuPlanChanged(keikaku, annualPlan.year, annualPlan.planned)"
+                          ng-disabled="tenkenkeikaku.isHuzokubutsuDisabled(keikaku, annualPlan)"
+                          ng-model="annualPlan.planned"
                           style="vertical-align: middle;"
                         />
                       </label>
                     </td>
                     <!-- 道路定期パト計画入力のチェックボックス -->
-                    <td ng-repeat="plan in keikaku.teiki_pat_plans track by plan.id" style="min-width: 40px; max-width: 40px; min-height: 44px; max-height: 44px; padding: 0;" ng-style="keikaku.teiki_pat_flag && !plan.patrol_done ? {} : {backgroundColor: '#F2F2F2'}">
+                    <td ng-repeat="annualPlan in keikaku.teiki_pat_plans track by annualPlan.id" style="min-width: 40px; max-width: 40px; min-height: 44px; max-height: 44px; padding: 0;" ng-style="tenkenkeikaku.isTeikiPatDisabled(keikaku, annualPlan) ? {backgroundColor: '#F2F2F2'} : {}">
                       <label style="display: block; width: 100%; height: 100%; margin-bottom: 0; ">
                         <input
                           type="checkbox"
-                          ng-change="tenkenkeikaku.onTeikiPatPlanChanged(keikaku, plan.year, plan.planned)"
-                          ng-disabled="!keikaku.teiki_pat_flag || plan.patrol_done"
-                          ng-model="plan.planned"
+                          ng-change="tenkenkeikaku.onTeikiPatPlanChanged(keikaku, annualPlan.year, annualPlan.planned)"
+                          ng-disabled="tenkenkeikaku.isTeikiPatDisabled(keikaku, annualPlan)"
+                          ng-model="annualPlan.planned"
                           style="vertical-align: middle;"
                         />
                       </label>
