@@ -52,6 +52,7 @@ class TenkenKeikakuModel extends CI_Model {
     $where_dogen_cd="";
     $where_syucchoujo_cd="";
     $where_shisetsu_cd="";
+    $where_secchi="";
     $where_sp="";
     $where_shisetsu_kbn="";
     $where_rosen="";
@@ -75,6 +76,62 @@ class TenkenKeikakuModel extends CI_Model {
      ***/
     if (isset($condition['shisetsu_cd'])) {
       $where_shisetsu_cd = " AND s1.shisetsu_cd LIKE '%".$condition['shisetsu_cd']."%' ";
+    }
+
+    /***
+     * 設置年度
+     ***/
+    /*** どちらも入っている場合 ***/
+    if (isset($condition['secchi_from']) && isset($condition['secchi_to'])) {
+      // 大小関係
+      if ((int)($condition['secchi_from']) < (int)($condition['secchi_to'])) {
+        // fromの方が小さい
+        if (isset($condition['secchi_null'])) {
+          // 不明を含む
+          $where_secchi = " AND ((".$condition['secchi_from']." <= s1.secchi_yyyy AND s1.secchi_yyyy <= ".$condition['secchi_to'].") OR s1.secchi_yyyy IS NULL) ";
+        } else {
+          $where_secchi = " AND (".$condition['secchi_from']." <= s1.secchi_yyyy AND s1.secchi_yyyy <= ".$condition['secchi_to'].") ";
+        }
+      } else if ((int)($condition['secchi_from']) === (int)($condition['secchi_to'])) {
+        // 同じ場合
+        if (isset($condition['secchi_null'])) {
+          // 不明を含む
+          $where_secchi = " AND (s1.secchi_yyyy = ".$condition['secchi_from']." OR s1.secchi_yyyy IS NULL) ";
+        }else{
+          $where_secchi = " AND s1.secchi_yyyy = ".$condition['secchi_from']." ";
+        }
+      } else {
+        // fromの方が大きい
+        if (isset($condition['secchi_null'])) {
+          // 不明を含む
+          $where_secchi = " AND ((".$condition['secchi_to']." <= s1.secchi_yyyy AND s1.secchi_yyyy <= ".$condition['secchi_from'].") OR s1.secchi_yyyy IS NULL) ";
+        } else {
+          $where_secchi = " AND (".$condition['secchi_to']." <= s1.secchi_yyyy AND s1.secchi_yyyy <= ".$condition['secchi_from'].") ";
+        }
+      }
+
+    /*** どちらも入っていない ***/
+    } else if (!isset($condition['secchi_from']) && !isset($condition['secchi_to'])) {
+      if (isset($condition['secchi_null'])) {
+        // 不明を含む
+        $where_secchi = " AND s1.secchi_yyyy IS NULL ";
+      }
+    /*** FROMのみ入っている場合 ***/
+    } else if (!isset($condition['secchi_to'])) {
+      if (isset($condition['secchi_null'])) {
+        // 不明を含む
+        $where_secchi = " AND (".$condition['secchi_from']." <= s1.secchi_yyyy OR s1.secchi_yyyy IS NULL) ";
+      } else {
+        $where_secchi = " AND ".$condition['secchi_from']." <= s1.secchi_yyyy ";
+      }
+    /*** TOのみ入っている場合 ***/
+    } else {
+      if (isset($condition['secchi_null'])) {
+        // 不明を含む
+        $where_secchi = " AND (s1.secchi_yyyy <= ".$condition['secchi_to']." OR s1.secchi_yyyy IS NULL) ";
+      } else {
+        $where_secchi = " AND s1.secchi_yyyy <= ".$condition['secchi_to']." ";
+      }
     }
 
     /***
@@ -164,6 +221,7 @@ WITH shisetsu AS (
   $where_dogen_cd
   $where_syucchoujo_cd
   $where_shisetsu_cd
+  $where_secchi
   $where_sp
   $where_shisetsu_kbn
   $where_rosen
@@ -194,6 +252,7 @@ WITH shisetsu AS (
   $where_dogen_cd
   $where_syucchoujo_cd
   $where_shisetsu_cd
+  $where_secchi
   $where_sp
   $where_shisetsu_kbn
   $where_rosen
@@ -366,6 +425,7 @@ EOF;
     $where_dogen_cd="";
     $where_syucchoujo_cd="";
     $where_shisetsu_cd="";
+    $where_secchi="";
     $where_sp="";
     $where_shityouson="";
     $where_rosen="";
@@ -390,6 +450,62 @@ EOF;
      ***/
     if (isset($condition['shisetsu_cd'])) {
       $where_shisetsu_cd = " AND s1.shisetsu_cd LIKE '%".$condition['shisetsu_cd']."%' ";
+    }
+
+    /***
+     * 設置年度
+     ***/
+    /*** どちらも入っている場合 ***/
+    if (isset($condition['secchi_from']) && isset($condition['secchi_to'])) {
+      // 大小関係
+      if ((int)($condition['secchi_from']) < (int)($condition['secchi_to'])) {
+        // fromの方が小さい
+        if (isset($condition['secchi_null'])) {
+          // 不明を含む
+          $where_secchi = " AND ((".$condition['secchi_from']." <= s1.secchi_yyyy AND s1.secchi_yyyy <= ".$condition['secchi_to'].") OR s1.secchi_yyyy IS NULL) ";
+        } else {
+          $where_secchi = " AND (".$condition['secchi_from']." <= s1.secchi_yyyy AND s1.secchi_yyyy <= ".$condition['secchi_to'].") ";
+        }
+      } else if ((int)($condition['secchi_from']) === (int)($condition['secchi_to'])) {
+        // 同じ場合
+        if (isset($condition['secchi_null'])) {
+          // 不明を含む
+          $where_secchi = " AND (s1.secchi_yyyy = ".$condition['secchi_from']." OR s1.secchi_yyyy IS NULL) ";
+        }else{
+          $where_secchi = " AND s1.secchi_yyyy = ".$condition['secchi_from']." ";
+        }
+      } else {
+        // fromの方が大きい
+        if (isset($condition['secchi_null'])) {
+          // 不明を含む
+          $where_secchi = " AND ((".$condition['secchi_to']." <= s1.secchi_yyyy AND s1.secchi_yyyy <= ".$condition['secchi_from'].") OR s1.secchi_yyyy IS NULL) ";
+        } else {
+          $where_secchi = " AND (".$condition['secchi_to']." <= s1.secchi_yyyy AND s1.secchi_yyyy <= ".$condition['secchi_from'].") ";
+        }
+      }
+
+    /*** どちらも入っていない ***/
+    } else if (!isset($condition['secchi_from']) && !isset($condition['secchi_to'])) {
+      if (isset($condition['secchi_null'])) {
+        // 不明を含む
+        $where_secchi = " AND s1.secchi_yyyy IS NULL ";
+      }
+    /*** FROMのみ入っている場合 ***/
+    } else if (!isset($condition['secchi_to'])) {
+      if (isset($condition['secchi_null'])) {
+        // 不明を含む
+        $where_secchi = " AND (".$condition['secchi_from']." <= s1.secchi_yyyy OR s1.secchi_yyyy IS NULL) ";
+      } else {
+        $where_secchi = " AND ".$condition['secchi_from']." <= s1.secchi_yyyy ";
+      }
+    /*** TOのみ入っている場合 ***/
+    } else {
+      if (isset($condition['secchi_null'])) {
+        // 不明を含む
+        $where_secchi = " AND (s1.secchi_yyyy <= ".$condition['secchi_to']." OR s1.secchi_yyyy IS NULL) ";
+      } else {
+        $where_secchi = " AND s1.secchi_yyyy <= ".$condition['secchi_to']." ";
+      }
     }
 
     /***
@@ -501,6 +617,7 @@ WITH patrol_plan AS (
   $where_dogen_cd
   $where_syucchoujo_cd
   $where_shisetsu_cd
+  $where_secchi
   $where_sp
   $where_shisetsu_kbn
   $where_rosen
@@ -531,6 +648,7 @@ WITH patrol_plan AS (
   $where_dogen_cd
   $where_syucchoujo_cd
   $where_shisetsu_cd
+  $where_secchi
   $where_sp
   $where_shisetsu_kbn
   $where_rosen

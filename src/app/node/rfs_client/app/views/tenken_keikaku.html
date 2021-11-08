@@ -43,6 +43,32 @@
                     class="btn-group-justified" events="tenkenkeikaku.chkSS"></div>
                 </div>
               </div>
+              <div class="
+                    form-group input-append text-left">
+                <label class="form-control-label text-center margin">
+                  <p class="label">設置年度</p>
+                </label>
+                &nbsp;&nbsp;
+                <input style="position:relative; top:2px;" type="checkbox" ng-model="tenkenkeikaku.srch.include_secchi_null">
+                <p class="label">設置年度不明を対象に含める</p>
+                <div class="form-inline">
+                  <div class="form-group">
+                    <select class="form-control input-sm btn-group-justified select_h"
+                      ng-model="tenkenkeikaku.srch.secchi_nendo_from"
+                      ng-options="nendo.year as nendo.gengou for nendo in tenkenkeikaku.secchi_nendo"
+                      style="width:8em; text-align: left">
+                      <option value="">---</option>
+                    </select>
+                    <span>~</span>
+                    <select class="form-control input-sm btn-group-justified select_h"
+                      ng-model="tenkenkeikaku.srch.secchi_nendo_to"
+                      ng-options="nendo.year as nendo.gengou for nendo in tenkenkeikaku.secchi_nendo"
+                      style="width:8em; text-align: left">
+                      <option value="">---</option>
+                    </select>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -154,7 +180,7 @@
                 <tbody>
                   <tr ng-repeat="keikaku in tenkenkeikaku.keikaku_list track by keikaku.sno">
                     <td style="width: 300px; min-height: 44px; max-height: 44px;text-overflow: ellipsis; white-space: nowrap;">{{ keikaku.shisetsu_kbn_nm }}</td>
-                    <td style="min-width: 120px; min-height: 44px; max-height: 44px;">{{ keikaku.shisetsu_cd }}</td>
+                    <td style="min-width: 120px; min-height: 44px; max-height: 44px;"><a style="cursor:pointer;" ng-href="#/fam_edit/{{keikaku.sno}}">{{ keikaku.shisetsu_cd }}</a></td>
                     <td style="min-width: 70px; min-height: 44px; max-height: 44px;">{{ keikaku.rosen_cd }}</td>
                     <td style="min-width: 100px; min-height: 44px; max-height: 44px;">{{ keikaku.rosen_nm }}</td>
                     <td style="min-width: 50px; min-height: 44px; max-height: 44px;">{{ keikaku.lr_str }}</td>
