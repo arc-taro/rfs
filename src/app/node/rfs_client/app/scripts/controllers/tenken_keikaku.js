@@ -154,7 +154,7 @@ class TenkenKeikakuCtrl extends BaseCtrl {
         const thisYear = moment().add(-3, 'months').year();
         for (let i = 0; i < this.tenken_keikaku_year_span; i++) {
           // 今年から10年分、1年毎に和暦リストから取得してヘッダーの表示値とする
-          const wareki = this.wareki_List_future.find(wareki => wareki.year == (thisYear + i));
+          const wareki = _.find(this.wareki_List_future, wareki => wareki.year == (thisYear + i));
           this.keikaku_nendo_headers.push(wareki.wareki_ryaku);
         }
 
