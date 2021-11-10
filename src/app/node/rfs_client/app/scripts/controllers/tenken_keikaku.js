@@ -90,57 +90,6 @@ class TenkenKeikakuCtrl extends BaseCtrl {
       .then(data => {
         const json = data.data;
 
-        // this.keikaku_list = [
-        //   {
-        //     sno: 1,
-        //     shisetsu_kbn_nm: "橋梁",
-        //     shisetsu_cd: "11111-010",
-        //     rosen_cd: "1001",
-        //     rosen_nm: "小樽定山渓線",
-        //     lr_str: "区分1",
-        //     sp: "9000",
-        //     latest_teiki_pat: {
-        //       wareki_ryaku: "R3",
-        //       umu_str: "無"
-        //     },
-        //     latest_huzokubutsu: {
-        //       w_chk_dt: "R1",
-        //       check_shisetsu_judge_nm: "II"
-        //     },
-        //     houtei_nendo: "",
-        //     houtei_shisetsu_judge: "",
-        //     teiki_pat_nendo: "R4",
-        //     teiki_pat_ijou_umu: "無",
-        //     houtei_plans: [
-        //     {
-        //       target_dt: "2022-04-01",
-        //       nendo: "R4",
-        //       planned: false,
-        //     },
-        //     {
-        //       target_dt: "2023-04-01",
-        //       nendo: "R5",
-        //       planned: true,
-        //     },
-        //     {
-        //       target_dt: "2024-04-01",
-        //       nendo: "R6",
-        //       planned: false,
-        //     },
-        //     {
-        //       target_dt: "2025-04-01",
-        //       nendo: "R7",
-        //       planned: false,
-        //     },
-        //     {
-        //       target_dt: "2026-04-01",
-        //       nendo: "R8",
-        //       planned: false,
-        //     },
-        //     ]
-        //   }
-        // ];
-
         // 和暦リスト
         this.secchi_nendo = json.wareki_list;
 

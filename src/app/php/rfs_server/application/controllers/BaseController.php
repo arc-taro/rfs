@@ -176,4 +176,30 @@ class BaseController extends CI_Controller {
     return;
   }
 
+  /***
+   * DBから法定点検、附属物点検、定期パトロールを実施する施設区分のリストを作成する
+   */
+  protected function getPatrolTypeLists() {
+    $this->load->model('SchCommon');
+    $result = array(
+      'houtei' => [],
+      'huzokubutsu' => [],
+      'teiki_pat' => []
+    );
+    $patrol_types = $this->SchCommon->getPatrolTypes();
+    foreach($patrol_types as $type) {
+      $shisetsu_kbn = $type['shisetsu_kbn'];
+      if ($type['houtei_flag'] == 't') {
+        array_push($result['houtei'], $shisetsu_kbn);
+      }
+      if ($type['huzokubutsu_flag'] == 't') {
+        array_push($result['huzokubutsu'], $shisetsu_kbn);
+      }
+      if ($type['teiki_pat_flag'] == 't') {
+        array_push($result['teiki_pat'], $shisetsu_kbn);
+      }
+    }
+    return $result;
+  }
+
 }

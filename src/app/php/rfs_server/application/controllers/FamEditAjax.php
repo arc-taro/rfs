@@ -132,6 +132,9 @@ class FamEditAjax extends BaseController {
       $result['repair_cost_arr']=$repair_cost;
     }
 
+    // 施設区分と各種点検の組み合わせ一覧を取得
+    $result['patrol_types'] = $this->getPatrolTypeLists();
+
     /*************************/
     /*** 電気通信施設点検取得 ***/
     /*************************/
@@ -145,7 +148,7 @@ class FamEditAjax extends BaseController {
     /********************/
     /*** 附属物点検取得 ***/
     /********************/
-    if (1 <= $shisetsu_kbn && $shisetsu_kbn <= 5) {
+    if (in_array($shisetsu_kbn, $result['patrol_types']['huzokubutsu'])) {
       $huzokubutsu = $this->FamEditModel->getHuzokubutsu($sno, $shisetsu_kbn);
       // 戻り値に設定
       $result['huzokubutsu']=$huzokubutsu;

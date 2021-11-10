@@ -169,6 +169,12 @@ class ShisetsuEditCtrl extends BaseCtrl {
     this.data = {
       zenkei: []
     };
+
+    this.patrol_types = {
+      houtei: [],
+      huzokubutsu: [],
+      teiki_pat: [],
+    };
   }
 
   // 最初にデータを読み出す。
@@ -321,10 +327,22 @@ class ShisetsuEditCtrl extends BaseCtrl {
             }
           }
         }
+
+        // 施設区分と各種点検の組み合わせ一覧
+        this.patrol_types = json.patrol_types;
+
         this.picture = {};
         this.imageShow();
       }
     });
+  }
+
+  // 施設区分が附属物点検の実施対象かどうかを返す
+  isHuzokubutsuTarget(shisetsuKbn) {
+    if (this.patrol_types.huzokubutsu.indexOf(Number(shisetsuKbn)) > -1) {
+      return true;
+    }
+    return false;
   }
 
   // IDの保存を行う
@@ -498,7 +516,7 @@ class ShisetsuEditCtrl extends BaseCtrl {
       this.err_message.push("施設管理番号が未入力です");
     }
     // 形式(附属物点検施設のみ)
-    if (1 <= this.data.shisetsu_kbn && this.data.shisetsu_kbn <= 5) {
+    if (this.isHuzokubutsuTarget(this.data.shisetsu_kbn)) {
       if (!this.data.rrow) {
         this.err_message.push("路線が未選択です");
       }

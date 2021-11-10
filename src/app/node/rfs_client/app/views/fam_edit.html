@@ -160,12 +160,12 @@
                 <th colspan="2">所在地</th>
                 <th rowspan="2" colspan="2">形式／区分等</th>
                 <th colspan="2">
-                  <span ng-if="1 <= famedit.shisetsu.shisetsu_kbn && famedit.shisetsu.shisetsu_kbn <= 5">形式</span>
-                  <span ng-if="5 < famedit.shisetsu.shisetsu_kbn">{{famedit.keishiki_kubun_arr1.syubetsu_title}}</span>
+                  <span ng-if="famedit.isHuzokubutsuTarget(famedit.shisetsu.shisetsu_kbn)">形式</span>
+                  <span ng-if="!famedit.isHuzokubutsuTarget(famedit.shisetsu.shisetsu_kbn)">{{famedit.keishiki_kubun_arr1.syubetsu_title}}</span>
                 </th>
                 <th colspan="2">
-                  <span ng-if="1 <= famedit.shisetsu.shisetsu_kbn && famedit.shisetsu.shisetsu_kbn <= 5">-</span>
-                  <span ng-if="5 < famedit.shisetsu.shisetsu_kbn">{{famedit.keishiki_kubun_arr2.syubetsu_title}}</span>
+                  <span ng-if="famedit.isHuzokubutsuTarget(famedit.shisetsu.shisetsu_kbn)">-</span>
+                  <span ng-if="!famedit.isHuzokubutsuTarget(famedit.shisetsu.shisetsu_kbn)">{{famedit.keishiki_kubun_arr2.syubetsu_title}}</span>
                 </th>
               </tr>
               <tr>
@@ -173,12 +173,12 @@
                 <td colspan="2">{{famedit.shisetsu.shityouson}}{{famedit.shisetsu.azaban}}</td>
                 <td colspan="2">
                   <span
-                    ng-if="1 <= famedit.shisetsu.shisetsu_kbn && famedit.shisetsu.shisetsu_kbn <= 5">{{famedit.shisetsu.shisetsu_keishiki_nm}}</span>
-                  <span ng-if="5 < famedit.shisetsu.shisetsu_kbn">{{famedit.keishiki_kubun_arr1.keishiki_kubun}}</span>
+                    ng-if="famedit.isHuzokubutsuTarget(famedit.shisetsu.shisetsu_kbn)">{{famedit.shisetsu.shisetsu_keishiki_nm}}</span>
+                  <span ng-if="!famedit.isHuzokubutsuTarget(famedit.shisetsu.shisetsu_kbn)">{{famedit.keishiki_kubun_arr1.keishiki_kubun}}</span>
                 </td>
                 <td colspan="2">
-                  <span ng-if="1 <= famedit.shisetsu.shisetsu_kbn && famedit.shisetsu.shisetsu_kbn <= 5">-</span>
-                  <span ng-if="5 < famedit.shisetsu.shisetsu_kbn">{{famedit.keishiki_kubun_arr2.keishiki_kubun}}</span>
+                  <span ng-if="famedit.isHuzokubutsuTarget(famedit.shisetsu.shisetsu_kbn)">-</span>
+                  <span ng-if="!famedit.isHuzokubutsuTarget(famedit.shisetsu.shisetsu_kbn)">{{famedit.keishiki_kubun_arr2.keishiki_kubun}}</span>
                 </td>
               </tr>
               <tr>

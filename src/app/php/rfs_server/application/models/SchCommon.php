@@ -177,14 +177,17 @@ EOF;
 
     $sql= <<<EOF
 SELECT
-  shisetsu_kbn
-  , shisetsu_kbn_nm
+  rmsk.shisetsu_kbn
+  , rmsk.shisetsu_kbn_nm
 FROM
-  rfs_m_shisetsu_kbn
+  rfs_m_shisetsu_kbn rmsk
+INNER JOIN
+  rfs_m_patrol_type rmpt 
+  ON rmsk.shisetsu_kbn = rmpt.shisetsu_kbn 
 WHERE
-  shisetsu_kbn <= 5
+  rmpt.huzokubutsu_flag = true
 ORDER BY
-  sort_no
+  rmsk.sort_no
 EOF;
 
     $query = $this->DB_rfs->query($sql);
@@ -543,22 +546,25 @@ EOF;
     $where_shisetu_kbn="";
     if ($kbn == 1) {
     }else if($kbn == 2) {
-      $where_shisetu_kbn=" AND shisetsu_kbn <= 5";
+      $where_shisetu_kbn=" AND rmpt.huzokubutsu_flag = true";
     }
 
     $sql= <<<EOF
 SELECT
-    shisetsu_kbn    as id
-  , shisetsu_kbn_nm as label
-  , shisetsu_kbn
-  , sort_no
+    rmsk.shisetsu_kbn    as id
+  , rmsk.shisetsu_kbn_nm as label
+  , rmsk.shisetsu_kbn
+  , rmsk.sort_no
 FROM
-  rfs_m_shisetsu_kbn
+  rfs_m_shisetsu_kbn rmsk
+LEFT JOIN
+  rfs_m_patrol_type rmpt 
+  ON rmsk.shisetsu_kbn = rmpt.shisetsu_kbn 
 WHERE
   TRUE
   $where_shisetu_kbn
 ORDER BY
-  sort_no
+  rmsk.sort_no
 EOF;
     $query = $this->DB_rfs->query($sql);
     $result = $query->result('array');
@@ -1100,6 +1106,19 @@ WHERE
   AND seireki <= $to
 ORDER BY 
   seireki $jun
+EOF;
+    $query = $this->DB_rfs->query($sql);
+    $result = $query->result('array');
+    return $result;
+  }
+
+  public function getPatrolTypes() {
+    log_message('debug', __METHOD__);
+    $sql= <<<EOF
+SELECT
+  *
+FROM
+  rfs_m_patrol_type
 EOF;
     $query = $this->DB_rfs->query($sql);
     $result = $query->result('array');
