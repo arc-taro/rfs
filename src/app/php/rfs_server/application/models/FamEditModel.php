@@ -865,6 +865,18 @@ WITH ijou_list AS (
     tld.ijyou_umu_flg = 1
   GROUP BY
     tenken_list_cd 
+),
+max_patrol AS (
+  SELECT 
+    sno
+    ,max(zenkei_image_at) max_zenkei_image_at
+  FROM
+    teiki_patrol.tenken_list_details tld 
+  WHERE 
+    tld.zenkei_image_1 IS NOT NULL 
+    AND tld.shisetsu_flg = 0
+  GROUP BY 
+    sno
 )
 SELECT 
   tls.tenken_list_cd,
@@ -873,11 +885,15 @@ SELECT
   tld.tenken_list_detail_cd,
   wf.wareki_ryaku || '年' wareki_ryaku,
   tls.tenken_list_name,
-  il.ijou_list_count
+  il.ijou_list_count -- 同じtenken_listsに紐づくdetailのうち、ijyou_umu_flg=1のものの数
+  ,tld.ijyou_umu_flg -- このレコードの異常有無
 FROM
   teiki_patrol.tenken_lists tls
 INNER JOIN teiki_patrol.tenken_list_details  tld
   ON tls.tenken_list_cd = tld.tenken_list_cd
+INNER JOIN max_patrol mp 
+  ON tld.sno = mp.sno
+  AND tld.zenkei_image_at = max_zenkei_image_at
 LEFT JOIN v_wareki_seireki_future wf
   ON EXTRACT(YEAR FROM tls.deliveried_at) = wf.seireki
 LEFT JOIN rfs_m_shisetsu shi
@@ -892,6 +908,11 @@ EOF;
     $result = $query->result('array');
     
     for($i = 0; $i < count($result); $i++) {
+      if ($result[$i]['ijyou_umu_flg'] != 1) {
+        // 異常のないレコードは部材の取得対象外
+        $result[$i]['buzai'] = '';
+        continue;
+      }
       $tenken_list_detail_cd = $result[$i]['tenken_list_detail_cd'];
       $shisetsu_kbn = $result[$i]['shisetsu_kbn'];
       // 部材を取得して結果と結合
