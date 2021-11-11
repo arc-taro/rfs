@@ -754,14 +754,14 @@ log_message('debug', "sql=$sql");
     $sql= <<<EOF
 WITH max_tenken_detail AS (
   SELECT 
-    tenken_list_cd
+    sno
     ,max(zenkei_image_at) max_zenkei_image_at
-  FROM 
-    teiki_patrol.tenken_list_details
-  WHERE
-    zenkei_image_1 IS NOT NULL
-  GROUP BY
-    tenken_list_cd
+  FROM
+    teiki_patrol.tenken_list_details tld 
+  WHERE 
+    tld.zenkei_image_1 IS NOT NULL 
+  GROUP BY 
+    sno
 ),
 ijou_list AS (
   -- tenken_listごとに、tenken_list_detailsに異常有無フラグが1のレコードを集計する
@@ -797,7 +797,8 @@ INNER JOIN
   ON tl.tenken_list_cd = tld.tenken_list_cd
 INNER JOIN 
   max_tenken_detail mtd
-  ON tld.zenkei_image_at = mtd.max_zenkei_image_at
+  ON tld.sno = mtd.sno
+  AND tld.zenkei_image_at = mtd.max_zenkei_image_at
 LEFT JOIN
   ijou_list il
   ON tl.tenken_list_cd = il.tenken_list_cd
