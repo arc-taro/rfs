@@ -124,31 +124,52 @@ class TenkenKeikakuCtrl extends BaseCtrl {
         // 路線
         this.rosen_dat = json.rosen;
 
-        // 前画面からの建管・出張所を元に
-        // 建管と出張所の関係をセット（建管は必ずある）
-        // 選択時は該当の建管をセット
-        for (var k = 0; k < this.dogen_syucchoujo_dat.dogen_info.length; k++) {
-          var data_d = this.dogen_syucchoujo_dat.dogen_info[k];
-          if (data_d.dogen_cd == this.mng_dogen_cd) {
-            this.dogen = data_d;
-            this.syucchoujo = {};
-            this.syucchoujo.syucchoujo_cd = 0;
-            for (
-              var l = 0;
-              l < data_d.syucchoujo_row.syucchoujo_info.length;
-              l++
-            ) {
-              var data_s = data_d.syucchoujo_row.syucchoujo_info[l];
-              // 維持管理で選択された出張所をセット
-              if (data_s.syucchoujo_cd == this.mng_syucchoujo_cd) {
-                this.syucchoujo = data_s;
+        // 建管と出張所の関係をセット
+        // 建管未選択
+        if (this.mng_dogen_cd == 0) {
+          // 未選択時は先頭にする
+          var data_d = this.dogen_syucchoujo_dat.dogen_info[0];
+          this.dogen = data_d;
+          this.dogen.dogen_cd = this.dogen.dogen_cd;
+          // 出張所初期化
+          this.syucchoujo = {};
+          this.syucchoujo.syucchoujo_cd = 0;
+
+          for (var l = 0; l < data_d.syucchoujo_row.syucchoujo_info.length; l++) {
+            var data_s = data_d.syucchoujo_row.syucchoujo_info[l];
+            if (data_s.syucchoujo_cd == this.mng_syucchoujo_cd) {
+              this.syucchoujo = data_s;
+            }
+          }
+        } else {
+          // 選択時は該当の建管をセット
+          for (var k = 0; k < this.dogen_syucchoujo_dat.dogen_info.length; k++) {
+            var data_d = this.dogen_syucchoujo_dat.dogen_info[k];
+            if (data_d.dogen_cd == this.mng_dogen_cd) {
+              this.dogen = data_d;
+              this.syucchoujo = {};
+              this.syucchoujo.syucchoujo_cd = 0;
+              for (
+                var l = 0;
+                l < data_d.syucchoujo_row.syucchoujo_info.length;
+                l++
+              ) {
+                var data_s = data_d.syucchoujo_row.syucchoujo_info[l];
+                // 維持管理で選択された出張所をセット
+                if (data_s.syucchoujo_cd == this.mng_syucchoujo_cd) {
+                  this.syucchoujo = data_s;
+                }
               }
             }
           }
         }
-
+        return this.mngarea_update(this.$http, this.dogen.dogen_cd, this.syucchoujo.syucchoujo_cd);
+      }).then(() => {
+        // mngarea上書き
+        this.mng_dogen_cd = this.session.mngarea.dogen_cd;
+        this.mng_syucchoujo_cd = this.session.mngarea.syucchoujo_cd;
       })
-      .finally(data => {
+      .finally(() => {
 
         // 路線リストを生成
         this.filterRosen = this.filterRosens();
