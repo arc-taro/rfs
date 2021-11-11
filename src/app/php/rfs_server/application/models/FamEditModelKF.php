@@ -3,7 +3,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
 require("FamEditModel.php");
 
-// 台帳:道路土工構造物（法面・擁壁・函渠）登録用
+// 台帳:切土登録用
 class FamEditModelKF extends FamEditModel {
 
   /**
@@ -14,7 +14,7 @@ class FamEditModelKF extends FamEditModel {
   }
 
   /***
-   *  台帳:道路土工構造物（法面・擁壁・函渠）の更新
+   *  台帳:切土の更新
    *
    *  引数
    *    $daichou 入力台帳

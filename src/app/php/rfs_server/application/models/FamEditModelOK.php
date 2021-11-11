@@ -3,7 +3,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
 require("FamEditModel.php");
 
-// 台帳:トンネル・シェッド等・大型カルバート登録用
+// 台帳:大型カルバート登録用
 class FamEditModelOK extends FamEditModel {
 
   /**
@@ -14,7 +14,7 @@ class FamEditModelOK extends FamEditModel {
   }
 
   /***
-   *  台帳:トンネル・シェッド等・大型カルバートの更新
+   *  台帳:大型カルバートの更新
    *
    *  引数
    *    $daichou 入力台帳

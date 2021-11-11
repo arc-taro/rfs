@@ -112,18 +112,32 @@ class SysTopAjax extends BaseController {
     $ret_ts=$this->SysTopModel->getSumShisetsu($dogen_cd, $syucchoujo_cd, 20);
     // ロードヒーティング(未決定だったので仮にrhにした)
     $ret_rh=$this->SysTopModel->getSumShisetsu($dogen_cd, $syucchoujo_cd, 21);
-    // 橋梁・横断歩道橋
+    // 道路標識（門型）
+    $ret_dm=$this->SysTopModel->getSumShisetsu($dogen_cd, $syucchoujo_cd, 35);
+    // 道路情報提供装置（門型）
+    $ret_jm=$this->SysTopModel->getSumShisetsu($dogen_cd, $syucchoujo_cd, 36);
+    // 橋梁
     $ret_br=$this->SysTopModel->getSumShisetsu($dogen_cd, $syucchoujo_cd, 24);
-    // トンネル・シェッド等・大型カルバート
-    $ret_ok=$this->SysTopModel->getSumShisetsu($dogen_cd, $syucchoujo_cd, 25);
-    // 道路土工構造物（法面・擁壁・函渠）
+    // 横断歩道橋
+    $ret_oh=$this->SysTopModel->getSumShisetsu($dogen_cd, $syucchoujo_cd, 29);
+    // トンネル
+    $ret_tn=$this->SysTopModel->getSumShisetsu($dogen_cd, $syucchoujo_cd, 25);
+    // シェッド等
+    $ret_sh=$this->SysTopModel->getSumShisetsu($dogen_cd, $syucchoujo_cd, 30);
+    // 大型カルバート
+    $ret_ok=$this->SysTopModel->getSumShisetsu($dogen_cd, $syucchoujo_cd, 31);
+    // 切土
     $ret_kf=$this->SysTopModel->getSumShisetsu($dogen_cd, $syucchoujo_cd, 26);
+    // 盛土
+    $ret_mt=$this->SysTopModel->getSumShisetsu($dogen_cd, $syucchoujo_cd, 34);
     // 歩道
     $ret_hd=$this->SysTopModel->getSumShisetsu($dogen_cd, $syucchoujo_cd, 27);
-    // カルテ点検
+    // 落石崩壊
     $ret_gk=$this->SysTopModel->getSumShisetsu($dogen_cd, $syucchoujo_cd, 28);
-    // 道路標識（門型）
-    $ret_dm=$this->SysTopModel->getSumShisetsu($dogen_cd, $syucchoujo_cd, 29);
+    // 岩盤崩壊
+    $ret_gh=$this->SysTopModel->getSumShisetsu($dogen_cd, $syucchoujo_cd, 32);
+    // 急流河川
+    $ret_kk=$this->SysTopModel->getSumShisetsu($dogen_cd, $syucchoujo_cd, 33);
     
     // 返却$result作成
     $result["dh"] = $ret_dh;
@@ -147,12 +161,19 @@ class SysTopAjax extends BaseController {
     $result["dn"] = $ret_dn;
     $result["ts"] = $ret_ts;
     $result["rh"] = $ret_rh;
+    $result["dm"] = $ret_dm;
+    $result["jm"] = $ret_jm;
     $result["br"] = $ret_br;
+    $result["oh"] = $ret_oh;
+    $result["tn"] = $ret_tn;
+    $result["sh"] = $ret_sh;
     $result["ok"] = $ret_ok;
     $result["kf"] = $ret_kf;
+    $result["mt"] = $ret_mt;
     $result["hd"] = $ret_hd;
     $result["gk"] = $ret_gk;
-    $result["dm"] = $ret_dm;
+    $result["gh"] = $ret_gh;
+    $result["kk"] = $ret_kk;
 
     return $result;
   }

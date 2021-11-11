@@ -688,37 +688,37 @@ class FameditCtrl extends BaseCtrl {
           ]
         }
       },
-      "24": { // 橋梁・横断歩道橋
+      "24": { // 橋梁
         num: [],
         num_str: [],
         pulldown: [],
         date: [],
         include_tpl: {
-          daichou_tplnm: 'views/daichou/kyouryou_oudanhodoukyou.html',
+          daichou_tplnm: 'views/daichou/kyouryou.html',
           daichou_rireki: [
             this.TENKEN_HOSYUU_RIREKI_TEMPLATE_PATH,
           ]
         }
       },
-      "25": { // トンネル・シェッド等・大型カルバート
+      "25": { // トンネル
         num: [],
         num_str: [],
         pulldown: [],
         date: [],
         include_tpl: {
-          daichou_tplnm: 'views/daichou/tonneru_shed_culvert.html',
+          daichou_tplnm: 'views/daichou/tonneru2.html',
           daichou_rireki: [
             this.TENKEN_HOSYUU_RIREKI_TEMPLATE_PATH,
           ]
         }
       },
-      "26": { // 道路土工構造物（法面・擁壁・函渠）
+      "26": { // 切土
         num: [],
         num_str: [],
         pulldown: [],
         date: [],
         include_tpl: {
-          daichou_tplnm: 'views/daichou/douro_dokou_kouzoubutsu.html',
+          daichou_tplnm: 'views/daichou/kirido.html',
           daichou_rireki: [
             this.TENKEN_HOSYUU_RIREKI_TEMPLATE_PATH,
           ]
@@ -736,25 +736,109 @@ class FameditCtrl extends BaseCtrl {
           ]
         }
       },
-      "28": { // カルテ点検（落石・崩壊、急流河川）
+      "28": { // 落石崩壊
         num: [],
         num_str: [],
         pulldown: [],
         date: [],
         include_tpl: {
-          daichou_tplnm: 'views/daichou/carte_tenken.html',
+          daichou_tplnm: 'views/daichou/rakuseki_houkai.html',
           daichou_rireki: [
             this.TENKEN_HOSYUU_RIREKI_TEMPLATE_PATH,
           ]
         }
       },
-      "29": { // 道路標識（門型）
+      "29": { // 横断歩道橋
+        num: [],
+        num_str: [],
+        pulldown: [],
+        date: [],
+        include_tpl: {
+          daichou_tplnm: 'views/daichou/oudanhodoukyou.html',
+          daichou_rireki: [
+            this.TENKEN_HOSYUU_RIREKI_TEMPLATE_PATH,
+          ]
+        }
+      },
+      "30": { // シェッド等
+        num: [],
+        num_str: [],
+        pulldown: [],
+        date: [],
+        include_tpl: {
+          daichou_tplnm: 'views/daichou/shed.html',
+          daichou_rireki: [
+            this.TENKEN_HOSYUU_RIREKI_TEMPLATE_PATH,
+          ]
+        }
+      },
+      "31": { // 大型カルバート
+        num: [],
+        num_str: [],
+        pulldown: [],
+        date: [],
+        include_tpl: {
+          daichou_tplnm: 'views/daichou/culvert.html',
+          daichou_rireki: [
+            this.TENKEN_HOSYUU_RIREKI_TEMPLATE_PATH,
+          ]
+        }
+      },
+      "32": { // 岩盤崩壊
+        num: [],
+        num_str: [],
+        pulldown: [],
+        date: [],
+        include_tpl: {
+          daichou_tplnm: 'views/daichou/gamban_houkai.html',
+          daichou_rireki: [
+            this.TENKEN_HOSYUU_RIREKI_TEMPLATE_PATH,
+          ]
+        }
+      },
+      "33": { // 急流河川
+        num: [],
+        num_str: [],
+        pulldown: [],
+        date: [],
+        include_tpl: {
+          daichou_tplnm: 'views/daichou/kyuuryuu_kasen.html',
+          daichou_rireki: [
+            this.TENKEN_HOSYUU_RIREKI_TEMPLATE_PATH,
+          ]
+        }
+      },
+      "34": { // 盛土
+        num: [],
+        num_str: [],
+        pulldown: [],
+        date: [],
+        include_tpl: {
+          daichou_tplnm: 'views/daichou/morido.html',
+          daichou_rireki: [
+            this.TENKEN_HOSYUU_RIREKI_TEMPLATE_PATH,
+          ]
+        }
+      },
+      "35": { // 道路標識（門型）
         num: [],
         num_str: [],
         pulldown: [],
         date: [],
         include_tpl: {
           daichou_tplnm: 'views/daichou/hyoushiki_mongata.html',
+          daichou_rireki: [
+            this.TENKEN_HOSYUU_RIREKI_TEMPLATE_PATH,
+          ]
+        }
+      },
+      "36": { // 道路情報提供装置（門型）
+        num: [],
+        num_str: [],
+        pulldown: [],
+        date: [],
+        include_tpl: {
+          daichou_tplnm: 'views/daichou/jyouhouban_mongata.html',
           daichou_rireki: [
             this.TENKEN_HOSYUU_RIREKI_TEMPLATE_PATH,
           ]
@@ -866,6 +950,32 @@ class FameditCtrl extends BaseCtrl {
       this.setMstKK(json); // 冠水警報表示
     } else if (this.shisetsu.shisetsu_kbn == 23) {
       this.setMstTK(json); // トンネル警報表示
+    } else if (this.shisetsu.shisetsu_kbn == 24) {
+      this.setMstBR(json); // 橋梁
+    } else if (this.shisetsu.shisetsu_kbn == 25) {
+      this.setMstTN(json); // トンネル
+    } else if (this.shisetsu.shisetsu_kbn == 26) {
+      this.setMstKF(json); // 切土
+    } else if (this.shisetsu.shisetsu_kbn == 27) {
+      this.setMstHD(json); // 歩道
+    } else if (this.shisetsu.shisetsu_kbn == 28) {
+      this.setMstGK(json); // 落石崩壊
+    } else if (this.shisetsu.shisetsu_kbn == 29) {
+      this.setMstOH(json); // 横断歩道橋
+    } else if (this.shisetsu.shisetsu_kbn == 30) {
+      this.setMstSH(json); // シェッド等
+    } else if (this.shisetsu.shisetsu_kbn == 31) {
+      this.setMstOK(json); // 大型カルバート
+    } else if (this.shisetsu.shisetsu_kbn == 32) {
+      this.setMstGH(json); // 岩盤崩壊
+    } else if (this.shisetsu.shisetsu_kbn == 33) {
+      this.setMstKK(json); // 急流河川
+    } else if (this.shisetsu.shisetsu_kbn == 34) {
+      this.setMstMT(json); // 盛土
+    } else if (this.shisetsu.shisetsu_kbn == 35) {
+      this.setMstDM(json); // 道路標識（門型）
+    } else if (this.shisetsu.shisetsu_kbn == 36) {
+      this.setMstJM(json); // 道路情報提供装置（門型）
     }
   }
 
@@ -1017,6 +1127,32 @@ class FameditCtrl extends BaseCtrl {
     this.koukyou_tandoku_arr = json.koukyou_tandoku; // 公共単独
     this.hyouji_shiyou_arr = json.hyouji_shiyou; // 表示仕様
   }
+
+  setMstBR(json) {}
+
+  setMstTN(json) {}
+  
+  setMstKF(json) {}
+  
+  setMstHD(json) {}
+  
+  setMstGK(json) {}
+  
+  setMstOH(json) {}
+  
+  setMstSH(json) {}
+  
+  setMstOK(json) {}
+  
+  setMstGH(json) {}
+  
+  setMstKK(json) {}
+  
+  setMstMT(json) {}
+  
+  setMstDM(json) {}
+  
+  setMstJM(json) {}
 
   // 形式区分セット
   setKeishikiKubunArr(json) {
@@ -1201,7 +1337,7 @@ class FameditCtrl extends BaseCtrl {
       } else if (this.shisetsu.shisetsu_kbn == 24) {
         this.feature.style.externalGraphic = `images/icon/shisetsu_mng/br_1.gif`;
       } else if (this.shisetsu.shisetsu_kbn == 25) {
-        this.feature.style.externalGraphic = `images/icon/shisetsu_mng/ok_1.gif`;
+        this.feature.style.externalGraphic = `images/icon/shisetsu_mng/tn_1.gif`;
       } else if (this.shisetsu.shisetsu_kbn == 26) {
         this.feature.style.externalGraphic = `images/icon/shisetsu_mng/kf_1.gif`;
       } else if (this.shisetsu.shisetsu_kbn == 27) {
@@ -1209,7 +1345,21 @@ class FameditCtrl extends BaseCtrl {
       } else if (this.shisetsu.shisetsu_kbn == 28) {
         this.feature.style.externalGraphic = `images/icon/shisetsu_mng/gk_1.gif`;
       } else if (this.shisetsu.shisetsu_kbn == 29) {
+        this.feature.style.externalGraphic = `images/icon/shisetsu_mng/oh_1.gif`;
+      } else if (this.shisetsu.shisetsu_kbn == 30) {
+        this.feature.style.externalGraphic = `images/icon/shisetsu_mng/sh_1.gif`;
+      } else if (this.shisetsu.shisetsu_kbn == 31) {
+        this.feature.style.externalGraphic = `images/icon/shisetsu_mng/ok_1.gif`;
+      } else if (this.shisetsu.shisetsu_kbn == 34) {
+        this.feature.style.externalGraphic = `images/icon/shisetsu_mng/mt_1.gif`;
+      } else if (this.shisetsu.shisetsu_kbn == 32) {
+        this.feature.style.externalGraphic = `images/icon/shisetsu_mng/gh_1.gif`;
+      } else if (this.shisetsu.shisetsu_kbn == 33) {
+        this.feature.style.externalGraphic = `images/icon/shisetsu_mng/kk_1.gif`;
+      } else if (this.shisetsu.shisetsu_kbn == 35) {
         this.feature.style.externalGraphic = `images/icon/shisetsu_mng/dm_1.gif`;
+      } else if (this.shisetsu.shisetsu_kbn == 36) {
+        this.feature.style.externalGraphic = `images/icon/shisetsu_mng/jm_1.gif`;
       }
       this.vectorLayer.addFeatures([this.feature]);
     } else {

@@ -80,13 +80,20 @@ class SystopCtrl extends BaseCtrl {
       this.sum_rh = json.rh;
       this.sum_kk = json.kk;
       this.sum_tk = json.tk;
+      this.sum_dm = json.dm;
+      this.sum_jm = json.jm;
       this.sum_br = json.br;
+      this.sum_oh = json.oh;
+      this.sum_tn = json.tn;
+      this.sum_sh = json.sh;
       this.sum_ok = json.ok;
       this.sum_kf = json.kf;
+      this.sum_mt = json.mt;
       this.sum_hd = json.hd;
       this.sum_gk = json.gk;
-      this.sum_dm = json.dm;
-
+      this.sum_gh = json.gh;
+      this.sum_kk = json.kk;
+      
       // 電気通信URL
       this.ele_url = json.ele_url;
 
