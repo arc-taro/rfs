@@ -831,57 +831,40 @@ EOF;
     }
 
     $sql= <<<EOF
-WITH max_main AS (
-  SELECT
-    sno
-    ,struct_idx
-    ,max(chk_times) AS max_chk_times
-  FROM
-    rfs_t_chk_main
-  GROUP BY
-    sno
-    ,struct_idx
-),
-max_huzokubutsu as (
-  SELECT
-    chk_mng_no 
-    ,max(rireki_no) AS max_rireki_no
-  FROM
-    rfs_t_chk_huzokubutsu
-  GROUP BY
-    chk_mng_no
-)
-select
+SELECT
   rtcm.chk_mng_no
   , rtcm.sno
   , rtch.chk_dt
   , rtcm.struct_idx
+  , rtch.check_shisetsu_judge
+  , rtcm.chk_times
+  , rtch.rireki_no
   , wareki_to_char(rtch.chk_dt, 'ggLL') w_chk_dt  -- 直近年度
   , rtch.check_shisetsu_judge
   , rmsj.shisetsu_judge_nm check_shisetsu_judge_nm  -- 直近の健全性
   -- PHP側で日付を正確に指定するために年月日を分けて取得
-  ,to_char(rtcm.target_dt, 'YYYY') as target_dt_year
-  ,to_char(rtcm.target_dt, 'MM') as target_dt_month
-  ,to_char(rtcm.target_dt, 'MM') as target_dt_day
+  , to_char(rtcm.target_dt, 'YYYY') as target_dt_year
+  , to_char(rtcm.target_dt, 'MM') as target_dt_month
+  , to_char(rtcm.target_dt, 'MM') as target_dt_day
 FROM
+  rfs_m_shisetsu rms
+LEFT JOIN
   rfs_t_chk_main rtcm
-INNER JOIN
-  max_main mm
-  ON
-    rtcm.sno = mm.sno
-    AND rtcm.chk_times = mm.max_chk_times
-    AND rtcm.struct_idx = mm.struct_idx
-inner JOIN
+  ON rms.sno = rtcm.sno
+LEFT JOIN
   rfs_t_chk_huzokubutsu rtch
-  on rtcm.chk_mng_no = rtch.chk_mng_no 
-inner join 
-  max_huzokubutsu mh
-  on rtch.chk_mng_no = mh.chk_mng_no and rtch.rireki_no = mh.max_rireki_no
+  ON rtch.chk_mng_no = rtcm.chk_mng_no
 LEFT JOIN rfs_m_shisetsu_judge rmsj
   ON rtch.check_shisetsu_judge = rmsj.shisetsu_judge
 WHERE
   rtcm.sno = $sno
+  AND rtch.chk_mng_no IS NOT NULL
   $where_struct_idx
+ORDER BY
+-- chk_timesとrireki_noが最大のもののみを取得するためにソートして最初の1件を取得する
+  chk_times DESC
+  , rireki_no DESC
+LIMIT 1
 EOF;
     $query = $this->DB_rfs->query($sql);
     $result = $query->result('array');
