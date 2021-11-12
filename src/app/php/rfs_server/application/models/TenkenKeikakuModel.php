@@ -276,7 +276,7 @@ EOF;
     $result = $this->srchTenkenShisetsuMain($condition);
     
     for($i_row = 0; $i_row < count($result); $i_row++) {
-      // 直近の定期パトと法定点検/附属物点検のデータを結合
+      // 直近の附属物点検のデータを結合（定期パトと法定点検はMainで取得済み）
       $sno = $result[$i_row]['sno'];
       $shisetsu_kbn = $result[$i_row]['shisetsu_kbn'];
       $struct_idx = $result[$i_row]['struct_idx'];
@@ -287,14 +287,6 @@ EOF;
         $latest_huzokubutsu_result = $this->getChkMainMaxData($sno, $shisetsu_kbn, $struct_idx);
         if (count($latest_huzokubutsu_result) > 0) {
           $result[$i_row]['latest_huzokubutsu'] = $latest_huzokubutsu_result[0];
-        }
-      }
-      if ($result[$i_row]['houtei_flag']) {
-        $result[$i_row]['latest_houtei'] = [];
-        // 法定点検
-        $latest_houtei_result = $this->getChkHouteiMaxData($sno);
-        if (count($latest_houtei_result) > 0) {
-          $result[$i_row]['latest_houtei'] = $latest_houtei_result[0];
         }
       }
 
@@ -609,6 +601,7 @@ WITH patrol_plan AS (
     tenken_list_cd 
 )
 , latest_teiki_pat AS (
+  -- snoごとに直近の定期パトロールを取得する
   SELECT
     tld.sno
     ,tl.deliveried_at
@@ -637,6 +630,7 @@ WITH patrol_plan AS (
     ON tl.tenken_list_cd = il.tenken_list_cd
 )
 , latest_teiki_pat_json AS (
+  -- 直近の定期パトロールは1オブジェクトとしてまとまっていたほうが扱いやすいのでJSONに変換しておく
   SELECT
     ltp.sno
     , json_agg(ltp) latest_teiki_pat_json
@@ -644,6 +638,39 @@ WITH patrol_plan AS (
     latest_teiki_pat ltp
   GROUP BY 
     ltp.sno
+)
+, max_houtei_chk_times AS (
+  SELECT
+    sno
+    ,max(chk_times) AS max_chk_times
+  FROM
+    rfs_t_chk_houtei 
+  GROUP BY
+    sno
+)
+, latest_houtei AS (
+  -- snoごとに直近の法定点検を取得する
+  SELECT
+    rtch.*
+    -- PHP側で日付を正確に指定するために年月日を分けて取得
+    ,to_char(rtch.target_dt, 'YYYY') as target_dt_year
+    ,to_char(rtch.target_dt, 'MM') as target_dt_month
+    ,to_char(rtch.target_dt, 'MM') as target_dt_day
+  FROM
+    rfs_t_chk_houtei rtch 
+  INNER JOIN
+    max_houtei_chk_times mhct
+  ON rtch.sno = mhct.sno AND rtch.chk_times = mhct.max_chk_times
+)
+, latest_houtei_json AS (
+  -- 直近の法定点検は1オブジェクトとしてまとまっていたほうが扱いやすいのでJSONに変換しておく
+  SELECT
+    lh.sno
+    , json_agg(lh) latest_houtei_json
+  FROM
+    latest_houtei lh
+  GROUP BY 
+    lh.sno
 )
 , shisetsu AS (
   -- ※この後ろのUNIONで防雪柵のレコードを別途取得しているが、
@@ -737,6 +764,7 @@ SELECT
   , rmpt.huzokubutsu_flag
   , rmpt.teiki_pat_flag
   , ltpj.latest_teiki_pat_json
+  , lhj.latest_houtei_json
 FROM
   shisetsu s
   INNER JOIN
@@ -745,6 +773,9 @@ FROM
   LEFT JOIN
     latest_teiki_pat_json ltpj
     ON ltpj.sno = s.sno AND rmpt.teiki_pat_flag = TRUE
+  LEFT JOIN
+    latest_houtei_json lhj
+    ON lhj.sno = s.sno AND rmpt.houtei_flag = TRUE
   LEFT JOIN rfs_m_shisetsu_kbn sk
     ON s.shisetsu_kbn = sk.shisetsu_kbn
   LEFT JOIN rfs_m_rosen r
@@ -775,7 +806,7 @@ ORDER BY
     ,s.struct_idx
 
 EOF;
-log_message('debug', "sql=$sql");
+    // log_message('debug', "sql=$sql");
     $query = $this->DB_rfs->query($sql);
     $result = $query->result('array');
 
@@ -785,7 +816,7 @@ log_message('debug', "sql=$sql");
       $row['huzokubutsu_flag'] = $row['huzokubutsu_flag'] == 't' ? true : false;
       $row['teiki_pat_flag'] = $row['teiki_pat_flag'] == 't' ? true : false;
 
-      // patrol_plansと直近のパトロールはJSON文字列なので連想配列に戻す
+      // patrol_plansと直近の点検はJSON文字列なので連想配列に戻す
       $row['patrol_plans'] = is_null($row['patrol_plans']) ? [] : json_decode($row['patrol_plans'], true);
       if ($row['teiki_pat_flag']) {
         $latest_teiki_pat = is_null($row['latest_teiki_pat_json']) ? [] : json_decode($row['latest_teiki_pat_json'], true);
@@ -794,6 +825,18 @@ log_message('debug', "sql=$sql");
           $row['latest_teiki_pat'] = $latest_teiki_pat[0];
         }
       }
+      // JSONデータは変換して不要になるので削除
+      unset($row['latest_teiki_pat_json']);
+      if ($row['houtei_flag']) {
+        $latest_houtei = is_null($row['latest_houtei_json']) ? [] : json_decode($row['latest_houtei_json'], true);
+        $row['latest_houtei'] = [];
+        if (count($latest_houtei) > 0) {
+          $row['latest_houtei'] = $latest_houtei[0];
+        }
+      }
+      // JSONデータは変換して不要になるので削除
+      unset($row['latest_houtei_json']);
+      // ※附属物点検は1つのSQLでは難しそうなので、呼び出し元で1レコードごとに別途SQLを発行して取得する
 
       return $row;
     }, $result);
@@ -813,7 +856,8 @@ log_message('debug', "sql=$sql");
    *
    ***/
   protected function getChkMainMaxData($sno, $shisetsu_kbn, $struct_idx){
-    log_message('info', __METHOD__);
+    // 検索結果1レコードごとに読みだされるため、関数の呼び出しログが大量に出るので削除
+    // log_message('info', __METHOD__);
 
     // 防雪柵の場合は親はいらない
     // それ以外はstruct_idx=0
@@ -860,45 +904,6 @@ ORDER BY
   chk_times DESC
   , rireki_no DESC
 LIMIT 1
-EOF;
-    $query = $this->DB_rfs->query($sql);
-    $result = $query->result('array');
-    return $result;
-  }
-
-  /***
-   * 法定点検の直近データを取得する。
-   *
-   * 引数:$sno sno
-   * 　　:$shisetsu_kbn 施設区分
-   *
-   ***/
-  protected function getChkHouteiMaxData($sno){
-    log_message('info', __METHOD__);
-
-    $sql= <<<EOF
-WITH max_houtei AS (
-  SELECT
-    sno
-    ,max(chk_times) AS max_chk_times
-  FROM
-    rfs_t_chk_houtei rtch2 
-  GROUP BY
-    sno
-)
-SELECT
-rtch.*
--- PHP側で日付を正確に指定するために年月日を分けて取得
-,to_char(rtch.target_dt, 'YYYY') as target_dt_year
-,to_char(rtch.target_dt, 'MM') as target_dt_month
-,to_char(rtch.target_dt, 'MM') as target_dt_day
-FROM
-  rfs_t_chk_houtei rtch 
-INNER JOIN
-  max_houtei
-ON rtch.sno = max_houtei.sno AND rtch.chk_times = max_houtei.max_chk_times
-WHERE
-  rtch.sno = $sno
 EOF;
     $query = $this->DB_rfs->query($sql);
     $result = $query->result('array');
