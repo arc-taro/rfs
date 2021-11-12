@@ -276,19 +276,19 @@ EOF;
     $result = $this->srchTenkenShisetsuMain($condition);
     
     for($i_row = 0; $i_row < count($result); $i_row++) {
-      // 直近の附属物点検のデータを結合（定期パトと法定点検はMainで取得済み）
-      $sno = $result[$i_row]['sno'];
-      $shisetsu_kbn = $result[$i_row]['shisetsu_kbn'];
-      $struct_idx = $result[$i_row]['struct_idx'];
+      // // 直近の附属物点検のデータを結合（定期パトと法定点検はMainで取得済み）
+      // $sno = $result[$i_row]['sno'];
+      // $shisetsu_kbn = $result[$i_row]['shisetsu_kbn'];
+      // $struct_idx = $result[$i_row]['struct_idx'];
 
-      if ($result[$i_row]['huzokubutsu_flag']) {
-        $result[$i_row]['latest_huzokubutsu'] = [];
-        // 附属物点検
-        $latest_huzokubutsu_result = $this->getChkMainMaxData($sno, $shisetsu_kbn, $struct_idx);
-        if (count($latest_huzokubutsu_result) > 0) {
-          $result[$i_row]['latest_huzokubutsu'] = $latest_huzokubutsu_result[0];
-        }
-      }
+      // if ($result[$i_row]['huzokubutsu_flag']) {
+      //   $result[$i_row]['latest_huzokubutsu'] = [];
+      //   // 附属物点検
+      //   $latest_huzokubutsu_result = $this->getChkMainMaxData($sno, $shisetsu_kbn, $struct_idx);
+      //   if (count($latest_huzokubutsu_result) > 0) {
+      //     $result[$i_row]['latest_huzokubutsu'] = $latest_huzokubutsu_result[0];
+      //   }
+      // }
 
       // チェックボックスに対応するデータを作成する
       $result[$i_row]['teiki_pat_plans'] = [];
@@ -665,12 +665,83 @@ WITH patrol_plan AS (
 , latest_houtei_json AS (
   -- 直近の法定点検は1オブジェクトとしてまとまっていたほうが扱いやすいのでJSONに変換しておく
   SELECT
-    lh.sno
-    , json_agg(lh) latest_houtei_json
+    lho.sno
+    , json_agg(lho) latest_houtei_json
   FROM
-    latest_houtei lh
+    latest_houtei lho
   GROUP BY 
-    lh.sno
+    lho.sno
+)
+, chk_main_huzokubutsu as
+(
+  select
+    rtcm.*,
+    rtch.rireki_no
+  from
+    rfs_t_chk_main rtcm
+  INNER JOIN
+    rfs_t_chk_huzokubutsu rtch
+    on rtcm.chk_mng_no = rtch.chk_mng_no
+), max_chk_times_tbl as (
+  select
+    sno,
+    struct_idx,
+    max(chk_times) as max_chk_times
+  from
+    chk_main_huzokubutsu
+  group by
+    sno,struct_idx
+), max_rireki_tbl as (
+select
+  chk_mng_no
+  ,max(rireki_no) as max_rireki_no
+from
+  rfs_t_chk_huzokubutsu
+group by chk_mng_no
+)
+, latest_huzokubutsu AS (
+  -- snoごとに直近の法定点検を取得する
+select
+  mctt.sno,
+  mctt.struct_idx,
+  mctt.max_chk_times,
+  rtcm.chk_mng_no,
+  mrt.max_rireki_no
+  , rtch.check_shisetsu_judge
+  , wareki_to_char(rtch.chk_dt, 'ggLL') w_chk_dt  -- 直近年度
+  , rtch.check_shisetsu_judge
+  , rmsj.shisetsu_judge_nm check_shisetsu_judge_nm  -- 直近の健全性
+  -- PHP側で日付を正確に指定するために年月日を分けて取得
+  , to_char(rtcm.target_dt, 'YYYY') as target_dt_year
+  , to_char(rtcm.target_dt, 'MM') as target_dt_month
+  , to_char(rtcm.target_dt, 'MM') as target_dt_day
+from
+  max_chk_times_tbl mctt
+INNER JOIN
+  rfs_t_chk_main rtcm
+  ON mctt.sno = rtcm.sno
+     AND mctt.struct_idx = rtcm.struct_idx
+     AND mctt.max_chk_times = rtcm.chk_times
+INNER JOIN
+  max_rireki_tbl mrt
+  ON rtcm.chk_mng_no = mrt.chk_mng_no
+LEFT JOIN
+  rfs_t_chk_huzokubutsu rtch
+  ON rtch.chk_mng_no = rtcm.chk_mng_no
+LEFT JOIN rfs_m_shisetsu_judge rmsj
+  ON rtch.check_shisetsu_judge = rmsj.shisetsu_judge
+)
+, latest_huzokubutsu_json AS (
+  -- 直近の点検は1オブジェクトとしてまとまっていたほうが扱いやすいのでJSONに変換しておく
+  SELECT
+    lhu.sno
+    , lhu.struct_idx
+    , json_agg(lhu) latest_huzokubutsu_json
+  FROM
+    latest_huzokubutsu lhu
+  GROUP BY 
+    lhu.sno
+    ,lhu.struct_idx
 )
 , shisetsu AS (
   -- ※この後ろのUNIONで防雪柵のレコードを別途取得しているが、
@@ -765,6 +836,7 @@ SELECT
   , rmpt.teiki_pat_flag
   , ltpj.latest_teiki_pat_json
   , lhj.latest_houtei_json
+  , lhuj.latest_huzokubutsu_json
 FROM
   shisetsu s
   INNER JOIN
@@ -776,6 +848,15 @@ FROM
   LEFT JOIN
     latest_houtei_json lhj
     ON lhj.sno = s.sno AND rmpt.houtei_flag = TRUE
+  LEFT JOIN
+    latest_huzokubutsu_json lhuj
+    ON lhuj.sno = s.sno 
+    AND
+    CASE WHEN s.shisetsu_kbn = 4
+      THEN lhuj.struct_idx = s.struct_idx
+      ELSE TRUE
+    END
+    AND rmpt.huzokubutsu_flag = TRUE
   LEFT JOIN rfs_m_shisetsu_kbn sk
     ON s.shisetsu_kbn = sk.shisetsu_kbn
   LEFT JOIN rfs_m_rosen r
@@ -806,7 +887,7 @@ ORDER BY
     ,s.struct_idx
 
 EOF;
-    // log_message('debug', "sql=$sql");
+    log_message('debug', "sql=$sql");
     $query = $this->DB_rfs->query($sql);
     $result = $query->result('array');
 
@@ -827,6 +908,7 @@ EOF;
       }
       // JSONデータは変換して不要になるので削除
       unset($row['latest_teiki_pat_json']);
+
       if ($row['houtei_flag']) {
         $latest_houtei = is_null($row['latest_houtei_json']) ? [] : json_decode($row['latest_houtei_json'], true);
         $row['latest_houtei'] = [];
@@ -836,8 +918,17 @@ EOF;
       }
       // JSONデータは変換して不要になるので削除
       unset($row['latest_houtei_json']);
-      // ※附属物点検は1つのSQLでは難しそうなので、呼び出し元で1レコードごとに別途SQLを発行して取得する
 
+      if ($row['huzokubutsu_flag']) {
+        $latest_huzokubutsu = is_null($row['latest_huzokubutsu_json']) ? [] : json_decode($row['latest_huzokubutsu_json'], true);
+        $row['latest_huzokubutsu'] = [];
+        if (count($latest_huzokubutsu) > 0) {
+          $row['latest_huzokubutsu'] = $latest_huzokubutsu[0];
+        }
+      }
+      // JSONデータは変換して不要になるので削除
+      unset($row['latest_huzokubutsu_json']);
+      
       return $row;
     }, $result);
 
