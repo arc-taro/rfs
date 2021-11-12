@@ -283,7 +283,7 @@ EOF;
 
       if ($result[$i_row]['huzokubutsu_flag']) {
         $result[$i_row]['latest_huzokubutsu'] = [];
-        // 附属物点検
+        // 附属物点検（附属物点検は1つのSQLで取得すると遅くなったので別途取得）
         $latest_huzokubutsu_result = $this->getChkMainMaxData($sno, $shisetsu_kbn, $struct_idx);
         if (count($latest_huzokubutsu_result) > 0) {
           $result[$i_row]['latest_huzokubutsu'] = $latest_huzokubutsu_result[0];
@@ -836,7 +836,7 @@ EOF;
       }
       // JSONデータは変換して不要になるので削除
       unset($row['latest_houtei_json']);
-      // ※附属物点検は1つのSQLでは難しそうなので、呼び出し元で1レコードごとに別途SQLを発行して取得する
+      // ※附属物点検はここのSQLに組み込むと逆に遅くなってしまったので、呼び出し元で1レコードごとに別途SQLを発行して取得する
 
       return $row;
     }, $result);
