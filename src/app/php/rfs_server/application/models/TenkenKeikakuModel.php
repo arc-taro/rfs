@@ -281,15 +281,6 @@ EOF;
       $shisetsu_kbn = $result[$i_row]['shisetsu_kbn'];
       $struct_idx = $result[$i_row]['struct_idx'];
 
-      // 定期パト
-      if ($result[$i_row]['teiki_pat_flag']) {
-        $result[$i_row]['latest_teiki_pat'] = [];
-        $latest_teiki_pat_result = $this->getTeikiPatrolLatestData($sno);
-        if (count($latest_teiki_pat_result) > 0) {
-          $result[$i_row]['latest_teiki_pat'] = $latest_teiki_pat_result[0];
-        }
-      }
-
       if ($result[$i_row]['huzokubutsu_flag']) {
         $result[$i_row]['latest_huzokubutsu'] = [];
         // 附属物点検
@@ -593,6 +584,67 @@ WITH patrol_plan AS (
     rtpp.sno
     , rtpp.struct_idx
 )
+, max_tenken_detail AS (
+  SELECT 
+    sno
+    ,max(zenkei_image_at) max_zenkei_image_at
+  FROM
+    teiki_patrol.tenken_list_details tld 
+  WHERE 
+    tld.zenkei_image_1 IS NOT NULL 
+  GROUP BY 
+    sno
+)
+, ijou_list AS (
+  -- tenken_listごとに、tenken_list_detailsに異常有無フラグが1のレコードを集計する
+  -- ここにヒットしないtenken_list_cdは異常有無フラグが全て0かnull
+  SELECT
+    tenken_list_cd
+    , count(tenken_list_cd) AS ijou_list_count
+  FROM 
+    teiki_patrol.tenken_list_details tld
+  WHERE
+    tld.ijyou_umu_flg = 1
+  GROUP BY
+    tenken_list_cd 
+)
+, latest_teiki_pat AS (
+  SELECT
+    tld.sno
+    ,tl.deliveried_at
+    ,wareki_to_char(tl.deliveried_at, 'ggLL')  wareki_ryaku -- 直近年度
+    ,il.ijou_list_count
+    ,CASE
+      WHEN il.ijou_list_count IS NULL
+        THEN '無'
+      ELSE '有'
+    END umu_str -- 直近異常有無
+    -- PHP側で日付を正確に指定するために年月日を分けて取得
+    ,to_char(tld.zenkei_image_at, 'YYYY') as target_dt_year
+    ,to_char(tld.zenkei_image_at, 'MM') as target_dt_month
+    ,to_char(tld.zenkei_image_at, 'MM') as target_dt_day
+  FROM
+    teiki_patrol.tenken_lists tl
+  INNER JOIN
+    teiki_patrol.tenken_list_details tld
+    ON tl.tenken_list_cd = tld.tenken_list_cd
+  INNER JOIN 
+    max_tenken_detail mtd
+    ON tld.sno = mtd.sno
+    AND tld.zenkei_image_at = mtd.max_zenkei_image_at
+  LEFT JOIN
+    ijou_list il
+    ON tl.tenken_list_cd = il.tenken_list_cd
+)
+, latest_teiki_pat_json AS (
+  SELECT
+    rvlt.sno
+    , json_agg(rvlt) latest_teiki_pat_json
+  FROM
+    rfs_v_latest_teiki_pat rvlt
+  GROUP BY 
+    rvlt.sno
+)
 , shisetsu AS (
   -- ※この後ろのUNIONで防雪柵のレコードを別途取得しているが、
   -- 定期パトの点検計画は防雪柵自体に紐づくので、ここでは防雪柵の施設自体のレコードも取得する
@@ -684,11 +736,15 @@ SELECT
   , rmpt.houtei_flag
   , rmpt.huzokubutsu_flag
   , rmpt.teiki_pat_flag
+  , ltpj.latest_teiki_pat_json
 FROM
   shisetsu s
   INNER JOIN
     rfs_m_patrol_type rmpt
     ON rmpt.shisetsu_kbn = s.shisetsu_kbn
+  LEFT JOIN
+    latest_teiki_pat_json ltpj
+    ON ltpj.sno = s.sno AND rmpt.teiki_pat_flag = TRUE
   LEFT JOIN rfs_m_shisetsu_kbn sk
     ON s.shisetsu_kbn = sk.shisetsu_kbn
   LEFT JOIN rfs_m_rosen r
@@ -729,8 +785,15 @@ log_message('debug', "sql=$sql");
       $row['huzokubutsu_flag'] = $row['huzokubutsu_flag'] == 't' ? true : false;
       $row['teiki_pat_flag'] = $row['teiki_pat_flag'] == 't' ? true : false;
 
-      // patrol_plansはJSON文字列なので連想配列に戻す
+      // patrol_plansと直近のパトロールはJSON文字列なので連想配列に戻す
       $row['patrol_plans'] = is_null($row['patrol_plans']) ? [] : json_decode($row['patrol_plans'], true);
+      if ($row['teiki_pat_flag']) {
+        $latest_teiki_pat = is_null($row['latest_teiki_pat_json']) ? [] : json_decode($row['latest_teiki_pat_json'], true);
+        $row['latest_teiki_pat'] = [];
+        if (count($latest_teiki_pat) > 0) {
+          $row['latest_teiki_pat'] = $latest_teiki_pat[0];
+        }
+      }
 
       return $row;
     }, $result);
@@ -739,74 +802,6 @@ log_message('debug', "sql=$sql");
     //    $r = print_r($result, true);
     //    log_message('debug', "result=$r");
 
-    return $result;
-  }
-
-    /***
-   * 定期パトロールの直近データを取得する。
-   *
-   * 引数:$sno sno
-   *
-   ***/
-  protected function getTeikiPatrolLatestData($sno){
-    log_message('info', __METHOD__);
-
-    $sql= <<<EOF
-WITH max_tenken_detail AS (
-  SELECT 
-    sno
-    ,max(zenkei_image_at) max_zenkei_image_at
-  FROM
-    teiki_patrol.tenken_list_details tld 
-  WHERE 
-    tld.zenkei_image_1 IS NOT NULL 
-  GROUP BY 
-    sno
-),
-ijou_list AS (
-  -- tenken_listごとに、tenken_list_detailsに異常有無フラグが1のレコードを集計する
-  -- ここにヒットしないtenken_list_cdは異常有無フラグが全て0かnull
-  SELECT
-    tenken_list_cd
-    , count(tenken_list_cd) AS ijou_list_count
-  FROM 
-    teiki_patrol.tenken_list_details tld
-  WHERE
-    tld.ijyou_umu_flg = 1
-  GROUP BY
-    tenken_list_cd 
-)
-SELECT
-  tld.sno
-  ,tl.deliveried_at
-  ,wareki_to_char(tl.deliveried_at, 'ggLL')  wareki_ryaku -- 直近年度
-  ,il.ijou_list_count
-  ,CASE
-    WHEN il.ijou_list_count IS NULL
-      THEN '無'
-    ELSE '有'
-  END umu_str -- 直近異常有無
-  -- PHP側で日付を正確に指定するために年月日を分けて取得
-  ,to_char(tld.zenkei_image_at, 'YYYY') as target_dt_year
-  ,to_char(tld.zenkei_image_at, 'MM') as target_dt_month
-  ,to_char(tld.zenkei_image_at, 'MM') as target_dt_day
-FROM
-  teiki_patrol.tenken_lists tl
-INNER JOIN
-  teiki_patrol.tenken_list_details tld
-  ON tl.tenken_list_cd = tld.tenken_list_cd
-INNER JOIN 
-  max_tenken_detail mtd
-  ON tld.sno = mtd.sno
-  AND tld.zenkei_image_at = mtd.max_zenkei_image_at
-LEFT JOIN
-  ijou_list il
-  ON tl.tenken_list_cd = il.tenken_list_cd
-WHERE
-  tld.sno = $sno
-EOF;
-    $query = $this->DB_rfs->query($sql);
-    $result = $query->result('array');
     return $result;
   }
 
