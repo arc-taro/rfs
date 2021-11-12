@@ -638,12 +638,12 @@ WITH patrol_plan AS (
 )
 , latest_teiki_pat_json AS (
   SELECT
-    rvlt.sno
-    , json_agg(rvlt) latest_teiki_pat_json
+    ltp.sno
+    , json_agg(ltp) latest_teiki_pat_json
   FROM
-    rfs_v_latest_teiki_pat rvlt
+    latest_teiki_pat ltp
   GROUP BY 
-    rvlt.sno
+    ltp.sno
 )
 , shisetsu AS (
   -- ※この後ろのUNIONで防雪柵のレコードを別途取得しているが、
