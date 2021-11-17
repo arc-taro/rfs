@@ -29,7 +29,7 @@ class TenkenKeikakuAjax extends BaseController {
     *   建管、出張所、セッション情報の建管、出張所でデータ取得
     */
   public function initTenkenKeikaku(){
-    log_message('info', "initFamMain");
+    log_message('info', "initTenkenKeikaku");
 
     // マスタの取得
     $this->load->model('SchCommon');
