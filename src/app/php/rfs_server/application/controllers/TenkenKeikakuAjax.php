@@ -54,10 +54,6 @@ class TenkenKeikakuAjax extends BaseController {
     $result['shisetsu_kbn']=$shisetsu_kbn;
     $result['rosen']=$rosen;
 
-    // 現在選択中の出張所
-    $dogen_cd=$this->session['mngarea']['dogen_cd']; // 建管コード
-    $syucchoujo_cd=$this->session['mngarea']['syucchoujo_cd']; // 出張所コード
-
     // 検索画面での設定が必要なので返却する
     // $result['srch']=$srch;
     $this->json = json_encode($result);
