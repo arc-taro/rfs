@@ -417,9 +417,9 @@ class TenkenKeikakuCtrl extends BaseCtrl {
           this.srch_cnt = srch_cnt;
           this.changeNumItem(); // 数値項目を数値化
 
-          this.range = this.getPageList(srch_cnt);
-          this.current_page = 1; // 検索後は1ページ指定
-          this.setPage(this.current_page);
+          // this.range = this.getPageList(srch_cnt);
+          // this.current_page = 1; // 検索後は1ページ指定
+          // this.setPage(this.current_page);
 
           // 検索実行時、条件を指定して検索を閉じる
           this.jyoukenkensaku = true;
@@ -1022,35 +1022,35 @@ class TenkenKeikakuCtrl extends BaseCtrl {
   /*********************/
   /* ページネーション部分 */
   /*********************/
-  getPageList(srch_cnt) {
-    this.max_page = Math.ceil(srch_cnt / this.items_per_page);
-    var ret = [];
-    for (var i = 1; i <= this.max_page; i++) {
-      ret.push(i);
-    }
-    return ret;
-  }
+  // getPageList(srch_cnt) {
+  //   this.max_page = Math.ceil(srch_cnt / this.items_per_page);
+  //   var ret = [];
+  //   for (var i = 1; i <= this.max_page; i++) {
+  //     ret.push(i);
+  //   }
+  //   return ret;
+  // }
 
-  setPage(n) {
-    this.current_page = n;
-    this.prev_disabled = this.prevPageDisabled();
-    this.next_disabled = this.nextPageDisabled();
-  }
-  prevPage() {
-    this.current_page--;
-    this.setPage(this.current_page);
-  }
-  nextPage() {
-    this.current_page++;
-    this.setPage(this.current_page);
-  }
+  // setPage(n) {
+  //   this.current_page = n;
+  //   this.prev_disabled = this.prevPageDisabled();
+  //   this.next_disabled = this.nextPageDisabled();
+  // }
+  // prevPage() {
+  //   this.current_page--;
+  //   this.setPage(this.current_page);
+  // }
+  // nextPage() {
+  //   this.current_page++;
+  //   this.setPage(this.current_page);
+  // }
 
-  prevPageDisabled() {
-    return this.current_page === 1 ? "disabled" : "";
-  }
-  nextPageDisabled() {
-    return this.current_page === this.max_page ? "disabled" : "";
-  }
+  // prevPageDisabled() {
+  //   return this.current_page === 1 ? "disabled" : "";
+  // }
+  // nextPageDisabled() {
+  //   return this.current_page === this.max_page ? "disabled" : "";
+  // }
 }
 
 let angModule = require("../app.js");
