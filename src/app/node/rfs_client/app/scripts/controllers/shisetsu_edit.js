@@ -1089,6 +1089,7 @@ class ShisetsuEditCtrl extends BaseCtrl {
       this.data.shisetsu_cd = "HD";
     } else if (this.data.shisetsu_kbn == 28) {
       // カルテ点検の場合は何もセットしない
+      this.data.shisetsu_cd = "";
     } else if (this.data.shisetsu_kbn == 29) {
       this.data.shisetsu_cd = "FB";
     } else if (this.data.shisetsu_kbn == 30) {
@@ -1097,8 +1098,10 @@ class ShisetsuEditCtrl extends BaseCtrl {
       this.data.shisetsu_cd = "CL";
     } else if (this.data.shisetsu_kbn == 32) {
       // カルテ点検の場合は何もセットしない
+      this.data.shisetsu_cd = "";
     } else if (this.data.shisetsu_kbn == 33) {
       // カルテ点検の場合は何もセットしない
+      this.data.shisetsu_cd = "";
     } else if (this.data.shisetsu_kbn == 34) {
       this.data.shisetsu_cd = "DF";
     } else if (this.data.shisetsu_kbn == 35) {
