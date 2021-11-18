@@ -3,8 +3,8 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
 require("FamEditModel.php");
 
-// 台帳:岩盤崩壊登録用
-class FamEditModelGH extends FamEditModel {
+// 台帳:トンネル（施設区分25。施設区分14の「トンネル（道路トンネル非常用装置/その他）」とは異なる）登録用
+class FamEditModelTU extends FamEditModel {
 
   /**
     * コンストラクタ
@@ -14,17 +14,17 @@ class FamEditModelGH extends FamEditModel {
   }
 
   /***
-   *  台帳:岩盤崩壊の更新
+   *  台帳:トンネルの更新
    *
    *  引数
    *    $daichou 入力台帳
    ***/
   public function saveDaichou($daichou) {
-    log_message('info', "FamEditModelGH->saveDaichou");
+    log_message('info', "FamEditModelTU->saveDaichou");
     $this->setDaichouCommon($daichou); // 施設区分に関わらず共通のデータ
     // $this->setItem($daichou); // この施設区分に固有のもの
     $sql= <<<SQL
-            insert into rfs_t_daichou_gh (
+            insert into rfs_t_daichou_tu (
               sno
               , bikou
               , kyoutsuu1
@@ -59,7 +59,7 @@ class FamEditModelGH extends FamEditModel {
               , {$daichou['update_account_nm']}
               --最終更新者追加END
             )
-            ON CONFLICT ON CONSTRAINT rfs_t_daichou_gh_pkey
+            ON CONFLICT ON CONSTRAINT rfs_t_daichou_tu_pkey
             DO UPDATE SET
               bikou = {$daichou['bikou']}
               ,kyoutsuu1 = {$daichou['kyoutsuu1']}

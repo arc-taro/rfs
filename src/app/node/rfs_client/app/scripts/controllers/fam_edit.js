@@ -953,27 +953,27 @@ class FameditCtrl extends BaseCtrl {
     } else if (this.shisetsu.shisetsu_kbn == 24) {
       this.setMstBR(json); // 橋梁
     } else if (this.shisetsu.shisetsu_kbn == 25) {
-      this.setMstTN(json); // トンネル
+      this.setMstTU(json); // トンネル
     } else if (this.shisetsu.shisetsu_kbn == 26) {
-      this.setMstKF(json); // 切土
+      this.setMstDK(json); // 切土
     } else if (this.shisetsu.shisetsu_kbn == 27) {
       this.setMstHD(json); // 歩道
     } else if (this.shisetsu.shisetsu_kbn == 28) {
-      this.setMstGK(json); // 落石崩壊
+      this.setMstKR(json); // 落石崩壊
     } else if (this.shisetsu.shisetsu_kbn == 29) {
-      this.setMstOH(json); // 横断歩道橋
+      this.setMstFB(json); // 横断歩道橋
     } else if (this.shisetsu.shisetsu_kbn == 30) {
       this.setMstSH(json); // シェッド等
     } else if (this.shisetsu.shisetsu_kbn == 31) {
-      this.setMstOK(json); // 大型カルバート
+      this.setMstCL(json); // 大型カルバート
     } else if (this.shisetsu.shisetsu_kbn == 32) {
-      this.setMstGH(json); // 岩盤崩壊
+      this.setMstKG(json); // 岩盤崩壊
     } else if (this.shisetsu.shisetsu_kbn == 33) {
       this.setMstKK(json); // 急流河川
     } else if (this.shisetsu.shisetsu_kbn == 34) {
-      this.setMstMT(json); // 盛土
+      this.setMstDF(json); // 盛土
     } else if (this.shisetsu.shisetsu_kbn == 35) {
-      this.setMstDM(json); // 道路標識（門型）
+      this.setMstHM(json); // 道路標識（門型）
     } else if (this.shisetsu.shisetsu_kbn == 36) {
       this.setMstJM(json); // 道路情報提供装置（門型）
     }
@@ -1128,30 +1128,43 @@ class FameditCtrl extends BaseCtrl {
     this.hyouji_shiyou_arr = json.hyouji_shiyou; // 表示仕様
   }
 
+  // 橋梁
   setMstBR(json) {}
 
-  setMstTN(json) {}
+  // トンネル
+  setMstTU(json) {}
+
+  // 切土
+  setMstDK(json) {}
   
-  setMstKF(json) {}
-  
+  // 歩道
   setMstHD(json) {}
   
-  setMstGK(json) {}
+  // 落石崩壊
+  setMstKR(json) {}
   
-  setMstOH(json) {}
+  // 横断歩道橋
+  setMstFB(json) {}
   
+  // シェッド等
   setMstSH(json) {}
   
-  setMstOK(json) {}
+  // 大型カルバート
+  setMstCL(json) {}
   
-  setMstGH(json) {}
+  // 岩盤崩壊
+  setMstKG(json) {}
   
+  // 急流河川
   setMstKK(json) {}
   
-  setMstMT(json) {}
+  // 盛土
+  setMstDF(json) {}
   
-  setMstDM(json) {}
+  // 道路標識（門型）
+  setMstDHM(json) {}
   
+  // 道路情報提供装置（門型）
   setMstJM(json) {}
 
   // 形式区分セット
@@ -1337,27 +1350,28 @@ class FameditCtrl extends BaseCtrl {
       } else if (this.shisetsu.shisetsu_kbn == 24) {
         this.feature.style.externalGraphic = `images/icon/shisetsu_mng/br_1.gif`;
       } else if (this.shisetsu.shisetsu_kbn == 25) {
-        this.feature.style.externalGraphic = `images/icon/shisetsu_mng/tn_1.gif`;
+        this.feature.style.externalGraphic = `images/icon/shisetsu_mng/tu_1.gif`;
       } else if (this.shisetsu.shisetsu_kbn == 26) {
-        this.feature.style.externalGraphic = `images/icon/shisetsu_mng/kf_1.gif`;
+        this.feature.style.externalGraphic = `images/icon/shisetsu_mng/dk_1.gif`;
       } else if (this.shisetsu.shisetsu_kbn == 27) {
         this.feature.style.externalGraphic = `images/icon/shisetsu_mng/hd_1.gif`;
       } else if (this.shisetsu.shisetsu_kbn == 28) {
-        this.feature.style.externalGraphic = `images/icon/shisetsu_mng/gk_1.gif`;
+        this.feature.style.externalGraphic = `images/icon/shisetsu_mng/kr_1.gif`;
       } else if (this.shisetsu.shisetsu_kbn == 29) {
-        this.feature.style.externalGraphic = `images/icon/shisetsu_mng/oh_1.gif`;
+        this.feature.style.externalGraphic = `images/icon/shisetsu_mng/fb_1.gif`;
       } else if (this.shisetsu.shisetsu_kbn == 30) {
         this.feature.style.externalGraphic = `images/icon/shisetsu_mng/sh_1.gif`;
       } else if (this.shisetsu.shisetsu_kbn == 31) {
-        this.feature.style.externalGraphic = `images/icon/shisetsu_mng/ok_1.gif`;
+        this.feature.style.externalGraphic = `images/icon/shisetsu_mng/cl_1.gif`;
       } else if (this.shisetsu.shisetsu_kbn == 34) {
-        this.feature.style.externalGraphic = `images/icon/shisetsu_mng/mt_1.gif`;
+        this.feature.style.externalGraphic = `images/icon/shisetsu_mng/df_1.gif`;
       } else if (this.shisetsu.shisetsu_kbn == 32) {
-        this.feature.style.externalGraphic = `images/icon/shisetsu_mng/gh_1.gif`;
+        this.feature.style.externalGraphic = `images/icon/shisetsu_mng/kg_1.gif`;
       } else if (this.shisetsu.shisetsu_kbn == 33) {
-        this.feature.style.externalGraphic = `images/icon/shisetsu_mng/kk_1.gif`;
+        // 「kk_1.gif」は冠水（廃止）に使われていたので「kk2_1.gif」を使用
+        this.feature.style.externalGraphic = `images/icon/shisetsu_mng/kk2_1.gif`;
       } else if (this.shisetsu.shisetsu_kbn == 35) {
-        this.feature.style.externalGraphic = `images/icon/shisetsu_mng/dm_1.gif`;
+        this.feature.style.externalGraphic = `images/icon/shisetsu_mng/hm_1.gif`;
       } else if (this.shisetsu.shisetsu_kbn == 36) {
         this.feature.style.externalGraphic = `images/icon/shisetsu_mng/jm_1.gif`;
       }

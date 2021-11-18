@@ -491,38 +491,38 @@ class FamEditAjax extends BaseController {
       $this->load->model("FamEditModelBR");
       $model = $this->FamEditModelBR;
     } else if ($daichou['shisetsu_kbn']==25) { // トンネル 
-      $this->load->model("FamEditModelTN");
-      $model = $this->FamEditModelTN;
+      $this->load->model("FamEditModelTU");
+      $model = $this->FamEditModelTU;
     } else if ($daichou['shisetsu_kbn']==26) { // 切土 
-      $this->load->model("FamEditModelKF");
-      $model = $this->FamEditModelKF;
+      $this->load->model("FamEditModelDK");
+      $model = $this->FamEditModelDK;
     } else if ($daichou['shisetsu_kbn']==27) { // 歩道 
       $this->load->model("FamEditModelHD");
       $model = $this->FamEditModelHD;
     } else if ($daichou['shisetsu_kbn']==28) { // 落石崩壊 
-      $this->load->model("FamEditModelGK");
-      $model = $this->FamEditModelGK;
+      $this->load->model("FamEditModelKR");
+      $model = $this->FamEditModelKR;
     } else if ($daichou['shisetsu_kbn']==29) { // 横断歩道橋 
-      $this->load->model("FamEditModelOH");
-      $model = $this->FamEditModelOH;
+      $this->load->model("FamEditModelFB");
+      $model = $this->FamEditModelFB;
     } else if ($daichou['shisetsu_kbn']==30) { // シェッド等 
       $this->load->model("FamEditModelSH");
       $model = $this->FamEditModelSH;
     } else if ($daichou['shisetsu_kbn']==31) { // 大型カルバート 
-      $this->load->model("FamEditModelOK");
-      $model = $this->FamEditModelOK;
+      $this->load->model("FamEditModelCL");
+      $model = $this->FamEditModelCL;
     } else if ($daichou['shisetsu_kbn']==32) { // 岩盤崩壊 
-      $this->load->model("FamEditModelGH");
-      $model = $this->FamEditModelGH;
+      $this->load->model("FamEditModelKG");
+      $model = $this->FamEditModelKG;
     } else if ($daichou['shisetsu_kbn']==33) { // 急流河川 
       $this->load->model("FamEditModelKK");
       $model = $this->FamEditModelKK;
     } else if ($daichou['shisetsu_kbn']==34) { // 盛土 
-      $this->load->model("FamEditModelMT");
-      $model = $this->FamEditModelMT;
+      $this->load->model("FamEditModelDF");
+      $model = $this->FamEditModelDF;
     } else if ($daichou['shisetsu_kbn']==35) { // 道路標識（門型） 
-      $this->load->model("FamEditModelDM");
-      $model = $this->FamEditModelDM;
+      $this->load->model("FamEditModelHM");
+      $model = $this->FamEditModelHM;
     } else if ($daichou['shisetsu_kbn']==36) { // 道路情報提供装置（門型） 
       $this->load->model("FamEditModelJM");
       $model = $this->FamEditModelJM;

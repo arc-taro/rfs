@@ -946,27 +946,28 @@ class FamMainCtrl extends BaseCtrl {
       } else if (this.data[k].shisetsu_kbn == 24) {
         feature.style.externalGraphic = `images/icon/shisetsu_mng/br_1.gif`;
       } else if (this.data[k].shisetsu_kbn == 25) {
-        feature.style.externalGraphic = `images/icon/shisetsu_mng/tn_1.gif`;
+        feature.style.externalGraphic = `images/icon/shisetsu_mng/tu_1.gif`;
       } else if (this.data[k].shisetsu_kbn == 26) {
-        feature.style.externalGraphic = `images/icon/shisetsu_mng/kf_1.gif`;
+        feature.style.externalGraphic = `images/icon/shisetsu_mng/dk_1.gif`;
       } else if (this.data[k].shisetsu_kbn == 27) {
         feature.style.externalGraphic = `images/icon/shisetsu_mng/hd_1.gif`;
       } else if (this.data[k].shisetsu_kbn == 28) {
-        feature.style.externalGraphic = `images/icon/shisetsu_mng/gk_1.gif`;
+        feature.style.externalGraphic = `images/icon/shisetsu_mng/kr_1.gif`;
       } else if (this.data[k].shisetsu_kbn == 29) {
-        feature.style.externalGraphic = `images/icon/shisetsu_mng/oh_1.gif`;
+        feature.style.externalGraphic = `images/icon/shisetsu_mng/fb_1.gif`;
       } else if (this.data[k].shisetsu_kbn == 30) {
         feature.style.externalGraphic = `images/icon/shisetsu_mng/sh_1.gif`;
       } else if (this.data[k].shisetsu_kbn == 31) {
-        feature.style.externalGraphic = `images/icon/shisetsu_mng/ok_1.gif`;
+        feature.style.externalGraphic = `images/icon/shisetsu_mng/cl_1.gif`;
       } else if (this.data[k].shisetsu_kbn == 32) {
-        feature.style.externalGraphic = `images/icon/shisetsu_mng/gh_1.gif`;
+        feature.style.externalGraphic = `images/icon/shisetsu_mng/kg_1.gif`;
       } else if (this.data[k].shisetsu_kbn == 33) {
-        feature.style.externalGraphic = `images/icon/shisetsu_mng/kk_1.gif`; 
+        // 「kk_1.gif」は冠水（廃止）に使われていたので「kk2_1.gif」を使用
+        feature.style.externalGraphic = `images/icon/shisetsu_mng/kk2_1.gif`; 
       } else if (this.data[k].shisetsu_kbn == 34) {
-        feature.style.externalGraphic = `images/icon/shisetsu_mng/mt_1.gif`;
+        feature.style.externalGraphic = `images/icon/shisetsu_mng/df_1.gif`;
       } else if (this.data[k].shisetsu_kbn == 35) {
-        feature.style.externalGraphic = `images/icon/shisetsu_mng/dm_1.gif`;
+        feature.style.externalGraphic = `images/icon/shisetsu_mng/hm_1.gif`;
       } else if (this.data[k].shisetsu_kbn == 36) {
         feature.style.externalGraphic = `images/icon/shisetsu_mng/jm_1.gif`;
       }

@@ -3,8 +3,8 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
 require("FamEditModel.php");
 
-// 台帳:切土登録用
-class FamEditModelKF extends FamEditModel {
+// 台帳:横断歩道橋登録用
+class FamEditModelFB extends FamEditModel {
 
   /**
     * コンストラクタ
@@ -14,17 +14,17 @@ class FamEditModelKF extends FamEditModel {
   }
 
   /***
-   *  台帳:切土の更新
+   *  台帳:横断歩道橋の更新
    *
    *  引数
    *    $daichou 入力台帳
    ***/
   public function saveDaichou($daichou) {
-    log_message('info', "FamEditModelKF->saveDaichou");
+    log_message('info', "FamEditModelFB->saveDaichou");
     $this->setDaichouCommon($daichou); // 施設区分に関わらず共通のデータ
     // $this->setItem($daichou); // この施設区分に固有のもの
     $sql= <<<SQL
-            insert into rfs_t_daichou_kf (
+            insert into rfs_t_daichou_fb (
               sno
               , bikou
               , kyoutsuu1
@@ -59,7 +59,7 @@ class FamEditModelKF extends FamEditModel {
               , {$daichou['update_account_nm']}
               --最終更新者追加END
             )
-            ON CONFLICT ON CONSTRAINT rfs_t_daichou_kf_pkey
+            ON CONFLICT ON CONSTRAINT rfs_t_daichou_fb_pkey
             DO UPDATE SET
               bikou = {$daichou['bikou']}
               ,kyoutsuu1 = {$daichou['kyoutsuu1']}
