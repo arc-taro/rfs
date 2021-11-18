@@ -1082,15 +1082,29 @@ class ShisetsuEditCtrl extends BaseCtrl {
     } else if (this.data.shisetsu_kbn == 24) {
       this.data.shisetsu_cd = "BR";
     } else if (this.data.shisetsu_kbn == 25) {
-      this.data.shisetsu_cd = "OK";
+      this.data.shisetsu_cd = "TU";
     } else if (this.data.shisetsu_kbn == 26) {
-      this.data.shisetsu_cd = "KF";
+      this.data.shisetsu_cd = "DK";
     } else if (this.data.shisetsu_kbn == 27) {
       this.data.shisetsu_cd = "HD";
     } else if (this.data.shisetsu_kbn == 28) {
-      this.data.shisetsu_cd = "GK";
+      // カルテ点検の場合は何もセットしない
     } else if (this.data.shisetsu_kbn == 29) {
-      this.data.shisetsu_cd = "DM";
+      this.data.shisetsu_cd = "FB";
+    } else if (this.data.shisetsu_kbn == 30) {
+      this.data.shisetsu_cd = "SH";
+    } else if (this.data.shisetsu_kbn == 31) {
+      this.data.shisetsu_cd = "CL";
+    } else if (this.data.shisetsu_kbn == 32) {
+      // カルテ点検の場合は何もセットしない
+    } else if (this.data.shisetsu_kbn == 33) {
+      // カルテ点検の場合は何もセットしない
+    } else if (this.data.shisetsu_kbn == 34) {
+      this.data.shisetsu_cd = "DF";
+    } else if (this.data.shisetsu_kbn == 35) {
+      this.data.shisetsu_cd = "HM";
+    } else if (this.data.shisetsu_kbn == 36) {
+      this.data.shisetsu_cd = "JM";
     }
   }
 
