@@ -284,14 +284,15 @@ class TenkenKeikakuAjax extends BaseController {
     foreach($teiki_pat_plans as $plan) {
       $this->TenkenKeikakuModel->insertTeikiPatTenkenKeikaku($plan['sno'], $plan['shisetsu_kbn'], $plan['struct_idx'], $plan['year']);
     }
-    
+
     // トランザクション処理
     if ($this->DB_rfs->trans_status() === FALSE) {
+      $result['result_cd'] = 400;
       $this->DB_rfs->trans_rollback();
     } else {
+      $result['result_cd'] = 200;
       $this->DB_rfs->trans_commit();
     }
-    $result = [];
     // 返却
     $this->json = json_encode($result);
     $this->output->set_content_type('application/json')->set_output($this->json);

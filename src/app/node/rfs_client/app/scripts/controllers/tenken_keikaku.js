@@ -675,7 +675,11 @@ class TenkenKeikakuCtrl extends BaseCtrl {
       }).then((data) => {
         // 保存中を消す
         this.waitOverlay = false;
-        return this.alert("完了メッセージ", "点検計画の登録が完了しました");
+        if (data.data.result_cd == 200) {
+          return this.alert("完了メッセージ", "点検計画の登録が完了しました");
+        } else {
+          return this.alert("完了メッセージ", "点検計画の登録に失敗しました");
+        }
       }).then((data) => {
         // メッセージ非表示
         this.windowUnlock();
