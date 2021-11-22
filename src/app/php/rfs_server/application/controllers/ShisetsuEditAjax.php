@@ -83,6 +83,9 @@ class ShisetsuEditAjax extends BaseController {
     $kanri_info=$this->SchCommon->getKanrisyaInfo($syucchoujo_cd);
     $result['kanri_info']=$kanri_info;
 
+    // 施設区分と各種点検の組み合わせ一覧を取得
+    $result['patrol_types'] = $this->getPatrolTypeLists();
+
     $this->config->load('config');
     $result["ele_url"]=$this->config->config['ele_url'];
 
@@ -118,10 +121,10 @@ class ShisetsuEditAjax extends BaseController {
 
     // 施設台帳Excel(再)作成
     $this->saveShisetsuDaichou($sno, $shisetsu_kbn);
+    $patrol_types = $this->getPatrolTypeLists();
 
     // 付属物点検Excel(再)作成
-    if ($shisetsu_kbn == 1 || $shisetsu_kbn == 2 || $shisetsu_kbn == 3 ||
-        $shisetsu_kbn == 4 || $shisetsu_kbn == 5 || $shisetsu_kbn == 11) {
+    if (in_array($shisetsu_kbn, $patrol_types['huzokubutsu'])) {
       $this->saveChkData($this->post['data']);
     }
 

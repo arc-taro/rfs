@@ -175,8 +175,27 @@ class FameditCtrl extends BaseCtrl {
         this.repair_cost_arr = [];
       }
 
+      // 施設区分と各種点検の組み合わせ一覧
+      this.patrol_types = json.patrol_types;
+
+      // 施設区分に応じて実施する点検の表示欄のテンプレートを挿入
+      for (const shisetsu_kbn of Object.keys(this.master.shisetsu)) {
+        if (this.isTeikiPatTarget(Number(shisetsu_kbn))) {
+          const denkiIndex = this.master.shisetsu[shisetsu_kbn].include_tpl.daichou_rireki.indexOf(this.DENKI_TEMPLATE_PATH);
+          // 電気のテンプレートがある施設の場合は、その後ろ（なければ先頭）に挿入
+          this.master.shisetsu[shisetsu_kbn].include_tpl.daichou_rireki.splice(denkiIndex + 1, 0, this.TEIKI_PAT_TEMPLATE_PATH);
+        }
+        if (this.isHouteiTarget(Number(shisetsu_kbn))) {
+          this.master.shisetsu[shisetsu_kbn].include_tpl.daichou_rireki.unshift(this.HOUTEI_TEMPLATE_PATH);
+        }
+        if (this.isHuzokubutsuTarget(Number(shisetsu_kbn))) {
+          this.master.shisetsu[shisetsu_kbn].include_tpl.daichou_rireki.unshift(this.HUZOKUBUTSU_TEMPLATE_PATH);
+        } 
+      }
+
+
       // 点検データ
-      if ((1 <= this.shisetsu.shisetsu_kbn && this.shisetsu.shisetsu_kbn <= 5) || (22 <= this.shisetsu.shisetsu_kbn && this.shisetsu.shisetsu_kbn <= 23)) {
+      if (this.isHuzokubutsuTarget(this.shisetsu.shisetsu_kbn)) {
         if (json.huzokubutsu.length == 0) {
           this.huzokubutsu = [];
         } else {
@@ -288,8 +307,37 @@ class FameditCtrl extends BaseCtrl {
     this.hosyuu_naiyou = "";
     // 閲覧モード
     this.editable = false;
+    this.patrol_types = {
+      houtei: [],
+      huzokubutsu: [],
+      teiki_pat: [],
+    };
     // 定数を設定
     this.constSet();
+  }
+
+  // 施設区分が附属物点検の実施対象のものかどうかを返す
+  isHuzokubutsuTarget(shisetsuKbn) {
+    if (this.patrol_types.huzokubutsu.indexOf(Number(shisetsuKbn)) > -1) {
+      return true;
+    }
+    return false;
+  }
+
+  // 施設区分が法定点検の実施対象のものかどうかを返す
+  isHouteiTarget(shisetsuKbn) {
+    if (this.patrol_types.houtei.indexOf(Number(shisetsuKbn)) > -1) {
+      return true;
+    }
+    return false;
+  }
+
+  // 施設区分が定期パトロールの実施対象のものかどうかを返す
+  isTeikiPatTarget(shisetsuKbn) {
+    if (this.patrol_types.teiki_pat.indexOf(Number(shisetsuKbn)) > -1) {
+      return true;
+    }
+    return false;
   }
 
   // 定数を設定
@@ -316,6 +364,25 @@ class FameditCtrl extends BaseCtrl {
     //   });
     // }
 
+    // 固定値を設定
+    Object.defineProperties(this, {
+      TEIKI_PAT_TEMPLATE_PATH: {
+        value: 'views/daichou/tenken_teiki_patrol.html'
+      },
+      HOUTEI_TEMPLATE_PATH: {
+        value: 'views/daichou/tenken_houtei.html'
+      },
+      HUZOKUBUTSU_TEMPLATE_PATH: {
+        value: 'views/daichou/tenken_huzokubutsu.html'
+      },
+      DENKI_TEMPLATE_PATH: {
+        value: 'views/daichou/tenken_denki.html'
+      },
+      TENKEN_HOSYUU_RIREKI_TEMPLATE_PATH: {
+        value: 'views/daichou/tenken_hosyuu_rireki.html'
+      }
+    })
+
     /***
      * num:数値項目名…数値項目を明示的に数値化
      * num_str:数値項目日本語名
@@ -323,7 +390,8 @@ class FameditCtrl extends BaseCtrl {
      * date:日付項目名…YYYY/MM/DDに整形
      ***/
     this.master = {};
-
+    // ※法定点検・附属物点検・定期パトロールのテンプレートの使用/不使用はマスタから取得するため、
+    // この時点では情報を持っていないので、initのAPIの結果を受信してから追加する
     this.master.shisetsu = {
       "0": { // 共通
         num: ['sp', 'sp_to', 'encho'],
@@ -339,9 +407,7 @@ class FameditCtrl extends BaseCtrl {
         include_tpl: {
           daichou_tplnm: 'views/daichou/hyoushiki.html',
           daichou_rireki: [
-            'views/daichou/tenken_huzokubutsu.html',
-            'views/daichou/tenken_teiki_patrol.html',
-            'views/daichou/tenken_hosyuu_rireki.html',
+            this.TENKEN_HOSYUU_RIREKI_TEMPLATE_PATH,
           ],
           gdh_tplnm: 'views/daichou/gdh.html'
         }
@@ -354,10 +420,8 @@ class FameditCtrl extends BaseCtrl {
         include_tpl: {
           daichou_tplnm: 'views/daichou/jyouhouban_denko.html',
           daichou_rireki: [
-            'views/daichou/tenken_huzokubutsu.html',
-            'views/daichou/tenken_denki.html',
-            'views/daichou/tenken_teiki_patrol.html',
-            'views/daichou/tenken_hosyuu_rireki.html',
+            this.DENKI_TEMPLATE_PATH,
+            this.TENKEN_HOSYUU_RIREKI_TEMPLATE_PATH,
           ]
         }
       },
@@ -372,9 +436,7 @@ class FameditCtrl extends BaseCtrl {
         include_tpl: {
           daichou_tplnm: 'views/daichou/syoumei.html',
           daichou_rireki: [
-            'views/daichou/tenken_huzokubutsu.html',
-            'views/daichou/tenken_teiki_patrol.html',
-            'views/daichou/tenken_hosyuu_rireki.html',
+            this.TENKEN_HOSYUU_RIREKI_TEMPLATE_PATH,
           ]
         }
       },
@@ -386,9 +448,7 @@ class FameditCtrl extends BaseCtrl {
         include_tpl: {
           daichou_tplnm: 'views/daichou/bousetsu.html',
           daichou_rireki: [
-            'views/daichou/tenken_huzokubutsu.html',
-            'views/daichou/tenken_teiki_patrol.html',
-            'views/daichou/tenken_hosyuu_rireki.html',
+            this.TENKEN_HOSYUU_RIREKI_TEMPLATE_PATH,
           ]
         }
       },
@@ -400,9 +460,7 @@ class FameditCtrl extends BaseCtrl {
         include_tpl: {
           daichou_tplnm: 'views/daichou/snowpole.html',
           daichou_rireki: [
-            'views/daichou/tenken_huzokubutsu.html',
-            'views/daichou/tenken_teiki_patrol.html',
-            'views/daichou/tenken_hosyuu_rireki.html',
+            this.TENKEN_HOSYUU_RIREKI_TEMPLATE_PATH,
           ]
         }
       },
@@ -414,10 +472,8 @@ class FameditCtrl extends BaseCtrl {
         include_tpl: {
           daichou_tplnm: 'views/daichou/kisyou_kanshi.html',
           daichou_rireki: [
-            'views/daichou/tenken_houtei.html', // 法定点検（附属物点検を行わないもの=施設区分6以降）
-            'views/daichou/tenken_denki.html',
-            'views/daichou/tenken_teiki_patrol.html',
-            'views/daichou/tenken_hosyuu_rireki.html',
+            this.DENKI_TEMPLATE_PATH,
+            this.TENKEN_HOSYUU_RIREKI_TEMPLATE_PATH,
           ]
         }
       },
@@ -429,10 +485,8 @@ class FameditCtrl extends BaseCtrl {
         include_tpl: {
           daichou_tplnm: 'views/daichou/kisyou_jushin.html',
           daichou_rireki: [
-            'views/daichou/tenken_houtei.html',
-            'views/daichou/tenken_denki.html',
-            'views/daichou/tenken_teiki_patrol.html',
-            'views/daichou/tenken_hosyuu_rireki.html',
+            this.DENKI_TEMPLATE_PATH,
+            this.TENKEN_HOSYUU_RIREKI_TEMPLATE_PATH,
           ]
         }
       },
@@ -444,10 +498,8 @@ class FameditCtrl extends BaseCtrl {
         include_tpl: {
           daichou_tplnm: 'views/daichou/kisyou_chuukei.html',
           daichou_rireki: [
-            'views/daichou/tenken_houtei.html',
-            'views/daichou/tenken_denki.html',
-            'views/daichou/tenken_teiki_patrol.html',
-            'views/daichou/tenken_hosyuu_rireki.html',
+            this.DENKI_TEMPLATE_PATH,
+            this.TENKEN_HOSYUU_RIREKI_TEMPLATE_PATH,
           ]
         }
       },
@@ -459,10 +511,8 @@ class FameditCtrl extends BaseCtrl {
         include_tpl: {
           daichou_tplnm: 'views/daichou/kisyou_kansoku.html',
           daichou_rireki: [
-            'views/daichou/tenken_houtei.html',
-            'views/daichou/tenken_denki.html',
-            'views/daichou/tenken_teiki_patrol.html',
-            'views/daichou/tenken_hosyuu_rireki.html',
+            this.DENKI_TEMPLATE_PATH,
+            this.TENKEN_HOSYUU_RIREKI_TEMPLATE_PATH,
           ]
         }
       },
@@ -474,10 +524,8 @@ class FameditCtrl extends BaseCtrl {
         include_tpl: {
           daichou_tplnm: 'views/daichou/kisyou_camera.html',
           daichou_rireki: [
-            'views/daichou/tenken_houtei.html',
-            'views/daichou/tenken_denki.html',
-            'views/daichou/tenken_teiki_patrol.html',
-            'views/daichou/tenken_hosyuu_rireki.html',
+            this.DENKI_TEMPLATE_PATH,
+            this.TENKEN_HOSYUU_RIREKI_TEMPLATE_PATH,
           ]
         }
       },
@@ -489,9 +537,7 @@ class FameditCtrl extends BaseCtrl {
         include_tpl: {
           daichou_tplnm: 'views/daichou/jyouhouban_ctype.html',
           daichou_rireki: [
-            'views/daichou/tenken_houtei.html',
-            'views/daichou/tenken_teiki_patrol.html',
-            'views/daichou/tenken_hosyuu_rireki.html',
+            this.TENKEN_HOSYUU_RIREKI_TEMPLATE_PATH,
           ]
         }
       },
@@ -503,9 +549,7 @@ class FameditCtrl extends BaseCtrl {
         include_tpl: {
           daichou_tplnm: 'views/daichou/syadanki.html',
           daichou_rireki: [
-            'views/daichou/tenken_houtei.html',
-            'views/daichou/tenken_teiki_patrol.html',
-            'views/daichou/tenken_hosyuu_rireki.html',
+            this.TENKEN_HOSYUU_RIREKI_TEMPLATE_PATH,
           ]
         }
       },
@@ -517,9 +561,7 @@ class FameditCtrl extends BaseCtrl {
         include_tpl: {
           daichou_tplnm: 'views/daichou/dot.html',
           daichou_rireki: [
-            'views/daichou/tenken_houtei.html',
-            'views/daichou/tenken_teiki_patrol.html',
-            'views/daichou/tenken_hosyuu_rireki.html',
+            this.TENKEN_HOSYUU_RIREKI_TEMPLATE_PATH,
           ]
         }
       },
@@ -531,10 +573,8 @@ class FameditCtrl extends BaseCtrl {
         include_tpl: {
           daichou_tplnm: 'views/daichou/tonneru.html',
           daichou_rireki: [
-            'views/daichou/tenken_houtei.html',
-            'views/daichou/tenken_denki.html',
-            'views/daichou/tenken_teiki_patrol.html',
-            'views/daichou/tenken_hosyuu_rireki.html',
+            this.DENKI_TEMPLATE_PATH,
+            this.TENKEN_HOSYUU_RIREKI_TEMPLATE_PATH,
           ]
         }
       },
@@ -546,9 +586,7 @@ class FameditCtrl extends BaseCtrl {
         include_tpl: {
           daichou_tplnm: 'views/daichou/chuusya.html',
           daichou_rireki: [
-            'views/daichou/tenken_houtei.html',
-            'views/daichou/tenken_teiki_patrol.html',
-            'views/daichou/tenken_hosyuu_rireki.html',
+            this.TENKEN_HOSYUU_RIREKI_TEMPLATE_PATH,
           ]
         }
       },
@@ -560,9 +598,7 @@ class FameditCtrl extends BaseCtrl {
         include_tpl: {
           daichou_tplnm: 'views/daichou/ryokuka.html',
           daichou_rireki: [
-            'views/daichou/tenken_houtei.html',
-            'views/daichou/tenken_teiki_patrol.html',
-            'views/daichou/tenken_hosyuu_rireki.html',
+            this.TENKEN_HOSYUU_RIREKI_TEMPLATE_PATH,
           ]
         }
       },
@@ -574,9 +610,7 @@ class FameditCtrl extends BaseCtrl {
         include_tpl: {
           daichou_tplnm: 'views/daichou/rittai.html',
           daichou_rireki: [
-            'views/daichou/tenken_houtei.html',
-            'views/daichou/tenken_teiki_patrol.html',
-            'views/daichou/tenken_hosyuu_rireki.html',
+            this.TENKEN_HOSYUU_RIREKI_TEMPLATE_PATH,
           ]
         }
       },
@@ -588,9 +622,7 @@ class FameditCtrl extends BaseCtrl {
         include_tpl: {
           daichou_tplnm: 'views/daichou/youheki.html',
           daichou_rireki: [
-            'views/daichou/tenken_houtei.html',
-            'views/daichou/tenken_teiki_patrol.html',
-            'views/daichou/tenken_hosyuu_rireki.html',
+            this.TENKEN_HOSYUU_RIREKI_TEMPLATE_PATH,
           ]
         }
       },
@@ -602,9 +634,7 @@ class FameditCtrl extends BaseCtrl {
         include_tpl: {
           daichou_tplnm: 'views/daichou/norimen.html',
           daichou_rireki: [
-            'views/daichou/tenken_houtei.html',
-            'views/daichou/tenken_teiki_patrol.html',
-            'views/daichou/tenken_hosyuu_rireki.html',
+            this.TENKEN_HOSYUU_RIREKI_TEMPLATE_PATH,
           ]
         }
       },
@@ -616,9 +646,7 @@ class FameditCtrl extends BaseCtrl {
         include_tpl: {
           daichou_tplnm: 'views/daichou/shinsyutsu.html',
           daichou_rireki: [
-            'views/daichou/tenken_houtei.html',
-            'views/daichou/tenken_teiki_patrol.html',
-            'views/daichou/tenken_hosyuu_rireki.html',
+            this.TENKEN_HOSYUU_RIREKI_TEMPLATE_PATH,
           ]
         }
       },
@@ -630,9 +658,7 @@ class FameditCtrl extends BaseCtrl {
         include_tpl: {
           daichou_tplnm: 'views/daichou/roadheating.html',
           daichou_rireki: [
-            'views/daichou/tenken_houtei.html',
-            'views/daichou/tenken_teiki_patrol.html',
-            'views/daichou/tenken_hosyuu_rireki.html'
+            this.TENKEN_HOSYUU_RIREKI_TEMPLATE_PATH
           ]
         }
       },
@@ -644,11 +670,8 @@ class FameditCtrl extends BaseCtrl {
         include_tpl: {
           daichou_tplnm: 'views/daichou/kansui_keihou.html',
           daichou_rireki: [
-            'views/daichou/tenken_huzokubutsu.html',
-            'views/daichou/tenken_houtei.html',
-            'views/daichou/tenken_denki.html',
-            'views/daichou/tenken_teiki_patrol.html',
-            'views/daichou/tenken_hosyuu_rireki.html',
+            this.DENKI_TEMPLATE_PATH,
+            this.TENKEN_HOSYUU_RIREKI_TEMPLATE_PATH,
           ]
         }
       },
@@ -660,53 +683,44 @@ class FameditCtrl extends BaseCtrl {
         include_tpl: {
           daichou_tplnm: 'views/daichou/tonneru_keihou.html',
           daichou_rireki: [
-            'views/daichou/tenken_huzokubutsu.html',
-            'views/daichou/tenken_houtei.html',
-            'views/daichou/tenken_denki.html',
-            'views/daichou/tenken_teiki_patrol.html',
-            'views/daichou/tenken_hosyuu_rireki.html',
+            this.DENKI_TEMPLATE_PATH,
+            this.TENKEN_HOSYUU_RIREKI_TEMPLATE_PATH,
           ]
         }
       },
-      "24": { // 橋梁・横断歩道橋
+      "24": { // 橋梁
         num: [],
         num_str: [],
         pulldown: [],
         date: [],
         include_tpl: {
-          daichou_tplnm: 'views/daichou/kyouryou_oudanhodoukyou.html',
+          daichou_tplnm: 'views/daichou/kyouryou.html',
           daichou_rireki: [
-            'views/daichou/tenken_houtei.html',
-            'views/daichou/tenken_teiki_patrol.html',
-            'views/daichou/tenken_hosyuu_rireki.html',
+            this.TENKEN_HOSYUU_RIREKI_TEMPLATE_PATH,
           ]
         }
       },
-      "25": { // トンネル・シェッド等・大型カルバート
+      "25": { // トンネル
         num: [],
         num_str: [],
         pulldown: [],
         date: [],
         include_tpl: {
-          daichou_tplnm: 'views/daichou/tonneru_shed_culvert.html',
+          daichou_tplnm: 'views/daichou/tonneru2.html',
           daichou_rireki: [
-            'views/daichou/tenken_houtei.html',
-            'views/daichou/tenken_teiki_patrol.html',
-            'views/daichou/tenken_hosyuu_rireki.html',
+            this.TENKEN_HOSYUU_RIREKI_TEMPLATE_PATH,
           ]
         }
       },
-      "26": { // 道路土工構造物（法面・擁壁・函渠）
+      "26": { // 切土
         num: [],
         num_str: [],
         pulldown: [],
         date: [],
         include_tpl: {
-          daichou_tplnm: 'views/daichou/douro_dokou_kouzoubutsu.html',
+          daichou_tplnm: 'views/daichou/kirido.html',
           daichou_rireki: [
-            'views/daichou/tenken_houtei.html',
-            'views/daichou/tenken_teiki_patrol.html',
-            'views/daichou/tenken_hosyuu_rireki.html',
+            this.TENKEN_HOSYUU_RIREKI_TEMPLATE_PATH,
           ]
         }
       },
@@ -718,27 +732,95 @@ class FameditCtrl extends BaseCtrl {
         include_tpl: {
           daichou_tplnm: 'views/daichou/hodou.html',
           daichou_rireki: [
-            'views/daichou/tenken_houtei.html',
-            'views/daichou/tenken_teiki_patrol.html',
-            'views/daichou/tenken_hosyuu_rireki.html',
+            this.TENKEN_HOSYUU_RIREKI_TEMPLATE_PATH,
           ]
         }
       },
-      "28": { // カルテ点検（落石・崩壊、急流河川）
+      "28": { // 落石崩壊
         num: [],
         num_str: [],
         pulldown: [],
         date: [],
         include_tpl: {
-          daichou_tplnm: 'views/daichou/carte_tenken.html',
+          daichou_tplnm: 'views/daichou/rakuseki_houkai.html',
           daichou_rireki: [
-            'views/daichou/tenken_houtei.html',
-            'views/daichou/tenken_teiki_patrol.html',
-            'views/daichou/tenken_hosyuu_rireki.html',
+            this.TENKEN_HOSYUU_RIREKI_TEMPLATE_PATH,
           ]
         }
       },
-      "29": { // 道路標識（門型）
+      "29": { // 横断歩道橋
+        num: [],
+        num_str: [],
+        pulldown: [],
+        date: [],
+        include_tpl: {
+          daichou_tplnm: 'views/daichou/oudanhodoukyou.html',
+          daichou_rireki: [
+            this.TENKEN_HOSYUU_RIREKI_TEMPLATE_PATH,
+          ]
+        }
+      },
+      "30": { // シェッド等
+        num: [],
+        num_str: [],
+        pulldown: [],
+        date: [],
+        include_tpl: {
+          daichou_tplnm: 'views/daichou/shed.html',
+          daichou_rireki: [
+            this.TENKEN_HOSYUU_RIREKI_TEMPLATE_PATH,
+          ]
+        }
+      },
+      "31": { // 大型カルバート
+        num: [],
+        num_str: [],
+        pulldown: [],
+        date: [],
+        include_tpl: {
+          daichou_tplnm: 'views/daichou/culvert.html',
+          daichou_rireki: [
+            this.TENKEN_HOSYUU_RIREKI_TEMPLATE_PATH,
+          ]
+        }
+      },
+      "32": { // 岩盤崩壊
+        num: [],
+        num_str: [],
+        pulldown: [],
+        date: [],
+        include_tpl: {
+          daichou_tplnm: 'views/daichou/gamban_houkai.html',
+          daichou_rireki: [
+            this.TENKEN_HOSYUU_RIREKI_TEMPLATE_PATH,
+          ]
+        }
+      },
+      "33": { // 急流河川
+        num: [],
+        num_str: [],
+        pulldown: [],
+        date: [],
+        include_tpl: {
+          daichou_tplnm: 'views/daichou/kyuuryuu_kasen.html',
+          daichou_rireki: [
+            this.TENKEN_HOSYUU_RIREKI_TEMPLATE_PATH,
+          ]
+        }
+      },
+      "34": { // 盛土
+        num: [],
+        num_str: [],
+        pulldown: [],
+        date: [],
+        include_tpl: {
+          daichou_tplnm: 'views/daichou/morido.html',
+          daichou_rireki: [
+            this.TENKEN_HOSYUU_RIREKI_TEMPLATE_PATH,
+          ]
+        }
+      },
+      "35": { // 道路標識（門型）
         num: [],
         num_str: [],
         pulldown: [],
@@ -746,14 +828,23 @@ class FameditCtrl extends BaseCtrl {
         include_tpl: {
           daichou_tplnm: 'views/daichou/hyoushiki_mongata.html',
           daichou_rireki: [
-            'views/daichou/tenken_houtei.html',
-            'views/daichou/tenken_teiki_patrol.html',
-            'views/daichou/tenken_hosyuu_rireki.html',
+            this.TENKEN_HOSYUU_RIREKI_TEMPLATE_PATH,
+          ]
+        }
+      },
+      "36": { // 道路情報提供装置（門型）
+        num: [],
+        num_str: [],
+        pulldown: [],
+        date: [],
+        include_tpl: {
+          daichou_tplnm: 'views/daichou/jyouhouban_mongata.html',
+          daichou_rireki: [
+            this.TENKEN_HOSYUU_RIREKI_TEMPLATE_PATH,
           ]
         }
       }
     };
-
   }
 
   setInclude(shisetsu_kbn) {
@@ -859,6 +950,32 @@ class FameditCtrl extends BaseCtrl {
       this.setMstKK(json); // 冠水警報表示
     } else if (this.shisetsu.shisetsu_kbn == 23) {
       this.setMstTK(json); // トンネル警報表示
+    } else if (this.shisetsu.shisetsu_kbn == 24) {
+      this.setMstBR(json); // 橋梁
+    } else if (this.shisetsu.shisetsu_kbn == 25) {
+      this.setMstTU(json); // トンネル
+    } else if (this.shisetsu.shisetsu_kbn == 26) {
+      this.setMstDK(json); // 切土
+    } else if (this.shisetsu.shisetsu_kbn == 27) {
+      this.setMstHD(json); // 歩道
+    } else if (this.shisetsu.shisetsu_kbn == 28) {
+      this.setMstKR(json); // 落石崩壊
+    } else if (this.shisetsu.shisetsu_kbn == 29) {
+      this.setMstFB(json); // 横断歩道橋
+    } else if (this.shisetsu.shisetsu_kbn == 30) {
+      this.setMstSH(json); // シェッド等
+    } else if (this.shisetsu.shisetsu_kbn == 31) {
+      this.setMstCL(json); // 大型カルバート
+    } else if (this.shisetsu.shisetsu_kbn == 32) {
+      this.setMstKG(json); // 岩盤崩壊
+    } else if (this.shisetsu.shisetsu_kbn == 33) {
+      this.setMstKK(json); // 急流河川
+    } else if (this.shisetsu.shisetsu_kbn == 34) {
+      this.setMstDF(json); // 盛土
+    } else if (this.shisetsu.shisetsu_kbn == 35) {
+      this.setMstHM(json); // 道路標識（門型）
+    } else if (this.shisetsu.shisetsu_kbn == 36) {
+      this.setMstJM(json); // 道路情報提供装置（門型）
     }
   }
 
@@ -1010,6 +1127,45 @@ class FameditCtrl extends BaseCtrl {
     this.koukyou_tandoku_arr = json.koukyou_tandoku; // 公共単独
     this.hyouji_shiyou_arr = json.hyouji_shiyou; // 表示仕様
   }
+
+  // 橋梁
+  setMstBR(json) {}
+
+  // トンネル
+  setMstTU(json) {}
+
+  // 切土
+  setMstDK(json) {}
+  
+  // 歩道
+  setMstHD(json) {}
+  
+  // 落石崩壊
+  setMstKR(json) {}
+  
+  // 横断歩道橋
+  setMstFB(json) {}
+  
+  // シェッド等
+  setMstSH(json) {}
+  
+  // 大型カルバート
+  setMstCL(json) {}
+  
+  // 岩盤崩壊
+  setMstKG(json) {}
+  
+  // 急流河川
+  setMstKK(json) {}
+  
+  // 盛土
+  setMstDF(json) {}
+  
+  // 道路標識（門型）
+  setMstDHM(json) {}
+  
+  // 道路情報提供装置（門型）
+  setMstJM(json) {}
 
   // 形式区分セット
   setKeishikiKubunArr(json) {
@@ -1194,15 +1350,30 @@ class FameditCtrl extends BaseCtrl {
       } else if (this.shisetsu.shisetsu_kbn == 24) {
         this.feature.style.externalGraphic = `images/icon/shisetsu_mng/br_1.gif`;
       } else if (this.shisetsu.shisetsu_kbn == 25) {
-        this.feature.style.externalGraphic = `images/icon/shisetsu_mng/ok_1.gif`;
+        this.feature.style.externalGraphic = `images/icon/shisetsu_mng/tu_1.gif`;
       } else if (this.shisetsu.shisetsu_kbn == 26) {
-        this.feature.style.externalGraphic = `images/icon/shisetsu_mng/kf_1.gif`;
+        this.feature.style.externalGraphic = `images/icon/shisetsu_mng/dk_1.gif`;
       } else if (this.shisetsu.shisetsu_kbn == 27) {
         this.feature.style.externalGraphic = `images/icon/shisetsu_mng/hd_1.gif`;
       } else if (this.shisetsu.shisetsu_kbn == 28) {
-        this.feature.style.externalGraphic = `images/icon/shisetsu_mng/gk_1.gif`;
+        this.feature.style.externalGraphic = `images/icon/shisetsu_mng/kr_1.gif`;
       } else if (this.shisetsu.shisetsu_kbn == 29) {
-        this.feature.style.externalGraphic = `images/icon/shisetsu_mng/dm_1.gif`;
+        this.feature.style.externalGraphic = `images/icon/shisetsu_mng/fb_1.gif`;
+      } else if (this.shisetsu.shisetsu_kbn == 30) {
+        this.feature.style.externalGraphic = `images/icon/shisetsu_mng/sh_1.gif`;
+      } else if (this.shisetsu.shisetsu_kbn == 31) {
+        this.feature.style.externalGraphic = `images/icon/shisetsu_mng/cl_1.gif`;
+      } else if (this.shisetsu.shisetsu_kbn == 34) {
+        this.feature.style.externalGraphic = `images/icon/shisetsu_mng/df_1.gif`;
+      } else if (this.shisetsu.shisetsu_kbn == 32) {
+        this.feature.style.externalGraphic = `images/icon/shisetsu_mng/kg_1.gif`;
+      } else if (this.shisetsu.shisetsu_kbn == 33) {
+        // 「kk_1.gif」は冠水（廃止）に使われていたので「kk2_1.gif」を使用
+        this.feature.style.externalGraphic = `images/icon/shisetsu_mng/kk2_1.gif`;
+      } else if (this.shisetsu.shisetsu_kbn == 35) {
+        this.feature.style.externalGraphic = `images/icon/shisetsu_mng/hm_1.gif`;
+      } else if (this.shisetsu.shisetsu_kbn == 36) {
+        this.feature.style.externalGraphic = `images/icon/shisetsu_mng/jm_1.gif`;
       }
       this.vectorLayer.addFeatures([this.feature]);
     } else {

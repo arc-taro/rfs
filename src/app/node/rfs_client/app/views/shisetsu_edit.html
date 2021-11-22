@@ -147,7 +147,7 @@
                   <select class="form-control input-sm btn-group-justified" ng-model="shisetsu.data.rrow"
                     ng-options="rrow as rrow.rosen_nm for rrow in shisetsu.rosen_dat"
                     style="width:18em; text-align: left" ng-change="shisetsu.chgRosen()"
-                    ng-required="shisetsu.data.shisetsu_kbn<=5" ng-disabled="!shisetsu.editable">
+                    ng-required="shisetsu.isHuzokubutsuTarget(shisetsu.data.shisetsu_kbn)" ng-disabled="!shisetsu.editable">
                     <option value="">---</option>
                   </select>
                 </div>
@@ -379,7 +379,7 @@
         <!-- 附属物点検施設とそれ以外で項目が異なる(表示位置は同じ) -->
         <!-- 附属物点検施設 -->
         <div
-          ng-if="(1<= shisetsu.data.shisetsu_kbn && shisetsu.data.shisetsu_kbn <= 5) || shisetsu.data.shisetsu_kbn == 22 || shisetsu.data.shisetsu_kbn == 23">
+          ng-if="shisetsu.isHuzokubutsuTarget(shisetsu.data.shisetsu_kbn)">
           <div class="row" ng-show="!shisetsu.idPhase">
             <div class="col-sm-2"></div>
             <div class="col-sm-10 form-inline">
@@ -408,7 +408,7 @@
           </div>
         </div>
         <!-- 附属物点検施設以外 -->
-        <div ng-if="5 < shisetsu.data.shisetsu_kbn">
+        <div ng-if="!shisetsu.isHuzokubutsuTarget(shisetsu.data.shisetsu_kbn)">
           <div class="row" ng-show="!shisetsu.idPhase">
             <div class="col-sm-2"></div>
             <div class="col-sm-10 form-inline">

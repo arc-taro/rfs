@@ -62,4 +62,4 @@ require("./scripts/directives/md-checkbox.js");
 require("./scripts/directives/date-time-picker.js");
 require("./scripts/controllers/snow_removal.js");
 require("./scripts/controllers/csv_list.js");
-
+require("./scripts/controllers/tenken_keikaku.js");

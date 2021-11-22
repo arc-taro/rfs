@@ -1,0 +1,463 @@
+<div id="tenken_keikaku">
+  <!-- Navbar Start-->
+  <div class="navbar navbar-default navbar-fixed-top zidx5009">
+    <div class="container">
+      <a style="color:white;" class="navbar-brand" ng-href="#">
+        <img src="images/logo.png" class="img-rounded">道路施設管理システム</a>
+    </div>
+  </div>
+  <!-- End of Navber -->
+  <div class="row" style="padding-top: 42px;">
+    <div class="col-sm-12" style="padding-left:165px">
+      <div class="s_main" ng-click="tenkenkeikaku.jyoukenkensaku = !tenkenkeikaku.jyoukenkensaku">
+        <a style="color:white;">
+          <i class="fa" ng-class="{'fa-plus' : tenkenkeikaku.jyoukenkensaku , 'fa-minus' : !tenkenkeikaku.jyoukenkensaku}"></i>
+          条件を指定して検索 </a>
+      </div>
+      <div uib-collapse="tenkenkeikaku.jyoukenkensaku">
+        <div style="display:table;">
+          <div class="left_sts_i" style="display:table-cell;">
+            <p class="label4">
+              <i class="fa fa-flag" aria-hidden="true"></i>
+              <br>施設の情報</p>
+          </div>
+          <div class="row" style="display:table-cell;">
+            <div class=" col-sm-12 form-inline " style="float:left;">
+              <div class="form-group input-append text-left" style="margin-right:10px;">
+                <label class="form-control-label text-center margin">
+                  <p class="label">施設管理番号</p>
+                </label>
+                <div class="form-inline">
+                  <div class="form-group">
+                    <input type="text" ng-model="tenkenkeikaku.srch.shisetsu_cd" class="form-control input-sm input_h" style="width:19.4em; text-align: left">
+                  </div>
+                </div>
+              </div>
+              <div class="form-group input-append text-left zidx5008" style="margin-right:10px;">
+                <label class="form-control-label margin">
+                  <p class="label">施設名選択</p>
+                </label>
+                <div>
+                  <div ng-dropdown-multiselect="" options="tenkenkeikaku.shisetsu_kbn_dat" selected-model="tenkenkeikaku.srch.shisetsu_kbn_dat_model"
+                    translation-texts="tenkenkeikaku.translationTexts" extra-settings="tenkenkeikaku.extraSettings" style="height:26px; width:8em; text-align: left"
+                    class="btn-group-justified" events="tenkenkeikaku.chkSS"></div>
+                </div>
+              </div>
+              <div class="
+                    form-group input-append text-left">
+                <label class="form-control-label text-center margin">
+                  <p class="label">設置年度</p>
+                </label>
+                &nbsp;&nbsp;
+                <input style="position:relative; top:2px;" type="checkbox" ng-model="tenkenkeikaku.srch.include_secchi_null">
+                <p class="label">設置年度不明を対象に含める</p>
+                <div class="form-inline">
+                  <div class="form-group">
+                    <select class="form-control input-sm btn-group-justified select_h"
+                      ng-model="tenkenkeikaku.srch.secchi_nendo_from"
+                      ng-options="nendo.year as nendo.gengou for nendo in tenkenkeikaku.secchi_nendo"
+                      style="width:8em; text-align: left">
+                      <option value="">---</option>
+                    </select>
+                    <span>~</span>
+                    <select class="form-control input-sm btn-group-justified select_h"
+                      ng-model="tenkenkeikaku.srch.secchi_nendo_to"
+                      ng-options="nendo.year as nendo.gengou for nendo in tenkenkeikaku.secchi_nendo"
+                      style="width:8em; text-align: left">
+                      <option value="">---</option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div style="display:table;">
+          <div class="left_sts_i" style="display:table-cell;">
+            <p class="label4">
+              <i class="fa fa-map" aria-hidden="true"></i>
+              <br>施設の位置情報</p>
+          </div>
+          <div class="row" style="display:table-cell;">
+            <div class="col-sm-12 form-inline">
+              <div class="form-group input-append text-left zidx5005" style="margin-right:9px;">
+                <label class="form-control-label text-center margin">
+                  <p class="label">路線選択</p>
+                </label>
+                <div class="form-inline">
+                  <div ng-dropdown-multiselect="" options="tenkenkeikaku.filterRosen" selected-model="tenkenkeikaku.srch.rosen_dat_model"
+                    translation-texts="tenkenkeikaku.translationTexts" extra-settings="tenkenkeikaku.extraSettings" style="width:8em; text-align: left"
+                    class="btn-group-justified"></div>
+                </div>
+              </div>
+              <div class="form-group input-append text-left" style="margin-right:10px;">
+                <label class="form-control-label text-center margin">
+                  <p class="label">測点入力（ｍ）※路線選択が一つの場合のみ</p>
+                </label>
+                <div class="form-inline">
+                  <div class="form-group">
+                    <input type="number" ng-model="tenkenkeikaku.srch.sp_from" class="form-control input-sm input_h"
+                      ng-disabled="tenkenkeikaku.srch.rosen_dat_model.length!=1" style="width:9.2em; text-align: left">
+                    <span>~</span>
+                    <input type="number" ng-model="tenkenkeikaku.srch.sp_to" class="form-control input-sm input_h"
+                      ng-disabled="tenkenkeikaku.srch.rosen_dat_model.length!=1" style="width:9em; text-align: left">
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div style="display:table;" ng-if="tenkenkeikaku.exist_ss">
+          <div class="left_sts_i" style="display:table-cell;">
+            <p class="label4">
+              <i class="glyphicon glyphicon-pencil"></i>
+              <br>その他</p>
+          </div>
+          <div class="row" style="display:table-cell;">
+            <div class="col-sm-12 form-inline">
+              <div class="form-group input-append text-left zidx5005" style="margin-right:9px;">
+                <label class="form-control-label text-center margin">
+                  <p class="label">灯柱番号</p>
+                </label>
+                <div class="form-inline">
+                  <div class="form-group">
+                    <input type="text" ng-model="tenkenkeikaku.srch.touchuu_no" class="form-control input-sm input_h" style="width:19.4em; text-align: left">
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div style="display:table;">
+          <div class="left_sts_i" style="display:table-cell;">
+          </div>
+          <div class="row" style="display:table-cell;">
+            <div class="col-sm-12 form-inline" style="margin-bottom:24px;">
+              <div class="form-group input-append" style="margin-top:26px;  margin-right:5px;">
+                <button type="button" class="btn btn-xs btn-danger btn-group-justified text-center" ng-click="tenkenkeikaku.allReset()"
+                  style="width:8em;">
+                  <span class="glyphicon glyphicon-retweet"></span>　リセット</button>
+              </div>
+              <div class="form-group input-append text-center" style="margin-top:26px;">
+                <button type="button" class="btn btn-xs btn-info btn-group-justified text-center" ng-click="tenkenkeikaku.srchTenkenShisetsu()"
+                  style="width:8em;">
+                  <span class="glyphicon glyphicon-search"></span>　検索</button>
+              </div>&nbsp;
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="s_main" ng-click="tenkenkeikaku.naiyoukensaku = !tenkenkeikaku.naiyoukensaku" style="margin-bottom: 10px;">
+        <a style="color:white;">
+          <i class="fa" ng-class="{'fa-plus' : tenkenkeikaku.naiyoukensaku , 'fa-minus' : !tenkenkeikaku.naiyoukensaku}"></i>
+          検索条件内容 </a>
+      </div>
+
+      <div uib-collapse="tenkenkeikaku.naiyoukensaku">
+        <div class="row">
+          <div class="col-sm-12">
+            <div id="sync-table1" style="overflow:hidden;height: calc(100vh - 450px);width:auto;max-width:32%;overflow-x: scroll;float:left;">
+              <table class="sys table-bordered">
+                <thead>
+                  <tr style="height: 31px;">
+                    <th rowspan="3" style="width: 300px;">施設名</th>
+                    <th rowspan="3" style="min-width: 120px;">施設管理番号</th>
+                    <th rowspan="3" style="min-width: 70px;"><div>路線</div><div>コード</div></th>
+                    <th rowspan="3" style="min-width: 200px;">路線名</th>
+                    <th rowspan="3" style="min-width: 50px;"><div>横断</div><div>区分</div></th>
+                    <th rowspan="3" style="min-width: 50px;">測点</th>
+                  </tr>
+                  <!-- 右側のテーブルと高さ合わせのための空行 -->
+                  <tr style="height: 31px;">
+                  </tr>
+                  <!-- 右側のテーブルとの高さ合わせのための空行 -->
+                  <tr style="height: 31px;">
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr ng-repeat="keikaku in tenkenkeikaku.keikaku_list track by keikaku.id">
+                    <td style="width: 300px; min-height: 44px; max-height: 44px;text-overflow: ellipsis; white-space: nowrap;">{{ keikaku.shisetsu_kbn_nm }}<span ng-if="keikaku.shisetsu_kbn == 4 && keikaku.struct_idx > -1">({{keikaku.struct_idx}})</span></td>
+                    <td style="min-width: 120px; min-height: 44px; max-height: 44px;"><a style="cursor:pointer;" ng-href="#/fam_edit/{{keikaku.sno}}">{{ keikaku.shisetsu_cd }}</a></td>
+                    <td style="min-width: 70px; min-height: 44px; max-height: 44px;">{{ keikaku.rosen_cd }}</td>
+                    <td style="min-width: 200px; min-height: 44px; max-height: 44px;">{{ keikaku.rosen_nm }}</td>
+                    <td style="min-width: 50px; min-height: 44px; max-height: 44px;">{{ keikaku.lr_str }}</td>
+                    <td style="min-width: 50px; min-height: 44px; max-height: 44px;">{{ keikaku.sp }}</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div id="sync-table2" style="height: calc(100vh - 450px);width:auto;overflow-x: scroll;">
+              <table class="sys table-bordered">
+                <thead>
+                  <tr>
+                    <th colspan="4">直近の点検結果</th>
+                    <th colspan="{{tenkenkeikaku.tenken_keikaku_year_span}}" style="min-width: 148px;">法定点検計画</th>
+                    <th colspan="{{tenkenkeikaku.tenken_keikaku_year_span}}" style="min-width: 148px;">附属物点検計画</th>
+                    <th colspan="{{tenkenkeikaku.tenken_keikaku_year_span}}" style="min-width: 148px;">道路定期パト計画</th>
+                  </tr>
+                  <tr>
+                    <th colspan="2">附属物点検</th>
+                    <th colspan="2">道路定期パト</th>
+                    <th rowspan="2" style="min-width: 40px; max-width: 40px;" ng-repeat="header in tenkenkeikaku.keikaku_nendo_headers">
+                      {{header}}
+                    </th>
+                    <th rowspan="2" style="min-width: 40px; max-width: 40px;" ng-repeat="header in tenkenkeikaku.keikaku_nendo_headers">
+                      {{header}}
+                    </th>
+                    <th rowspan="2" style="min-width: 40px; max-width: 40px;" ng-repeat="header in tenkenkeikaku.keikaku_nendo_headers">
+                      {{header}}
+                    </th>
+                  </tr>
+                  <tr>
+                    <th style="min-width: 30px; padding-left: 0; padding-right: 0;">年度</th>
+                    <th style="min-width: 50px; padding-left: 0; padding-right: 0;">健全性</th>
+                    <th style="min-width: 30px; padding-left: 0; padding-right: 0;">年度</th>
+                    <th style="min-width: 60px; padding-left: 0; padding-right: 0;">異常有無</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr ng-repeat="keikaku in tenkenkeikaku.keikaku_list track by keikaku.id">
+                    <td style="min-height: 44px; max-height: 44px;">{{ keikaku.latest_huzokubutsu && keikaku.latest_huzokubutsu.w_chk_dt ? keikaku.latest_huzokubutsu.w_chk_dt : '' }}</td>
+                    <td style="min-height: 44px; max-height: 44px;" ng-style="keikaku.latest_huzokubutsu ? tenkenkeikaku.getCheckShisetsuJudgeCellStyle(keikaku.latest_huzokubutsu.check_shisetsu_judge) : {}">{{ keikaku.latest_huzokubutsu && keikaku.latest_huzokubutsu.check_shisetsu_judge_nm ? keikaku.latest_huzokubutsu.check_shisetsu_judge_nm : '' }}</td>
+                    <td style="min-height: 44px; max-height: 44px;">{{ keikaku.latest_teiki_pat && keikaku.latest_teiki_pat.wareki_ryaku ? keikaku.latest_teiki_pat.wareki_ryaku : '' }}</td>
+                    <td style="min-height: 44px; max-height: 44px;" ng-style="keikaku.latest_teiki_pat ? tenkenkeikaku.getIjouUmuCellStyle(keikaku.latest_teiki_pat.ijou_list_count) : {}">{{ keikaku.latest_teiki_pat && keikaku.latest_teiki_pat.umu_str ? keikaku.latest_teiki_pat.umu_str : ''  }}</td>
+                    <!-- 法定点検計画入力のチェックボックス -->
+                    <td ng-repeat="annualPlan in keikaku.houtei_plans track by annualPlan.id" style="min-width: 40px; max-width: 40px; min-height: 44px; max-height: 44px; padding: 0;" ng-style="tenkenkeikaku.isHouteiDisabled(keikaku, annualPlan) ? {backgroundColor: '#F2F2F2'} : {}">
+                      <label style="display: block; width: 100%; height: 100%; margin-bottom: 0; ">
+                        <input
+                          type="checkbox"
+                          ng-change="tenkenkeikaku.onHouteiPlanChanged(keikaku, annualPlan.year, annualPlan.planned)"
+                          ng-disabled="tenkenkeikaku.isHouteiDisabled(keikaku, annualPlan)"
+                          ng-model="annualPlan.planned"
+                          style="vertical-align: middle;"
+                        />
+                      </label>
+                    </td>
+                    <!-- 附属物点検計画入力のチェックボックス -->
+                    <td ng-repeat="annualPlan in keikaku.huzokubutsu_plans track by annualPlan.id" style="min-width: 40px; max-width: 40px; min-height: 44px; max-height: 44px; padding: 0;" ng-style="tenkenkeikaku.isHuzokubutsuDisabled(keikaku, annualPlan) ? {backgroundColor: '#F2F2F2'} : {}">
+                      <label style="display: block; width: 100%; height: 100%; margin-bottom: 0; ">
+                        <input
+                          type="checkbox"
+                          ng-change="tenkenkeikaku.onHuzokubutsuPlanChanged(keikaku, annualPlan.year, annualPlan.planned)"
+                          ng-disabled="tenkenkeikaku.isHuzokubutsuDisabled(keikaku, annualPlan)"
+                          ng-model="annualPlan.planned"
+                          style="vertical-align: middle;"
+                        />
+                      </label>
+                    </td>
+                    <!-- 道路定期パト計画入力のチェックボックス -->
+                    <td ng-repeat="annualPlan in keikaku.teiki_pat_plans track by annualPlan.id" style="min-width: 40px; max-width: 40px; min-height: 44px; max-height: 44px; padding: 0;" ng-style="tenkenkeikaku.isTeikiPatDisabled(keikaku, annualPlan) ? {backgroundColor: '#F2F2F2'} : {}">
+                      <label style="display: block; width: 100%; height: 100%; margin-bottom: 0; ">
+                        <input
+                          type="checkbox"
+                          ng-change="tenkenkeikaku.onTeikiPatPlanChanged(keikaku, annualPlan.year, annualPlan.planned)"
+                          ng-disabled="tenkenkeikaku.isTeikiPatDisabled(keikaku, annualPlan)"
+                          ng-model="annualPlan.planned"
+                          style="vertical-align: middle;"
+                        />
+                      </label>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="row" style="margin-top: 10px;margin-left:10px;width:99%;">
+        <div class="col-xs-11">
+        </div>
+        <div class="col-xs-1">
+          <button ng-click="tenkenkeikaku.saveKeikaku()" ng-disabled="!tenkenkeikaku.keikaku_list || tenkenkeikaku.keikaku_list.length == 0" class="btn btn-success" style="width: 100px;">保存</button>
+        </div>
+      </div>
+    </div>
+    <div style="top:42px;left:0px;z-index:1000; width:165px;"
+      class="sidebar sidebar-nav affix container-fluid background2" role="complementary">
+      <div class="form-group row" style="margin:10px 0 10px 0;">
+        <label class=" form-control-label margin">
+          <p class="label3">建設管理部</p>
+        </label>
+        <select class="form-control input-sm" ng-model="tenkenkeikaku.dogen"
+          ng-options="row as row.dogen_mei for row in tenkenkeikaku.dogen_syucchoujo_dat.dogen_info"
+          ng-change="tenkenkeikaku.chgDogen()" required>
+          <!-- 建管は必須にする
+<option value="">---</option>
+-->
+        </select>
+      </div>
+      <div class="form-group row" style="margin:0 0 20px 0;">
+        <label class=" form-control-label margin">
+          <p class="label3">管理区域（出張所）</p>
+        </label>
+        <select ng-show="tenkenkeikaku.ath_syozoku_cd==1 || tenkenkeikaku.ath_syozoku_cd==2 || tenkenkeikaku.ath_syozoku_cd==10001"
+          class="form-control input-sm" ng-model="tenkenkeikaku.syucchoujo"
+          ng-options="row as row.syucchoujo_mei for row in tenkenkeikaku.dogen.syucchoujo_row.syucchoujo_info"
+          ng-change="tenkenkeikaku.chgSyucchoujo()" required>
+          <option value="">全て</option>
+        </select>
+        <select ng-show="tenkenkeikaku.ath_syozoku_cd==3 || tenkenkeikaku.ath_syozoku_cd==4" class="form-control input-sm"
+          ng-model="tenkenkeikaku.syucchoujo"
+          ng-options="row as row.syucchoujo_mei for row in tenkenkeikaku.dogen.syucchoujo_row.syucchoujo_info"
+          ng-change="tenkenkeikaku.chgSyucchoujo()" required>
+        </select>
+      </div>
+
+      <div class="left_h" ng-click="sys_top.shisetsukind = !sys_top.shisetsukind">
+        <a style="color:white;">
+          <i class="fa" ng-class="{'fa-plus' : sys_top.shisetsukind , 'fa-minus' : !sys_top.shisetsukind}"></i> 施設種別
+        </a>
+      </div>
+
+      <div uib-collapse="sys_top.shisetsukind">
+        <div class="left_s">
+          <a ng-href="#/fam_main/1/1/6/-1/">道路標識</a>
+        </div>
+        <div class="left_s">
+          <a ng-href="#/fam_main/1/3/6/-1/">道路照明施設</a>
+        </div>
+        <div class="left_s">
+          <a ng-href="#/fam_main/1/2/6/-1/">道路情報提供装置</a>
+        </div>
+        <div class="left_s">
+          <a ng-href="#/fam_main/1/4/6/-1/">防雪柵</a>
+        </div>
+        <div class="left_s">
+          <a ng-href="#/fam_main/1/5/6/-1/">大型スノーポール</a>
+        </div>
+        <div class="left_s">
+          <a ng-href="#/fam_main/1/22/6/-1/">冠水警報表示</a>
+        </div>
+        <div class="left_s">
+          <a ng-href="#/fam_main/1/23/6/-1/">トンネル警報表示</a>
+        </div>
+        <div class="left_s">
+          <a ng-href="#/fam_main/1/6/6/-1/">気象情報（監視局）</a>
+        </div>
+        <div class="left_s">
+          <a ng-href="#/fam_main/1/7/6/-1/">気象情報（受信局）</a>
+        </div>
+        <div class="left_s">
+          <a ng-href="#/fam_main/1/8/6/-1/">気象情報（中継局）</a>
+        </div>
+        <div class="left_s">
+          <a ng-href="#/fam_main/1/9/6/-1/">気象情報（観測局）</a>
+        </div>
+        <div class="left_s">
+          <a ng-href="#/fam_main/1/10/6/-1/">気象情報（ITV）</a>
+        </div>
+        <div class="left_s">
+          <a ng-href="#/fam_main/1/11/6/-1/">道路情報板（C型）</a>
+        </div>
+        <div class="left_s">
+          <a ng-href="#/fam_main/1/12/6/-1/">遮断機</a>
+        </div>
+        <!--
+        <div class="left_s">
+          <a ng-href="#/fam_main/1/13/6/-1/">ドット線</a>
+        </div>
+-->
+        <div class="left_s">
+          <a ng-href="#/fam_main/1/14/6/-1/">トンネル</a>
+        </div>
+        <div class="left_s">
+          <a ng-href="#/fam_main/1/15/6/-1/">駐車公園</a>
+        </div>
+        <div class="left_s">
+          <a ng-href="#/fam_main/1/16/6/-1/">緑化樹木</a>
+        </div>
+        <div class="left_s">
+          <a ng-href="#/fam_main/1/17/6/-1/">立体横断</a>
+        </div>
+        <!--
+        <div class="left_s">
+          <a ng-href="#/fam_main/1/18/6/-1/">擁壁</a>
+        </div>
+        <div class="left_s">
+          <a ng-href="#/fam_main/1/19/6/-1/">法面</a>
+        </div>
+        <div class="left_s">
+          <a ng-href="#/fam_main/1/20/6/-1/">浸出装置</a>
+        </div>
+-->
+        <div class="left_s">
+          <a ng-href="#/fam_main/1/21/6/-1/">ロードヒーティング</a>
+        </div>
+
+        <div class="left_s">
+          <a ng-href="#/fam_main/1/24/6/-1/">橋梁・横断歩道橋</a>
+        </div>
+        <div class="left_s">
+          <a ng-href="#/fam_main/1/25/6/-1/">トンネル・シェッド等・大型カルバート</a>
+        </div>
+        <div class="left_s">
+          <a ng-href="#/fam_main/1/26/6/-1/">道路土工構造物（法面・擁壁・函渠）</a>
+        </div>
+        <div class="left_s">
+          <a ng-href="#/fam_main/1/27/6/-1/">歩道</a>
+        </div>
+        <div class="left_s">
+          <a ng-href="#/fam_main/1/28/6/-1/">カルテ点検（落石・崩壊、急流河川）</a>
+        </div>
+        <div class="left_s">
+          <a ng-href="#/fam_main/1/29/6/-1/">道路標識（門型）</a>
+        </div>
+      </div>
+
+      <div style="margin:20px 0 10px 0;">
+        <a ng-href="#/raf_top" class="sys_btn">道路附属物
+          <br>施設点検</a>
+      </div>
+      <div style="margin:10px 0 10px 0;">
+        <a ng-href="{{tenkenkeikaku.ele_url}}" class="sys_btn2">電気通信
+          <br>施設点検</a>
+      </div>
+      <div style="margin:10px 0 10px 0;">
+        <a ng-href="#/tenken_keikaku" class="sys_btn3">点検結果/計画
+          <br>入力・出力</a>
+      </div>
+      <div id="footerdamy-side"></div>
+    </div>
+  </div>
+  <div id="footerArea2">
+    <div class="row" style="margin-top : 8px">
+      <div class="col-sm-3" style="text-align:center;">
+        <a ng-href="#/sys_top" type="button" class="btn btn-xs btn-inverse btn-sm">
+          <span class="glyphicon glyphicon-arrow-left"></span>&nbsp;道路施設管理システムTOPに戻る</a>
+      </div>
+  </div>
+
+  <!-- 保存中オーバーレイ -->
+  <div class="waitOverlay " ng-show="tenkenkeikaku.waitOverlay">
+    <div style="width:100vw;height:100vh;font-size:60px;display: table-cell;text-align: center;vertical-align: middle; ">
+      <i class="fa fa-spinner fa-spin fa-3x fa-fw "></i>
+      <br>
+      <span>保存中です。
+        <br />しばらくお待ちください。</span>
+    </div>
+  </div>
+
+  <!-- 読込み中オーバーレイ -->
+  <div class="waitOverlay " ng-show="tenkenkeikaku.waitLoadOverlay">
+    <div style="width:100vw;height:100vh;font-size:60px;display: table-cell;text-align: center;vertical-align: middle; ">
+      <i class="fa fa-spinner fa-spin fa-3x fa-fw "></i>
+      <br>
+      <span>読込み中です。
+        <br />しばらくお待ちください。</span>
+    </div>
+  </div>
+
+  <!-- 削除中オーバーレイ -->
+  <div class="waitOverlay " ng-show="tenkenkeikaku.waitDeleteOverlay">
+    <div style="width:100vw;height:100vh;font-size:60px;display: table-cell;text-align: center;vertical-align: middle; ">
+      <i class="fa fa-spinner fa-spin fa-3x fa-fw "></i>
+      <br>
+      <span>削除中です。
+        <br />しばらくお待ちください。</span>
+    </div>
+  </div>
+
+</div>

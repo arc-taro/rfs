@@ -177,14 +177,17 @@ EOF;
 
     $sql= <<<EOF
 SELECT
-  shisetsu_kbn
-  , shisetsu_kbn_nm
+  rmsk.shisetsu_kbn
+  , rmsk.shisetsu_kbn_nm
 FROM
-  rfs_m_shisetsu_kbn
+  rfs_m_shisetsu_kbn rmsk
+INNER JOIN
+  rfs_m_patrol_type rmpt 
+  ON rmsk.shisetsu_kbn = rmpt.shisetsu_kbn 
 WHERE
-  shisetsu_kbn <= 5
+  rmpt.huzokubutsu_flag = true
 ORDER BY
-  sort_no
+  rmsk.sort_no
 EOF;
 
     $query = $this->DB_rfs->query($sql);
@@ -543,22 +546,25 @@ EOF;
     $where_shisetu_kbn="";
     if ($kbn == 1) {
     }else if($kbn == 2) {
-      $where_shisetu_kbn=" AND shisetsu_kbn <= 5";
+      $where_shisetu_kbn=" AND rmpt.huzokubutsu_flag = true";
     }
 
     $sql= <<<EOF
 SELECT
-    shisetsu_kbn    as id
-  , shisetsu_kbn_nm as label
-  , shisetsu_kbn
-  , sort_no
+    rmsk.shisetsu_kbn    as id
+  , rmsk.shisetsu_kbn_nm as label
+  , rmsk.shisetsu_kbn
+  , rmsk.sort_no
 FROM
-  rfs_m_shisetsu_kbn
+  rfs_m_shisetsu_kbn rmsk
+LEFT JOIN
+  rfs_m_patrol_type rmpt 
+  ON rmsk.shisetsu_kbn = rmpt.shisetsu_kbn 
 WHERE
   TRUE
   $where_shisetu_kbn
 ORDER BY
-  sort_no
+  rmsk.sort_no
 EOF;
     $query = $this->DB_rfs->query($sql);
     $result = $query->result('array');
@@ -1078,7 +1084,7 @@ EOF;
     return $result;
   }
 
-    /**
+  /**
    * 建管・出張所取得
    *
    * @return array
@@ -1172,6 +1178,33 @@ ORDER BY
   shisetsu_kbn
   , buzai_cd
 EOF;
+  $query = $this->DB_rfs->query($sql);
+  $result = $query->result('array');
+  return $result;
+}
+
+  /* 和暦のリストを取得する。
+   * 
+   * 現行のプルダウンに使用するため、項目を合わせる必要があった。
+   * year:西暦
+   * gengou:表記和暦
+   * 
+   */
+  public function getWarekiListFuture($from,$to,$jun="ASC") {
+    log_message('debug', __METHOD__);
+    $sql= <<<EOF
+    SELECT
+    seireki as year
+  , wareki_ryaku
+  , wareki_ryaku || '年' gengou 
+FROM
+  v_wareki_seireki_future 
+WHERE
+  seireki >= $from 
+  AND seireki <= $to
+ORDER BY 
+  seireki $jun
+EOF;
     $query = $this->DB_rfs->query($sql);
     $result = $query->result('array');
     return $result;
@@ -1194,6 +1227,19 @@ FROM
     rfs_m_shisetsu_judge
 ORDER BY
     shisetsu_judge_nm
+EOF;
+    $query = $this->DB_rfs->query($sql);
+    $result = $query->result('array');
+    return $result;
+  }
+
+  public function getPatrolTypes() {
+    log_message('debug', __METHOD__);
+    $sql= <<<EOF
+SELECT
+  *
+FROM
+  rfs_m_patrol_type
 EOF;
     $query = $this->DB_rfs->query($sql);
     $result = $query->result('array');

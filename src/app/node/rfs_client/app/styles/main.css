@@ -2048,6 +2048,46 @@ div.h_main-danger {
   text-decoration: none;
 }
 
+.sys_btn3 {
+  width: 100%;
+  font-size: 15px;
+  position: relative;
+  display: inline-block;
+  padding: 6px 0 6px;
+  background-color: #333;
+  /* border:1px solid #fff; */
+  color: #fff;
+  text-align: center;
+  background-color: #7030A0;
+  border-radius: 3px;
+  text-decoration: none;
+  transition: all .3s;
+  box-shadow: 2px 2px 2px #555;
+}
+
+.sys_btn3::after {
+  position: absolute;
+  top: 50%;
+  right: .2em;
+  content: '';
+  margin-top: -5px;
+  border: 7px solid transparent;
+  border-top-width: 5px;
+  border-bottom-width: 5px;
+  border-left-color: #fff;
+  transition: all .2s;
+}
+
+.sys_btn3:hover::after {
+  right: -.05em;
+}
+
+.sys_btn3:hover {
+  background-color: #431d5f;
+  color: #fff;
+  text-decoration: none;
+}
+
 .post-contents .button01:hover::after {
   border-left-color: #333;
 }

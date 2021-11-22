@@ -132,6 +132,9 @@ class FamEditAjax extends BaseController {
       $result['repair_cost_arr']=$repair_cost;
     }
 
+    // 施設区分と各種点検の組み合わせ一覧を取得
+    $result['patrol_types'] = $this->getPatrolTypeLists();
+
     /*************************/
     /*** 電気通信施設点検取得 ***/
     /*************************/
@@ -145,7 +148,7 @@ class FamEditAjax extends BaseController {
     /********************/
     /*** 附属物点検取得 ***/
     /********************/
-    if (1 <= $shisetsu_kbn && $shisetsu_kbn <= 5) {
+    if (in_array($shisetsu_kbn, $result['patrol_types']['huzokubutsu'])) {
       $huzokubutsu = $this->FamEditModel->getHuzokubutsu($sno, $shisetsu_kbn);
       // 戻り値に設定
       $result['huzokubutsu']=$huzokubutsu;
@@ -256,6 +259,20 @@ class FamEditAjax extends BaseController {
     $val[28]=[];
     $tbl[29]=[];
     $val[29]=[];
+    $tbl[30]=[];
+    $val[30]=[];
+    $tbl[31]=[];
+    $val[31]=[];
+    $tbl[32]=[];
+    $val[32]=[];
+    $tbl[33]=[];
+    $val[33]=[];
+    $tbl[34]=[];
+    $val[34]=[];
+    $tbl[35]=[];
+    $val[35]=[];
+    $tbl[36]=[];
+    $val[36]=[];
 
     // シンプルマスタはこちら
     for($i = 0 ; $i < count($tbl[$shisetsu_kbn]);$i++){
@@ -300,7 +317,7 @@ class FamEditAjax extends BaseController {
       // 形式区分なし
     } else if ($shisetsu_kbn == 13) { /*** ドット線 ***/
       // 形式区分なし
-    } else if ($shisetsu_kbn == 14) { /*** トンネル ***/
+    } else if ($shisetsu_kbn == 14) { /*** トンネル（道路トンネル非常用装置/その他） ***/
       // 設置個所縦断
       $secchi_kasyo_j = $this->SchCommon->getSecchiKasyo(1);
       $arr['secchi_kasyo_j']=$secchi_kasyo_j;
@@ -327,17 +344,31 @@ class FamEditAjax extends BaseController {
       $keishiki_kubun_num=2; // 形式区分2つ
     } else if ($shisetsu_kbn == 21) { /*** ロードヒーティング ***/
       $keishiki_kubun_num=2; // 形式区分2つ
-    } else if ($shisetsu_kbn == 24) { /*** 橋梁・横断歩道橋 ***/
+    } else if ($shisetsu_kbn == 24) { /*** 橋梁 ***/
       // TODO: 詳細不明
-    } else if ($shisetsu_kbn == 25) { /*** トンネル・シェッド等・大型カルバート ***/
+    } else if ($shisetsu_kbn == 25) { /*** トンネル ***/
       // TODO: 詳細不明
-    } else if ($shisetsu_kbn == 26) { /*** 道路土工構造物 ***/
+    } else if ($shisetsu_kbn == 26) { /*** 切土 ***/
       // TODO: 詳細不明
     } else if ($shisetsu_kbn == 27) { /*** 歩道 ***/
       // TODO: 詳細不明
-    } else if ($shisetsu_kbn == 28) { /*** カルテ点検（落石・崩壊、急流河川） ***/
+    } else if ($shisetsu_kbn == 28) { /*** 落石崩壊 ***/
       // TODO: 詳細不明
-    } else if ($shisetsu_kbn == 29) { /*** 道路標識（門型） ***/
+    } else if ($shisetsu_kbn == 29) { /*** 横断歩道橋 ***/
+      // TODO: 詳細不明
+    } else if ($shisetsu_kbn == 30) { /*** シェッド等 ***/
+      // TODO: 詳細不明
+    } else if ($shisetsu_kbn == 31) { /*** 大型カルバート ***/
+      // TODO: 詳細不明
+    } else if ($shisetsu_kbn == 32) { /*** 岩盤崩壊 ***/
+      // TODO: 詳細不明
+    } else if ($shisetsu_kbn == 33) { /*** 急流河川 ***/
+      // TODO: 詳細不明
+    } else if ($shisetsu_kbn == 34) { /*** 盛土 ***/
+      // TODO: 詳細不明
+    } else if ($shisetsu_kbn == 35) { /*** 道路標識（門型） ***/
+      // TODO: 詳細不明
+    } else if ($shisetsu_kbn == 36) { /*** 道路情報提供装置（門型） ***/
       // TODO: 詳細不明
     }
 
@@ -459,21 +490,42 @@ class FamEditAjax extends BaseController {
     } else if ($daichou['shisetsu_kbn']==24) { // 橋梁 
       $this->load->model("FamEditModelBR");
       $model = $this->FamEditModelBR;
-    } else if ($daichou['shisetsu_kbn']==25) { // トンネル・シェッド等・大型カルバート
-      $this->load->model("FamEditModelOK");
-      $model = $this->FamEditModelOK;
-    } else if ($daichou['shisetsu_kbn']==26) { // 道路土工構造物（法面・擁壁・函渠）
-      $this->load->model("FamEditModelKF");
-      $model = $this->FamEditModelKF;
+    } else if ($daichou['shisetsu_kbn']==25) { // トンネル 
+      $this->load->model("FamEditModelTU");
+      $model = $this->FamEditModelTU;
+    } else if ($daichou['shisetsu_kbn']==26) { // 切土 
+      $this->load->model("FamEditModelDK");
+      $model = $this->FamEditModelDK;
     } else if ($daichou['shisetsu_kbn']==27) { // 歩道 
       $this->load->model("FamEditModelHD");
       $model = $this->FamEditModelHD;
-    } else if ($daichou['shisetsu_kbn']==28) { // カルテ点検（落石・崩壊、急流河川） 
-      $this->load->model("FamEditModelGK");
-      $model = $this->FamEditModelGK;
-    } else if ($daichou['shisetsu_kbn']==29) { // 道路標識（門型） 
-      $this->load->model("FamEditModelDM");
-      $model = $this->FamEditModelDM;
+    } else if ($daichou['shisetsu_kbn']==28) { // 落石崩壊 
+      $this->load->model("FamEditModelKR");
+      $model = $this->FamEditModelKR;
+    } else if ($daichou['shisetsu_kbn']==29) { // 横断歩道橋 
+      $this->load->model("FamEditModelFB");
+      $model = $this->FamEditModelFB;
+    } else if ($daichou['shisetsu_kbn']==30) { // シェッド等 
+      $this->load->model("FamEditModelSH");
+      $model = $this->FamEditModelSH;
+    } else if ($daichou['shisetsu_kbn']==31) { // 大型カルバート 
+      $this->load->model("FamEditModelCL");
+      $model = $this->FamEditModelCL;
+    } else if ($daichou['shisetsu_kbn']==32) { // 岩盤崩壊 
+      $this->load->model("FamEditModelKG");
+      $model = $this->FamEditModelKG;
+    } else if ($daichou['shisetsu_kbn']==33) { // 急流河川 
+      $this->load->model("FamEditModelKK");
+      $model = $this->FamEditModelKK;
+    } else if ($daichou['shisetsu_kbn']==34) { // 盛土 
+      $this->load->model("FamEditModelDF");
+      $model = $this->FamEditModelDF;
+    } else if ($daichou['shisetsu_kbn']==35) { // 道路標識（門型） 
+      $this->load->model("FamEditModelHM");
+      $model = $this->FamEditModelHM;
+    } else if ($daichou['shisetsu_kbn']==36) { // 道路情報提供装置（門型） 
+      $this->load->model("FamEditModelJM");
+      $model = $this->FamEditModelJM;
     }
 
     $model->saveShisetsuDaichou($this->post);

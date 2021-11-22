@@ -225,8 +225,11 @@ select
   ) AS shisetsu_kbn_row
 from
   (select shisetsu_kbn as id, shisetsu_kbn_nm as label, shisetsu_kbn, sort_no from rfs_m_shisetsu_kbn order by sort_no) s
+inner join
+  rfs_m_patrol_type rmpt 
+  ON s.id = rmpt.shisetsu_kbn 
 where
-  id <= 5
+  rmpt.huzokubutsu_flag = true
 EOF;
 
         $query = $DB_rfs->query($sql);
@@ -277,8 +280,11 @@ from
           shisetsu_kbn
       ) skei
         on skbn.shisetsu_kbn = skei.shisetsu_kbn
+      inner join
+        rfs_m_patrol_type rmpt 
+        ON skbn.shisetsu_kbn = rmpt.shisetsu_kbn 
     where
-      skbn.shisetsu_kbn <= 5
+      rmpt.huzokubutsu_flag = true
     order by
       sort_no
   ) s

@@ -81,12 +81,19 @@ class SystopCtrl extends BaseCtrl {
       this.sum_kk = json.kk;
       this.sum_tk = json.tk;
       this.sum_br = json.br;
-      this.sum_ok = json.ok;
-      this.sum_kf = json.kf;
+      this.sum_fb = json.fb;
+      this.sum_tu = json.tu;
+      this.sum_sh = json.sh;
+      this.sum_cl = json.cl;
+      this.sum_dk = json.dk;
+      this.sum_df = json.df;
       this.sum_hd = json.hd;
-      this.sum_gk = json.gk;
-      this.sum_dm = json.dm;
-
+      this.sum_kr = json.kr;
+      this.sum_kg = json.kg;
+      this.sum_kk = json.kk;
+      this.sum_hm = json.hm;
+      this.sum_jm = json.jm;
+      
       // 電気通信URL
       this.ele_url = json.ele_url;
 
@@ -185,11 +192,18 @@ class SystopCtrl extends BaseCtrl {
       this.sum_kk = json.kk;
       this.sum_tk = json.tk;
       this.sum_br = json.br;
-      this.sum_ok = json.ok;
-      this.sum_kf = json.kf;
+      this.sum_fb = json.fb;
+      this.sum_tu = json.tu;
+      this.sum_sh = json.sh;
+      this.sum_cl = json.cl;
+      this.sum_dk = json.dk;
+      this.sum_df = json.df;
       this.sum_hd = json.hd;
-      this.sum_gk = json.gk;
-      this.sum_dm = json.dm;
+      this.sum_kr = json.kr;
+      this.sum_kg = json.kg;
+      this.sum_kk = json.kk;
+      this.sum_hm = json.hm;
+      this.sum_jm = json.jm;
       this.waitLoadOverlay = false; // 読込み中です
     });
   }
@@ -246,11 +260,18 @@ class SystopCtrl extends BaseCtrl {
       this.sum_kk = json.kk;
       this.sum_tk = json.tk;
       this.sum_br = json.br;
-      this.sum_ok = json.ok;
-      this.sum_kf = json.kf;
+      this.sum_fb = json.fb;
+      this.sum_tu = json.tu;
+      this.sum_sh = json.sh;
+      this.sum_cl = json.cl;
+      this.sum_dk = json.dk;
+      this.sum_df = json.df;
       this.sum_hd = json.hd;
-      this.sum_gk = json.gk;
-      this.sum_dm = json.dm;
+      this.sum_kr = json.kr;
+      this.sum_kg = json.kg;
+      this.sum_kk = json.kk;
+      this.sum_hm = json.hm;
+      this.sum_jm = json.jm;
       this.waitLoadOverlay = false; // 読込み中です
     });
   }
@@ -294,11 +315,18 @@ class SystopCtrl extends BaseCtrl {
       this.sum_kk = json.kk;
       this.sum_tk = json.tk;
       this.sum_br = json.br;
-      this.sum_ok = json.ok;
-      this.sum_kf = json.kf;
+      this.sum_fb = json.fb;
+      this.sum_tu = json.tu;
+      this.sum_sh = json.sh;
+      this.sum_cl = json.cl;
+      this.sum_dk = json.dk;
+      this.sum_df = json.df;
       this.sum_hd = json.hd;
-      this.sum_gk = json.gk;
-      this.sum_dm = json.dm;
+      this.sum_kr = json.kr;
+      this.sum_kg = json.kg;
+      this.sum_kk = json.kk;
+      this.sum_hm = json.hm;
+      this.sum_jm = json.jm;
       this.waitLoadOverlay = false; // 読込み中です
 
     });
