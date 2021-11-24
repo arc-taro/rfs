@@ -134,6 +134,8 @@ class ShisetsuEditAjax extends BaseController {
   public function saveShisetsuDaichou($sno, $shisetsu_kbn){
     log_message('debug', __METHOD__);
 
+    $model_excel = null;
+
     // 施設区分によって保存内容が異なる
     if ($shisetsu_kbn==1) {        // 道路標識
       $this->load->model("CreateDaichouExcelDH");
@@ -202,22 +204,39 @@ class ShisetsuEditAjax extends BaseController {
     } else if ($shisetsu_kbn==21) { // ロードヒーティング
       $this->load->model("CreateDaichouExcelRH");
       $model_excel = $this->CreateDaichouExcelRH;
-    } else if ($shisetsu_kbn==24) { // 橋梁・横断歩道橋
+    } else if ($shisetsu_kbn==24) { // 橋梁
       // TODO: Excel作成時に必要
-    } else if ($shisetsu_kbn==25) { // トンネル・シェッド等・大型カルバート
+    } else if ($shisetsu_kbn==25) { // トンネル
       // TODO: Excel作成時に必要
-    } else if ($shisetsu_kbn==26) { // 道路土工構造物
+    } else if ($shisetsu_kbn==26) { // 切土
       // TODO: Excel作成時に必要
     } else if ($shisetsu_kbn==27) { // 歩道
       // TODO: Excel作成時に必要
-    } else if ($shisetsu_kbn==28) { // カルテ点検（落石・崩壊、急流河川）
+    } else if ($shisetsu_kbn==28) { // 落石崩壊
       // TODO: Excel作成時に必要
-    } else if ($shisetsu_kbn==29) { // 道路標識（門型）
+    } else if ($shisetsu_kbn==29) { // 横断歩道橋
+      // TODO: Excel作成時に必要
+    } else if ($shisetsu_kbn==30) { // シェッド等
+      // TODO: Excel作成時に必要
+    } else if ($shisetsu_kbn==31) { // 大型カルバート
+      // TODO: Excel作成時に必要
+    } else if ($shisetsu_kbn==32) { // 岩盤崩壊
+      // TODO: Excel作成時に必要
+    } else if ($shisetsu_kbn==33) { // 急流河川
+      // TODO: Excel作成時に必要
+    } else if ($shisetsu_kbn==34) { // 盛土
+      // TODO: Excel作成時に必要
+    } else if ($shisetsu_kbn==35) { // 道路標識（門型）
+      // TODO: Excel作成時に必要
+    } else if ($shisetsu_kbn==36) { // 36	道路情報提供装置（門型）
       // TODO: Excel作成時に必要
     }
 
     // Excelを作成
-    $model_excel->outputDaichouData($sno);
+    // 現状、新規追加施設はExcelを作成しない（$model_excelがnull）なので、nullでないときのみ作成を実行
+    if (!is_null($model_excel)) {
+      $model_excel->outputDaichouData($sno);
+    }
   }
 
   // 付属物点検保存
