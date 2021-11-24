@@ -100,6 +100,7 @@ module.exports.angApp = angular
         templateUrl: 'views/csv_list.html',
         controller: 'CsvListCtrl',
         controllerAs: 'csvlst'
+      })
       .when('/tenken_keikaku', {
         templateUrl: 'views/tenken_keikaku.html',
         controller: 'TenkenKeikakuCtrl',
