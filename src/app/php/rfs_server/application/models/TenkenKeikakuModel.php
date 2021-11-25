@@ -242,7 +242,8 @@ WITH shisetsu AS (
     ) s2
       ON s1.shisetsu_cd = s2.shisetsu_cd
       AND s1.shisetsu_ver = s2.shisetsu_ver
-  LEFT JOIN
+  -- rfs_m_bousetsusaku_shichuにレコードが無い場合もあるのでINNER JOINする
+  INNER JOIN
     rfs_m_bousetsusaku_shichu rmbs
     ON rmbs.sno = s1.sno
   WHERE
@@ -717,7 +718,8 @@ WITH patrol_plan AS (
     ) s2
       ON s1.shisetsu_cd = s2.shisetsu_cd
       AND s1.shisetsu_ver = s2.shisetsu_ver
-  LEFT JOIN
+  -- rfs_m_bousetsusaku_shichuにレコードが無い場合もあるのでINNER JOINする
+  INNER JOIN
     rfs_m_bousetsusaku_shichu rmbs
     ON rmbs.sno = s1.sno
   WHERE
