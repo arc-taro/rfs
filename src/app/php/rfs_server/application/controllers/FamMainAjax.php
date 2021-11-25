@@ -150,6 +150,8 @@ class FamMainAjax extends BaseController {
        // 未入力追加=検索時はIS NULLとして検索
        }else if ($kyouyou_kbn==-2) {
          $tmp['label']="未入力";
+       }else if ($kyouyou_kbn==2) {
+         $tmp['label']="一部休止";
        }
        //$tmp['label']=$kyouyou_kbn==1 ? "供用" : "休止";
        array_push($srch['kyouyou_kbn_dat_model'], $tmp);
