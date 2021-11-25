@@ -121,8 +121,8 @@ class TenkenKeikakuAjax extends BaseController {
     // 件数を先に取得
     $cnt=$this->TenkenKeikakuModel->srchTenkenShisetsuNum($condition);
     //log_message('debug', "count=$cnt");
-    // 700件を超える場合は検索しない
-    if ($cnt>=700) {
+    // 100件を超える場合は検索しない
+    if ($cnt>=100) {
       $result['cnt']=$cnt;
     }else{
       $result=$this->TenkenKeikakuModel->srchTenkenShisetsu($condition);

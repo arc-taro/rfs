@@ -179,7 +179,7 @@ class TenkenKeikakuCtrl extends BaseCtrl {
   // 初期変数設定
   initVariable() {
     // 検索最大値
-    this.max_srch_cnt = 700;
+    this.max_srch_cnt = 100;
 
     this.shisetsukind = false;
 
@@ -366,7 +366,7 @@ class TenkenKeikakuCtrl extends BaseCtrl {
         var srch_cnt = json.cnt;
         var message;
 
-        // 700件を超えている場合、表示・取得をクリアし再絞込みしてもらう
+        // 100件を超えている場合、表示・取得をクリアし再絞込みしてもらう
         if (srch_cnt > this.max_srch_cnt) {
           this.clearResult();
           delete data.data;
