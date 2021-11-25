@@ -803,6 +803,7 @@ WHERE TRUE
 ORDER BY 
     s.rosen_cd
     ,s.sp
+    ,s.sno
     ,s.struct_idx
 
 EOF;
