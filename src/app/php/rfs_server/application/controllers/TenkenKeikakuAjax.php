@@ -54,6 +54,10 @@ class TenkenKeikakuAjax extends BaseController {
     $result['shisetsu_kbn']=$shisetsu_kbn;
     $result['rosen']=$rosen;
 
+    // 電気通信URL（電気通信施設画面へのリンクに使用する）
+    $this->config->load('config');
+    $result["ele_url"]=$this->config->config['www_ele_path'];
+
     // 検索画面での設定が必要なので返却する
     // $result['srch']=$srch;
     $this->json = json_encode($result);
