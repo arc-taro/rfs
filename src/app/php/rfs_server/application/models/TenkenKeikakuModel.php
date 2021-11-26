@@ -991,7 +991,7 @@ EOF;
     log_message('info', __METHOD__);
     $target_dt_obj = (new DateTime())->setDate($year, 4, 1);
     $target_dt = $target_dt_obj->format('Y-m-d');
-    $struct_idx_nullable = $shisetsu_kbn == 4 ? $struct_idx : 'null';
+    $struct_idx_nullable = $shisetsu_kbn == 4 ? $struct_idx : 0;
 
     $sql = <<<EOF
 INSERT INTO
