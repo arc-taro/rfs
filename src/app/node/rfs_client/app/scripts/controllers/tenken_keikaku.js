@@ -214,97 +214,7 @@ class TenkenKeikakuCtrl extends BaseCtrl {
     // // 数値項目配列
     this.numItem = [
       "rosen_cd",
-    //   "sp",
       "sp_to",
-    //   "encho",
-    //   "koutsuuryou_day",
-    //   "koutsuuryou_oogata",
-    //   "koutsuuryou_hutuu",
-    //   "koutsuuryou_12"
-    ];
-
-    // 検索結果のソート条件(左表)
-    this.sort_identifiers_left = [
-      // ["shisetsu_kbn_nm", "seq_no"],
-      // ["-shisetsu_kbn_nm", "seq_no"],
-      // ["name", "seq_no"],
-      // ["-name", "seq_no"],
-      // ["shisetsu_keishiki_nm", "seq_no"],
-      // ["-shisetsu_keishiki_nm", "seq_no"],
-      // ["keishiki_kubun1", "seq_no"],
-      // ["-keishiki_kubun1", "seq_no"],
-      // ["keishiki_kubun2", "seq_no"],
-      // ["-keishiki_kubun2", "seq_no"],
-      // ["shisetsu_cd", "seq_no"],
-      // ["-shisetsu_cd", "seq_no"],
-      // ["toutyuu_no", "seq_no"],
-      // ["-toutyuu_no", "seq_no"]
-    ];
-
-    // 検索結果のソート条件(右表)
-    this.sort_identifiers_right = [
-      // ["syozoku_cd", "seq_no"],
-      // ["-syozoku_cd", "seq_no"],
-      // [
-      //   "sort_priority_tenken_link",
-      //   "shisetsu_kbn_nm",
-      //   "sno",
-      //   "struct_idx",
-      //   "chk_mng_no",
-      //   "shichu_cnt"
-      // ],
-      // [
-      //   "-sort_priority_tenken_link",
-      //   "shisetsu_kbn_nm",
-      //   "sno",
-      //   "struct_idx",
-      //   "chk_mng_no",
-      //   "shichu_cnt"
-      // ],
-      // ["rosen_cd", "seq_no"],
-      // ["-rosen_cd", "seq_no"],
-      // ["rosen_nm", "seq_no"],
-      // ["-rosen_nm", "seq_no"],
-      // ["sp", "seq_no"],
-      // ["-sp", "seq_no"],
-      // ["sp_to", "seq_no"],
-      // ["-sp_to", "seq_no"],
-      // ["lr", "lr_str", "seq_no"],
-      // ["-lr", "lr_str", "seq_no"],
-      // ["encho", "seq_no"],
-      // ["-encho", "seq_no"],
-      // ["fukuin", "seq_no"],
-      // ["-fukuin", "seq_no"],
-      // ["address", "seq_no"],
-      // ["-address", "seq_no"],
-      // ["kyouyou_kbn", "kyouyou_kbn_str", "seq_no"],
-      // ["-kyouyou_kbn", "kyouyou_kbn_str", "seq_no"],
-      // ["secchi_yyyy", "secchi", "seq_no"],
-      // ["-secchi_yyyy", "secchi", "seq_no"],
-      // ["haishi_yyyy", "haishi", "seq_no"],
-      // ["-haishi_yyyy", "haishi", "seq_no"],
-      // ["ud", "ud_str", "seq_no"],
-      // ["-ud", "ud_str", "seq_no"],
-      // ["koutsuuryou_day", "seq_no"],
-      // ["-koutsuuryou_day", "seq_no"],
-      // ["koutsuuryou_12", "seq_no"],
-      // ["-koutsuuryou_12", "seq_no"],
-      // ["koutsuuryou_hutuu", "seq_no"],
-      // ["-koutsuuryou_hutuu", "seq_no"],
-      // ["koutsuuryou_oogata", "seq_no"],
-      // ["-koutsuuryou_oogata", "seq_no"],
-      // ["substitute_road_str", "seq_no"],
-      // ["-substitute_road_str", "seq_no"],
-      // ["emergency_road_str", "seq_no"],
-      // ["-emergency_road_str", "seq_no"],
-      // ["motorway_str", "seq_no"],
-      // ["-motorway_str", "seq_no"],
-      // ["senyou", "seq_no"],
-      // ["-senyou", "seq_no"],
-      // ["dogen_mei", "seq_no"],
-      // ["-dogen_mei", "seq_no"],
-      // ["syucchoujo_mei", "seq_no"],
-      // ["-syucchoujo_mei", "seq_no"]
     ];
 
     this.keikaku_nendo_headers = [];
@@ -384,6 +294,31 @@ class TenkenKeikakuCtrl extends BaseCtrl {
           return this.alert("検索", message);
         } else {
           this.keikaku_list = json.shisetsu_info;
+
+          // 防雪柵で子レコードがない場合は附属物点検の入力ができるようにフラグを設定する
+          for (let i = 0; i < this.keikaku_list.length; i++) {
+            if (this.keikaku_list[i].shisetsu_kbn != 4) {
+              continue;
+            }
+            this.keikaku_list[i].children_exists = true;
+            const currentStructIdx = this.keikaku_list[i].struct_idx;
+            if (i < this.keikaku_list.length - 1) {
+              const currentSno = this.keikaku_list[i].sno;
+              const nextSno = this.keikaku_list[i + 1].sno;
+              if (currentStructIdx == -1) {
+                // 親の行の場合で次の行のsnoが異なる場合は子レコードがないと判断
+                if (currentSno != nextSno) {
+                  this.keikaku_list[i].children_exists = false;
+                }
+                
+              }
+            } else {
+              if (currentStructIdx == -1) {
+                // 最後に親が来た場合は子レコードがないと判断
+                this.keikaku_list[i].children_exists = false;
+              }
+            }
+          }
           
           // ng-repeatする要素（各行とチェックボックスのマス）には一意の値が必要なので振る
           // HACK: Lodashを使えばもう少しシンプルに書けそう
@@ -438,7 +373,6 @@ class TenkenKeikakuCtrl extends BaseCtrl {
   }
 
   // 法定点検のチェックボックスが無効かどうかを返す
-  // @param {string} name - 表示したい名前を指定する。
   isHouteiDisabled(keikaku, annualPlan) {
     if (!keikaku.houtei_flag) {
       // 法定点検を実施しない施設の場合は無効
@@ -464,8 +398,11 @@ class TenkenKeikakuCtrl extends BaseCtrl {
     if (keikaku.shisetsu_kbn == 4) {
       // 防雪柵の場合
       if (keikaku.struct_idx == -1) {
-        // 親の行の場合は無効（附属物点検は支柱インデックスごとに設定するため）
-        return true;
+        // 親の行の場合
+        if (keikaku.children_exists) {
+          // 子（支柱インデックスごと）の行が存在する場合は無効（附属物点検は支柱インデックスごとに設定するため）
+          return true;
+        }
       }
     }
     return false;
@@ -593,16 +530,30 @@ class TenkenKeikakuCtrl extends BaseCtrl {
             });
           }
         } else {
-          // 防雪柵の場合は附属物点検の同じsnoでstruct_idxが0異常のものを変更する
-          if (eachKeikaku.sno == keikaku.sno && eachKeikaku.struct_idx > -1) {
-            // snoとstruct_idxが一致する行のみを変更し、それ以外の行は何もしない
-            eachKeikaku.huzokubutsu_plans = _.map(eachKeikaku.huzokubutsu_plans, plan => {
-              // 年が一致し、パトロール実施済みでないもののみを変更する
-              if (plan.year == year && !plan.patrol_done) {
-                plan.planned = false;
-              }
-              return plan; 
-            });
+          if (keikaku.children_exists) {
+            // 防雪柵の場合で支柱インデックスの行がある場合は附属物点検の同じsnoでstruct_idxが0以上のものを変更する
+            if (eachKeikaku.sno == keikaku.sno && eachKeikaku.struct_idx > -1) {
+              // snoが一致する支柱インデックスの行のみを変更し、それ以外の行は何もしない
+              eachKeikaku.huzokubutsu_plans = _.map(eachKeikaku.huzokubutsu_plans, plan => {
+                // 年が一致し、パトロール実施済みでないもののみを変更する
+                if (plan.year == year && !plan.patrol_done) {
+                  plan.planned = false;
+                }
+                return plan; 
+              });
+            }
+          } else {
+            // 防雪柵で支柱インデックスの行が無い場合は同じ行の附属物点検を変更する
+            if (eachKeikaku.sno == keikaku.sno && eachKeikaku.struct_idx == keikaku.struct_idx) {
+              // snoとstruct_idxが一致する行のみを変更し、それ以外の行は何もしない
+              eachKeikaku.huzokubutsu_plans = _.map(eachKeikaku.huzokubutsu_plans, plan => {
+                // 年が一致し、パトロール実施済みでないもののみを変更する
+                if (plan.year == year && !plan.patrol_done) {
+                  plan.planned = false;
+                }
+                return plan; 
+              });
+            }
           }
         }
         return eachKeikaku;

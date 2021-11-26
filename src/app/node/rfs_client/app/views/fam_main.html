@@ -462,15 +462,8 @@
                       <th colspan="2">出張所</th>
                     </tr>
                     <tr style="border-bottom: 3px solid #4682b4;">
-
                       <!-- CSS調整用のダミー要素 -->
                       <th class="sort_btn" ng-hide="true"></th>
-
-                      <th ng-repeat="sort_id in fammain.sort_identifiers_right" class="sort_btn"
-                        ng-click="fammain.SetSortOrder(sort_id)" ng-style="fammain.sort_style[sort_id]">
-                        <span ng-if="$even">▲</span>
-                        <span ng-if="$odd">▼</span>
-                      </th>
                     </tr>
                     <tr
                       ng-repeat="data in fammain.data | orderBy : fammain.sort_order | offset :  (fammain.current_page-1)*fammain.items_per_page |  limitTo: fammain.items_per_page">
