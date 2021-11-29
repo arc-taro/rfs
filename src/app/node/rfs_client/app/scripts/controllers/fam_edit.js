@@ -1162,7 +1162,7 @@ class FameditCtrl extends BaseCtrl {
   setMstDF(json) {}
   
   // 道路標識（門型）
-  setMstDHM(json) {}
+  setMstHM(json) {}
   
   // 道路情報提供装置（門型）
   setMstJM(json) {}
