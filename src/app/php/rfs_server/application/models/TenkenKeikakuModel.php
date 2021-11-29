@@ -412,7 +412,6 @@ EOF;
     $where_shisetsu_cd="";
     $where_secchi="";
     $where_sp="";
-    $where_shityouson="";
     $where_rosen="";
     $where_shisetsu_kbn="";
 
@@ -790,18 +789,6 @@ FROM
         ELSE s.struct_idx = pp.struct_idx
     END
 WHERE TRUE
---  s.shisetsu_ver = (
---    SELECT
---        shisetsu_ver
---    FROM
---      rfs_m_shisetsu
---    WHERE
---      shisetsu_cd = s.shisetsu_cd
---    ORDER BY
---      shisetsu_ver DESC
---    LIMIT
---      1
---  )
 ORDER BY 
     s.rosen_cd
     ,s.sp

@@ -32,30 +32,6 @@ class TenkenKeikakuCtrl extends BaseCtrl {
     this.$q = $q;
     this.$compile = $compile;
 
-    /* GET引数
-     *
-     *  srch_kbn:検索区分
-     *    1:sysTopから
-     *    2:1以外(sessionに検索項目がある場合は検索を行う)
-     *  shisetsu_kbn:施設区分
-     *  secchi_idx:設置インデックス
-     *    設置年度の範囲を表す
-     *    1:20年以上
-     *    2:10年以上20年未満
-     *    3:5年以上10年未満
-     *    4:5年未満
-     *    5:設置年度不明
-     *    6:計 = 設置年度の条件は付けずに検索
-     *  kyouyou_kbn:供用区分
-     *    1:供用
-     *    0:休止
-     *    -1:全て
-     */
-    this.srch_kbn = $routeParams.srch_kbn;
-    this.shisetsu_kbn = $routeParams.shisetsu_kbn;
-    this.secchi_idx = $routeParams.secchi_idx;
-    this.kyouyou_kbn = $routeParams.kyouyou_kbn;
-
     // 初期設定
     this.initVariable();
 
@@ -95,6 +71,8 @@ class TenkenKeikakuCtrl extends BaseCtrl {
 
         // 10年後まで含めた和暦リスト（secchi_nendoと別用途なので分ける）
         this.wareki_List_future = json.wareki_list_future;
+
+        // チェックボックスを表示する年数
         this.tenken_keikaku_year_span = json.tenken_keikaku_year_span;
 
         // 初期表示用のヘッダーを設定
@@ -125,33 +103,33 @@ class TenkenKeikakuCtrl extends BaseCtrl {
         // 建管未選択
         if (this.mng_dogen_cd == 0) {
           // 未選択時は先頭にする
-          var data_d = this.dogen_syucchoujo_dat.dogen_info[0];
+          const data_d = this.dogen_syucchoujo_dat.dogen_info[0];
           this.dogen = data_d;
           this.dogen.dogen_cd = this.dogen.dogen_cd;
           // 出張所初期化
           this.syucchoujo = {};
           this.syucchoujo.syucchoujo_cd = 0;
 
-          for (var l = 0; l < data_d.syucchoujo_row.syucchoujo_info.length; l++) {
-            var data_s = data_d.syucchoujo_row.syucchoujo_info[l];
+          for (let l = 0; l < data_d.syucchoujo_row.syucchoujo_info.length; l++) {
+            const data_s = data_d.syucchoujo_row.syucchoujo_info[l];
             if (data_s.syucchoujo_cd == this.mng_syucchoujo_cd) {
               this.syucchoujo = data_s;
             }
           }
         } else {
           // 選択時は該当の建管をセット
-          for (var k = 0; k < this.dogen_syucchoujo_dat.dogen_info.length; k++) {
-            var data_d = this.dogen_syucchoujo_dat.dogen_info[k];
+          for (let k = 0; k < this.dogen_syucchoujo_dat.dogen_info.length; k++) {
+            const data_d = this.dogen_syucchoujo_dat.dogen_info[k];
             if (data_d.dogen_cd == this.mng_dogen_cd) {
               this.dogen = data_d;
               this.syucchoujo = {};
               this.syucchoujo.syucchoujo_cd = 0;
               for (
-                var l = 0;
+                let l = 0;
                 l < data_d.syucchoujo_row.syucchoujo_info.length;
                 l++
               ) {
-                var data_s = data_d.syucchoujo_row.syucchoujo_info[l];
+                const data_s = data_d.syucchoujo_row.syucchoujo_info[l];
                 // 維持管理で選択された出張所をセット
                 if (data_s.syucchoujo_cd == this.mng_syucchoujo_cd) {
                   this.syucchoujo = data_s;
@@ -172,7 +150,7 @@ class TenkenKeikakuCtrl extends BaseCtrl {
         this.filterRosen = this.filterRosens();
         this.srch.rosen_all_cnt = this.filterRosen.length;
 
-        this.waitLoadOverlay = false; // 読込み中です
+        this.waitLoadOverlay = false; // 読込み中のスピナーを消す
       });
   }
 
@@ -206,12 +184,7 @@ class TenkenKeikakuCtrl extends BaseCtrl {
     this.srch.shisetsu_kbn_dat_model = [];
     this.srch.rosen_dat_model = [];
 
-    // ソート条件
-    this.sort_order = "['seq_no']"; // 項目名
-    this.reverse = false; // 昇順、降順
-    this.sort_style = [];
-
-    // // 数値項目配列
+    // 数値項目配列
     this.numItem = [
       "rosen_cd",
       "sp_to",
@@ -270,11 +243,11 @@ class TenkenKeikakuCtrl extends BaseCtrl {
       }
     })
       .then(data => {
-        var json = data.data;
+        const json = data.data;
 
         // 件数をチェック
-        var srch_cnt = json.cnt;
-        var message;
+        const srch_cnt = json.cnt;
+        let message;
 
         // 100件を超えている場合、表示・取得をクリアし再絞込みしてもらう
         if (srch_cnt > this.max_srch_cnt) {
@@ -300,6 +273,7 @@ class TenkenKeikakuCtrl extends BaseCtrl {
             if (this.keikaku_list[i].shisetsu_kbn != 4) {
               continue;
             }
+            // 子レコードがあるかどうかをセット
             this.keikaku_list[i].children_exists = true;
             const currentStructIdx = this.keikaku_list[i].struct_idx;
             if (i < this.keikaku_list.length - 1) {
@@ -310,7 +284,6 @@ class TenkenKeikakuCtrl extends BaseCtrl {
                 if (currentSno != nextSno) {
                   this.keikaku_list[i].children_exists = false;
                 }
-                
               }
             } else {
               if (currentStructIdx == -1) {
@@ -321,7 +294,8 @@ class TenkenKeikakuCtrl extends BaseCtrl {
           }
           
           // ng-repeatする要素（各行とチェックボックスのマス）には一意の値が必要なので振る
-          // HACK: Lodashを使えばもう少しシンプルに書けそう
+          // 行には「row_<施設番号>_<支柱インデックス>」、
+          // チェックボックスには「chkbox_<施設番号>_<支柱インデックス>_<点検の種別>_<年度（西暦）>」とする
           for (let iRow = 0; iRow < this.keikaku_list.length; iRow++) {
             const keikaku = this.keikaku_list[iRow];
             // 行のID
@@ -351,10 +325,6 @@ class TenkenKeikakuCtrl extends BaseCtrl {
 
           this.srch_cnt = srch_cnt;
           this.changeNumItem(); // 数値項目を数値化
-
-          // this.range = this.getPageList(srch_cnt);
-          // this.current_page = 1; // 検索後は1ページ指定
-          // this.setPage(this.current_page);
 
           // 検索実行時、条件を指定して検索を閉じる
           this.jyoukenkensaku = true;
@@ -407,6 +377,7 @@ class TenkenKeikakuCtrl extends BaseCtrl {
     }
     return false;
   }
+  
   // 定期パトロールのチェックボックスが無効かどうかを返す
   isTeikiPatDisabled(keikaku, annualPlan) {
     if (!keikaku.teiki_pat_flag) {
@@ -646,7 +617,7 @@ class TenkenKeikakuCtrl extends BaseCtrl {
     // 出張所選択
     if (this.syucchoujo.syucchoujo_cd != 0) {
       // 出張所フィルタ
-      var syucchoujo_cd = this.syucchoujo.syucchoujo_cd;
+      const syucchoujo_cd = this.syucchoujo.syucchoujo_cd;
       return this.rosen_dat.filter(function(value, index) {
         if (syucchoujo_cd == value.syucchoujo_cd) {
           return true;
@@ -655,7 +626,7 @@ class TenkenKeikakuCtrl extends BaseCtrl {
       });
     } else {
       // 建管フィルタ
-      var dogen_cd = this.dogen.dogen_cd;
+      const dogen_cd = this.dogen.dogen_cd;
       return this.rosen_dat.filter(function(value, index) {
         if (dogen_cd == value.dogen_cd) {
           return true;
@@ -702,8 +673,6 @@ class TenkenKeikakuCtrl extends BaseCtrl {
     delete this.srch.secchi_nendo_to; // 設置年度（後）
     delete this.srch.sp_from; // 測点（前）
     delete this.srch.sp_to; // 測点（後）
-    delete this.srch.shityouson; // 市町村
-    delete this.srch.azaban; // 字番
 
     // 設置年度に不明を含めるチェックボックスをクリア
     this.srch.include_secchi_null = false;
@@ -726,21 +695,10 @@ class TenkenKeikakuCtrl extends BaseCtrl {
     this.srch.rosen_dat_model = [];
   }
 
-  /**
-   * 条件選択のサブ画面の表示用
-   */
-  searchSelect(sel) {
-    for (var i = 0; i < this.searchCondition.length; i++) {
-      this.searchCondition[i].active = false;
-    }
-    sel.active = true;
-  }
-
   // 建管変更時処理
   // 本庁権限のみ
   // 1.mngarea更新
   // 2.検索初期化
-  //    元々検索結果が無い場合はマップのズームを変える
   chgDogen() {
     // 検索結果無
     if (this.keikaku_list == null) {
@@ -790,19 +748,6 @@ class TenkenKeikakuCtrl extends BaseCtrl {
             // mngarea上書き
             this.mng_dogen_cd = this.session.mngarea.dogen_cd;
             this.mng_syucchoujo_cd = this.session.mngarea.syucchoujo_cd;
-            // 基本情報編集の有無
-            if (
-              this.ath_syozoku_cd <= 2 ||
-              this.ath_syozoku_cd == 10001 ||
-              (this.ath_syozoku_cd == 3 &&
-                this.ath_syucchoujo_cd == this.mng_syucchoujo_cd)
-            ) {
-              // 基本情報有
-              this.in_kihonedit = true;
-            } else {
-              // 基本情報無し
-              this.in_kihonedit = false;
-            }
           });
         });
     }
@@ -853,19 +798,6 @@ class TenkenKeikakuCtrl extends BaseCtrl {
             // mngarea上書き
             this.mng_dogen_cd = this.session.mngarea.dogen_cd;
             this.mng_syucchoujo_cd = this.session.mngarea.syucchoujo_cd;
-            // 基本情報編集の有無
-            if (
-              this.ath_syozoku_cd <= 2 ||
-              this.ath_syozoku_cd == 10001 ||
-              (this.ath_syozoku_cd == 3 &&
-                this.ath_syucchoujo_cd == this.mng_syucchoujo_cd)
-            ) {
-              // 基本情報有
-              this.in_kihonedit = true;
-            } else {
-              // 基本情報無し
-              this.in_kihonedit = false;
-            }
           });
         });
     }
@@ -913,41 +845,11 @@ class TenkenKeikakuCtrl extends BaseCtrl {
   clearResult() {
     // 検索結果の削除
     this.keikaku_list = null;
-    // this.max_page = 0;
-    // this.current_page = 1;
-
-    // ソート条件クリア
-    this.sort_order = "['seq_no']";
-    this.reverse = false;
-    this.sort_style = [];
-    this.sort_style[this.sort_order] = {
-      color: "#217dbb"
-    };
-  }
-
-  // ソート対象項目名を設定
-  SetSortOrder(item) {
-    var current = JSON.stringify(this.sort_order);
-    var set = JSON.stringify(item);
-
-    // ソート済みの項目を選択した場合はソートリセット
-    if (current == set) {
-      this.sort_order = "['seq_no']";
-    } else {
-      // 複数指定時は配列が設定される
-      this.sort_order = item;
-    }
-
-    // 選択されたソート項目の色を変更
-    this.sort_style = [];
-    this.sort_style[this.sort_order] = {
-      color: "#217dbb"
-    };
   }
 
   changeNumItem() {
-    for (var i = 0; i < this.keikaku_list.length; i++) {
-      for (var j = 0; j < this.numItem.length; j++) {
+    for (let i = 0; i < this.keikaku_list.length; i++) {
+      for (let j = 0; j < this.numItem.length; j++) {
         if (this.keikaku_list[i][this.numItem[j]]) {
           if (Number(this.keikaku_list[i][this.numItem[j]])) {
             this.keikaku_list[i][this.numItem[j]] = Number(
@@ -958,54 +860,6 @@ class TenkenKeikakuCtrl extends BaseCtrl {
       }
     }
   }
-
-  // /**
-  //  * 検索結果リストを出力する
-  //  */
-  // submitList() {
-  //   if (!this.data) {
-  //     this.alert("リスト出力", "検索が実行されていません");
-  //     return;
-  //   }
-
-  //   // リスト出力パラメータ
-  //   this.post_data.dogen_cd = this.dogen.dogen_cd;
-  //   this.post_data.syucchoujo_cd = this.syucchoujo.syucchoujo_cd;
-  //   this.post_data.srch = JSON.stringify(this.data);
-  // }
-
-  /*********************/
-  /* ページネーション部分 */
-  /*********************/
-  // getPageList(srch_cnt) {
-  //   this.max_page = Math.ceil(srch_cnt / this.items_per_page);
-  //   var ret = [];
-  //   for (var i = 1; i <= this.max_page; i++) {
-  //     ret.push(i);
-  //   }
-  //   return ret;
-  // }
-
-  // setPage(n) {
-  //   this.current_page = n;
-  //   this.prev_disabled = this.prevPageDisabled();
-  //   this.next_disabled = this.nextPageDisabled();
-  // }
-  // prevPage() {
-  //   this.current_page--;
-  //   this.setPage(this.current_page);
-  // }
-  // nextPage() {
-  //   this.current_page++;
-  //   this.setPage(this.current_page);
-  // }
-
-  // prevPageDisabled() {
-  //   return this.current_page === 1 ? "disabled" : "";
-  // }
-  // nextPageDisabled() {
-  //   return this.current_page === this.max_page ? "disabled" : "";
-  // }
 }
 
 let angModule = require("../app.js");

@@ -75,8 +75,6 @@ class TenkenKeikakuAjax extends BaseController {
     $syucchoujo_cd=$this->post['syucchoujo_cd'];
     // 検索条件
     $srch = $this->post['srch'];
-    // sessionに追加
-    // $this->rgstSessionSrch($srch,1,1);
     // 施設検索
     $shisetsu_info=$this->srchShisetsuDetail($dogen_cd, $syucchoujo_cd, $srch);
     // 件数が入っている場合は検索しなかった
@@ -148,12 +146,7 @@ class TenkenKeikakuAjax extends BaseController {
    *  secchi_to 設置年度TO
    *  sp_from 測点FROM
    *  sp_to 測点TO
-   *  shityouson  市町村
-   *  azaban  字番
    *  shisetsu_kbn array 施設区分
-   *  substitute_road array 代替路の有無
-   *  emergency_road array 緊急輸送道路
-   *  kyouyou_kbn array 供用区分
    *  rosen array 路線
    */
   protected function arrangementCondition($dogen_cd, $syucchoujo_cd, $srch) {
@@ -163,12 +156,6 @@ class TenkenKeikakuAjax extends BaseController {
     // 選択プルダウン項目
     $shisetsu_kbn_arr = $srch['shisetsu_kbn_dat_model'];  // 選択された施設区分
     $shisetsu_kbn_all_cnt = $srch['shisetsu_kbn_all_cnt'];  // 全施設区分件数
-    // $substitute_road_arr = $srch['substitute_road_dat_model'];  // 選択された代替路
-    // $substitute_road_all_cnt = $srch['substitute_road_all_cnt'];  // 全代替路件数
-    // $emergency_road_arr = $srch['emergency_road_dat_model'];  // 選択された緊急輸送道路
-    // $emergency_road_all_cnt = $srch['emergency_road_all_cnt'];  // 全緊急輸送道路件数
-    // $kyouyou_kbn_arr = $srch['kyouyou_kbn_dat_model'];  // 選択された供用区分
-    // $kyouyou_kbn_all_cnt = $srch['kyouyou_kbn_all_cnt'];  // 全供用区分件数
     $rosen_dat_arr = $srch['rosen_dat_model'];  // 選択された路線
     $rosen_all_cnt = $srch['rosen_all_cnt'];  // 全路線件数
 
@@ -192,12 +179,6 @@ class TenkenKeikakuAjax extends BaseController {
       if (isset($srch['sp_to'])) {
         $ret['sp_to'] = $srch['sp_to']; // 測点TO
       }
-    }
-    if (isset($srch['shityouson'])) {
-      $ret['shityouson'] = $srch['shityouson']; // 市町村
-    }
-    if (isset($srch['azaban'])) {
-      $ret['azaban'] = $srch['azaban']; // 字番
     }
     if (isset($srch['include_secchi_null'])) {
       if ($srch['include_secchi_null']) {
