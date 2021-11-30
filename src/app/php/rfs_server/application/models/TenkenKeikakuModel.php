@@ -912,65 +912,29 @@ EOF;
     $end_date = $end_date_obj->format('Y-m-d');
 
     // snoとstuct_idxが一致するものを全て削除
-    // shisetsu_kbnが4以外のものはstruct_idxがnullなので分けて削除する（nullの場合in句が使えないため）
-    $shisetsu_kbn_4 = [];
-    $shisetsu_kbn_others = [];
-    foreach($shisetsu_list as $shisetsu) {
-      if ($shisetsu['shisetsu_kbn'] == 4) {
-        array_push($shisetsu_kbn_4, $shisetsu);
+    $in_clause = 'AND (sno,struct_idx) in (';
+    for ($i = 0; $i < count($shisetsu_list); $i++) {
+      $sno = $shisetsu_list[$i]['sno'];
+      $struct_idx = $shisetsu_list[$i]['shisetsu_kbn'] == 4 ? $shisetsu_list[$i]['struct_idx'] : 0;
+      $in_clause .= "($sno, $struct_idx)";
+      if ($i < count($shisetsu_list) - 1) {
+        $in_clause .= ', ';
       } else {
-        array_push($shisetsu_kbn_others, $shisetsu);
+        $in_clause .= ')';
       }
     }
-
-
-    $in_kbn_4 = 'AND (sno,struct_idx) in (';
-    if (count($shisetsu_kbn_4) > 0) {
-      for ($i = 0; $i < count($shisetsu_kbn_4); $i++) {
-        $sno = $shisetsu_kbn_4[$i]['sno'];
-        $struct_idx = $shisetsu_kbn_4[$i]['struct_idx'];
-        $in_kbn_4 .= "($sno, $struct_idx)";
-        if ($i < count($shisetsu_kbn_4) - 1) {
-          $in_kbn_4 .= ', ';
-        } else {
-          $in_kbn_4 .= ')';
-        }
-      }
-      $sql = <<<EOF
+    $sql = <<<EOF
 DELETE
 FROM
   public.rfs_t_patrol_plan
 WHERE
   target_dt BETWEEN '${start_date}' AND '${end_date}'
-  ${in_kbn_4}
+  ${in_clause}
 EOF;
 
-      log_message('debug', $sql);
-      $this->DB_rfs->query($sql);
-    }
+    // log_message('debug', $sql);
+    $this->DB_rfs->query($sql);
 
-    $in_kbn_others = 'AND sno in (';
-    if (count($shisetsu_kbn_others) > 0) {
-      for ($i = 0; $i < count($shisetsu_kbn_others); $i++) {
-        $sno = $shisetsu_kbn_others[$i]['sno'];
-        $in_kbn_others .= $sno;
-        if ($i < count($shisetsu_kbn_others) - 1) {
-          $in_kbn_others .= ', ';
-        } else {
-          $in_kbn_others .= ')';
-        }
-      }
-      $sql = <<<EOF
-DELETE
-FROM
-  public.rfs_t_patrol_plan
-WHERE
-  target_dt BETWEEN '${start_date}' AND '${end_date}'
-  ${in_kbn_others}
-EOF;
-      log_message('debug', $sql);
-      $this->DB_rfs->query($sql);
-    }
     return;
   }
 
@@ -997,7 +961,7 @@ public.rfs_t_patrol_plan (
 );
 EOF;
 
-    log_message('debug', $sql);
+    // log_message('debug', $sql);
     $this->DB_rfs->query($sql);
     return;
   }
