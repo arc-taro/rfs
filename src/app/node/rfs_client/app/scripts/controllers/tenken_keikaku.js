@@ -279,14 +279,14 @@ class TenkenKeikakuCtrl extends BaseCtrl {
             if (i < this.keikaku_list.length - 1) {
               const currentSno = this.keikaku_list[i].sno;
               const nextSno = this.keikaku_list[i + 1].sno;
-              if (currentStructIdx == -1) {
+              if (currentStructIdx == 0) {
                 // 親の行の場合で次の行のsnoが異なる場合は子レコードがないと判断
                 if (currentSno != nextSno) {
                   this.keikaku_list[i].children_exists = false;
                 }
               }
             } else {
-              if (currentStructIdx == -1) {
+              if (currentStructIdx == 0) {
                 // 最後に親が来た場合は子レコードがないと判断
                 this.keikaku_list[i].children_exists = false;
               }
@@ -367,7 +367,7 @@ class TenkenKeikakuCtrl extends BaseCtrl {
     }
     if (keikaku.shisetsu_kbn == 4) {
       // 防雪柵の場合
-      if (keikaku.struct_idx == -1) {
+      if (keikaku.struct_idx == 0) {
         // 親の行の場合
         if (keikaku.children_exists) {
           // 子（支柱インデックスごと）の行が存在する場合は無効（附属物点検は支柱インデックスごとに設定するため）
@@ -390,7 +390,7 @@ class TenkenKeikakuCtrl extends BaseCtrl {
     }
     if (keikaku.shisetsu_kbn == 4) {
       // 防雪柵の場合
-      if (keikaku.struct_idx > -1) {
+      if (keikaku.struct_idx > 0) {
         // 支柱インデックスの行の場合は無効（定期パトはまとめて設定するため）
         return true;
       }
@@ -450,8 +450,8 @@ class TenkenKeikakuCtrl extends BaseCtrl {
             });
           }
         } else {
-          // 防雪柵の場合は防雪柵の親データ(struct_idx == -1)を対象とする
-          if (eachKeikaku.sno == keikaku.sno && eachKeikaku.struct_idx == -1) {
+          // 防雪柵の場合は防雪柵の親データ(struct_idx == 0)を対象とする
+          if (eachKeikaku.sno == keikaku.sno && eachKeikaku.struct_idx == 0) {
             eachKeikaku.teiki_pat_plans = _.map(eachKeikaku.teiki_pat_plans, plan => {
               // 年が一致し、パトロール実施済みでないもののみを変更する
               if (plan.year == year && !plan.patrol_done) {
@@ -502,8 +502,8 @@ class TenkenKeikakuCtrl extends BaseCtrl {
           }
         } else {
           if (keikaku.children_exists) {
-            // 防雪柵の場合で支柱インデックスの行がある場合は附属物点検の同じsnoでstruct_idxが0以上のものを変更する
-            if (eachKeikaku.sno == keikaku.sno && eachKeikaku.struct_idx > -1) {
+            // 防雪柵の場合で支柱インデックスの行がある場合は附属物点検の同じsnoでstruct_idxが1以上のものを変更する
+            if (eachKeikaku.sno == keikaku.sno && eachKeikaku.struct_idx > 0) {
               // snoが一致する支柱インデックスの行のみを変更し、それ以外の行は何もしない
               eachKeikaku.huzokubutsu_plans = _.map(eachKeikaku.huzokubutsu_plans, plan => {
                 // 年が一致し、パトロール実施済みでないもののみを変更する

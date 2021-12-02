@@ -201,7 +201,7 @@ WITH shisetsu AS (
   -- 防雪柵以外
   SELECT
     s1.*
-    ,-1 as struct_idx
+    ,0 as struct_idx
   FROM
     rfs_m_shisetsu s1 JOIN (
       SELECT
@@ -677,7 +677,7 @@ WITH patrol_plan AS (
   -- 定期パトの点検計画は防雪柵自体に紐づくので、ここでは防雪柵の施設自体のレコードも取得する
   SELECT
     s1.*
-    ,-1 as struct_idx 
+    ,0 as struct_idx 
   FROM
     rfs_m_shisetsu s1 JOIN (
       SELECT
@@ -721,6 +721,8 @@ WITH patrol_plan AS (
   INNER JOIN
     rfs_m_bousetsusaku_shichu rmbs
     ON rmbs.sno = s1.sno
+    -- ここでは親のレコードは不要
+    AND rmbs.struct_idx > 0
   WHERE
   -- 廃止施設を読み込まないようにする
   ((TRIM(s1.haishi) = '' OR s1.haishi IS NULL) AND s1.haishi_yyyy IS NULL)
