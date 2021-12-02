@@ -638,7 +638,6 @@ class TenkenKeikakuCtrl extends BaseCtrl {
 
   // 異常有無欄のセルのスタイルを生成する
   getIjouUmuCellStyle(latestTeikiPat) {
-    console.log(JSON.stringify(latestTeikiPat, null, "\t"));
     const result = {};
     if (!latestTeikiPat) {
       // 直近の定期パトが無ければ設定しない
