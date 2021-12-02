@@ -637,19 +637,30 @@ class TenkenKeikakuCtrl extends BaseCtrl {
   }
 
   // 異常有無欄のセルのスタイルを生成する
-  getIjouUmuCellStyle(ijou_list_count) {
+  getIjouUmuCellStyle(latestTeikiPat) {
+    console.log(JSON.stringify(latestTeikiPat, null, "\t"));
     const result = {};
-    if (ijou_list_count) {
+    if (!latestTeikiPat) {
+      // 直近の定期パトが無ければ設定しない
+      return result;
+    }
+    if (latestTeikiPat.ijou_list_count) {
       result['backgroundColor'] = '#FF0000';
+      result['color'] = "#FFFFFF";
+    } else {
+      result['backgroundColor'] = '#90CAF9';
       result['color'] = "#FFFFFF";
     }
     return result;
   }
 
   // 健全性欄のセルのスタイルを生成する（健全性によって背景色が変わるため）
-  getCheckShisetsuJudgeCellStyle(check_shisetsu_judge) {
+  getCheckShisetsuJudgeCellStyle(latestHuzokubutsu) {
     const result = {};
-    switch(check_shisetsu_judge) {
+    if (!latestHuzokubutsu) {
+      return result;
+    }
+    switch (latestHuzokubutsu.check_shisetsu_judge) {
       case "1":
         result['backgroundColor'] = '#0000FF';
         result['color'] = "#FFFFFF";

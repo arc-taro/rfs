@@ -283,7 +283,7 @@ EOF;
       $struct_idx = $result[$i_row]['struct_idx'];
 
       if ($result[$i_row]['huzokubutsu_flag']) {
-        $result[$i_row]['latest_huzokubutsu'] = [];
+        $result[$i_row]['latest_huzokubutsu'] = null;
         // 附属物点検（附属物点検は1つのSQLで取得すると遅くなったので別途取得）
         $latest_huzokubutsu_result = $this->getChkMainMaxData($sno, $shisetsu_kbn, $struct_idx);
         if (count($latest_huzokubutsu_result) > 0) {
@@ -810,18 +810,20 @@ EOF;
 
       // patrol_plansと直近の点検はJSON文字列なので連想配列に戻す
       $row['patrol_plans'] = is_null($row['patrol_plans']) ? [] : json_decode($row['patrol_plans'], true);
+
       if ($row['teiki_pat_flag']) {
         $latest_teiki_pat = is_null($row['latest_teiki_pat_json']) ? [] : json_decode($row['latest_teiki_pat_json'], true);
-        $row['latest_teiki_pat'] = [];
+        $row['latest_teiki_pat'] = null;
         if (count($latest_teiki_pat) > 0) {
           $row['latest_teiki_pat'] = $latest_teiki_pat[0];
         }
       }
       // JSONデータは変換して不要になるので削除
       unset($row['latest_teiki_pat_json']);
+
       if ($row['houtei_flag']) {
         $latest_houtei = is_null($row['latest_houtei_json']) ? [] : json_decode($row['latest_houtei_json'], true);
-        $row['latest_houtei'] = [];
+        $row['latest_houtei'] = null;
         if (count($latest_houtei) > 0) {
           $row['latest_houtei'] = $latest_houtei[0];
         }

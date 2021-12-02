@@ -253,13 +253,13 @@
                     <td style="min-height: 44px; max-height: 44px;">{{ keikaku.latest_huzokubutsu &&
                       keikaku.latest_huzokubutsu.w_chk_dt ? keikaku.latest_huzokubutsu.w_chk_dt : '' }}</td>
                     <td style="min-height: 44px; max-height: 44px;"
-                      ng-style="keikaku.latest_huzokubutsu ? tenkenkeikaku.getCheckShisetsuJudgeCellStyle(keikaku.latest_huzokubutsu.check_shisetsu_judge) : {}">
+                      ng-style="tenkenkeikaku.getCheckShisetsuJudgeCellStyle(keikaku.latest_huzokubutsu)">
                       {{ keikaku.latest_huzokubutsu && keikaku.latest_huzokubutsu.check_shisetsu_judge_nm ?
                       keikaku.latest_huzokubutsu.check_shisetsu_judge_nm : '' }}</td>
                     <td style="min-height: 44px; max-height: 44px;">{{ keikaku.latest_teiki_pat &&
                       keikaku.latest_teiki_pat.wareki_ryaku ? keikaku.latest_teiki_pat.wareki_ryaku : '' }}</td>
                     <td style="min-height: 44px; max-height: 44px;"
-                      ng-style="keikaku.latest_teiki_pat ? tenkenkeikaku.getIjouUmuCellStyle(keikaku.latest_teiki_pat.ijou_list_count) : {}">
+                      ng-style="tenkenkeikaku.getIjouUmuCellStyle(keikaku.latest_teiki_pat)">
                       {{ keikaku.latest_teiki_pat && keikaku.latest_teiki_pat.umu_str ? keikaku.latest_teiki_pat.umu_str
                       : '' }}</td>
                     <!-- 法定点検計画入力のチェックボックス -->
