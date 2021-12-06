@@ -22,7 +22,9 @@
     "angular-dragdrop": "^1.0.13",
     "jquery-confirm2": "craftpip/jquery-confirm#^2.5.1",
     "angular-i18n": "1.5.7",
-    "lodash": "2"
+    "lodash": "2",
+    "ag-grid-community": "^26.2.0",
+    "ag-grid-angular": "^22.1.1"
   },
   "devDependencies": {
     "angular-mocks": "1.5.7"

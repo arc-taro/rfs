@@ -2404,3 +2404,16 @@ img.gdh_pic_max_large {
   min-height: 180px;
   max-width: 100%;
 }
+
+.ag-cell {
+  border: 1px solid #036 !important;
+  border-collapse: collapse;
+  text-align: center;
+}
+
+.ag-cell-label-label {
+  display: flex !important;
+}
+.ag-header-cell-text {
+  text-align: center;
+}

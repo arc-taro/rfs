@@ -18,3 +18,5 @@ require("bootswatch/flatly/bootstrap.css");
 require("./styles/main.less"); // styles/main.lessを追加したらコメントを外す
 //require("./lib/flatly/bootstrap.css");
 require("./styles/main.css"); // styles/main.cssを追加したらコメントを外す
+require("ag-grid-community/dist/styles/ag-grid.css");
+require("ag-grid-community/dist/styles/ag-theme-alpine.css");

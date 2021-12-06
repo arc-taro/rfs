@@ -14,6 +14,9 @@ window.onbeforeunload = function (event) {
  * Main module of the application.
  */
 
+// var AgGrid = require('ag-grid-community');
+// AgGrid.initialiseAgGridWithAngular1(angular);
+
 module.exports.angApp = angular
   .module('rfsApp', [
     'ngAnimate',
@@ -27,7 +30,8 @@ module.exports.angApp = angular
     'angularjs-dropdown-multiselect',
     'autocomplete',
     'autocompletecstm',
-    'ngDragDrop'
+    'ngDragDrop',
+    // 'AgGrid'
   ])
   .config(function ($routeProvider) {
     $routeProvider
