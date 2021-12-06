@@ -101,14 +101,7 @@ class TenkenKeikakuCtrl extends BaseCtrl {
                 lockPosition: true,
                 width: 60,
                 cellStyle: (params) => {
-                  // let editable = params.data.houtei_editable;
-                  // // パトロール実施済みかどうかを取得するため、年度を取得
-                  // // 「<点検の種別>_<西暦>」という形式になっているので、種別と西暦を取り出す
-                  // const ids = params.colDef.field.split("_");
-                  // const year = ids[ids.length - 1]; 
-                  // if (params.data["houtei_patrol_done" + year]) {
-                  //   editable = false;
-                  // }
+                  // 編集可能でないセルは背景をグレーにする
                   const editable = this.isHouteiEditable(params);
                   if (editable) {
                     return {}
@@ -120,17 +113,6 @@ class TenkenKeikakuCtrl extends BaseCtrl {
                 },
                 // 直接メソッドを指定していない理由はonCellValueChangedと同様
                 editable: (params) => this.isHouteiEditable(params)
-                // editable: (params) => {
-                //   let editable = params.data.houtei_editable;
-                //   // パトロール実施済みかどうかを取得するため、年度を取得
-                //   // 「<点検の種別>_<西暦>」という形式になっているので、種別と西暦を取り出す
-                //   const ids = params.colDef.field.split("_");
-                //   const year = ids[ids.length - 1]; 
-                //   if (params.data["houtei_patrol_done_" + year]) {
-                //     editable = false;
-                //   }
-                //   return editable;
-                // }
               };
             }).value();
           } else if (column.headerId === "huzokubutsu_plans") {
@@ -142,14 +124,7 @@ class TenkenKeikakuCtrl extends BaseCtrl {
                 lockPosition: true,
                 width: 60,
                 cellStyle: (params) => {
-                  // let editable = params.data.houtei_editable;
-                  // // パトロール実施済みかどうかを取得するため、年度を取得
-                  // // 「<点検の種別>_<西暦>」という形式になっているので、種別と西暦を取り出す
-                  // const ids = params.colDef.field.split("_");
-                  // const year = ids[ids.length - 1]; 
-                  // if (params.data["houtei_patrol_done" + year]) {
-                  //   editable = false;
-                  // }
+                  // 編集可能でないセルは背景をグレーにする
                   const editable = this.isHuzokubutsuEditable(params);
                   if (editable) {
                     return {}
@@ -161,17 +136,6 @@ class TenkenKeikakuCtrl extends BaseCtrl {
                 },
                 // 直接メソッドを指定していない理由はonCellValueChangedと同様
                 editable: (params) => this.isHuzokubutsuEditable(params)
-                // editable: (params) => {
-                //   let editable = params.data.huzokubutsu_editable;
-                //   // パトロール実施済みかどうかを取得するため、年度を取得
-                //   // 「<点検の種別>_<西暦>」という形式になっているので、種別と西暦を取り出す
-                //   const ids = params.colDef.field.split("_");
-                //   const year = ids[ids.length - 1]; 
-                //   if (params.data["huzokubutsu_patrol_done_" + year]) {
-                //     editable = false;
-                //   }
-                //   return editable;
-                // }
               };
             }).value();
           } else if (column.headerId === "teiki_pat_plans") {
@@ -183,14 +147,7 @@ class TenkenKeikakuCtrl extends BaseCtrl {
                 lockPosition: true,
                 width: 60,
                 cellStyle: (params) => {
-                  // let editable = params.data.houtei_editable;
-                  // // パトロール実施済みかどうかを取得するため、年度を取得
-                  // // 「<点検の種別>_<西暦>」という形式になっているので、種別と西暦を取り出す
-                  // const ids = params.colDef.field.split("_");
-                  // const year = ids[ids.length - 1]; 
-                  // if (params.data["houtei_patrol_done" + year]) {
-                  //   editable = false;
-                  // }
+                  // 編集可能でないセルは背景をグレーにする
                   const editable = this.isTeikiPatEditable(params);
                   if (editable) {
                     return {}
@@ -202,17 +159,6 @@ class TenkenKeikakuCtrl extends BaseCtrl {
                 },
                 // 直接メソッドを指定していない理由はonCellValueChangedと同様
                 editable: (params) => this.isTeikiPatEditable(params)
-                // editable: (params) => {
-                //   let editable = params.data.teiki_pat_editable;
-                //   // パトロール実施済みかどうかを取得するため、年度を取得
-                //   // 「<点検の種別>_<西暦>」という形式になっているので、種別と西暦を取り出す
-                //   const ids = params.colDef.field.split("_");
-                //   const year = ids[ids.length - 1]; 
-                //   if (params.data["teiki_pat_patrol_done_" + year]) {
-                //     editable = false;
-                //   }
-                //   return editable;
-                // }
               };
             }).value();
           }
@@ -634,57 +580,23 @@ class TenkenKeikakuCtrl extends BaseCtrl {
           const keyOfPlanned = "houtei_" + annualPlan.year;
           keikaku[keyOfPlanned] = annualPlan.planned;
 
-          // // チェックボックスが編集可能かどうかを判定
-          // let editable = true;
-          // if (!keikaku.houtei_flag) {
-          //   editable = false;
-          // }
           const keyOfPatrolDone = "houtei_patrol_done_" + annualPlan.year;
           keikaku[keyOfPatrolDone] = annualPlan.patrol_done;
-          // keikaku.houtei_editable = editable;
         }
       }
       if (keikaku.huzokubutsu_plans) {
         for (const annualPlan of keikaku.huzokubutsu_plans) {
           const keyOfPlanned = "huzokubutsu_" + annualPlan.year;
           keikaku[keyOfPlanned] = annualPlan.planned;
-          // // チェックボックスが編集可能かどうかを判定
-          // let editable = true;
-          // if (!keikaku.huzokubutsu_flag) {
-          //   editable = false;
-          // }
-          // if (keikaku.shisetsu_kbn == 4) {
-          //   // 防雪柵の場合
-          //   if (keikaku.struct_idx == 0) {
-          //     // 親の行の場合
-          //     if (keikaku.children_exist) {
-          //       // 子（支柱インデックスごと）の行が存在する場合は無効（附属物点検は支柱インデックスごとに設定するため）
-          //       editable = false;
-          //     }
-          //   }
-          // }          
+
           const keyOfPatrolDone = "huzokubutsu_patrol_done_" + annualPlan.year;
           keikaku[keyOfPatrolDone] = annualPlan.patrol_done;
-          // keikaku.huzokubutsu_editable = editable;
         }
       }
       if (keikaku.teiki_pat_plans) {
         for (const annualPlan of keikaku.teiki_pat_plans) {
           const keyOfPlanned = "teiki_pat_" + annualPlan.year;
           keikaku[keyOfPlanned] = annualPlan.planned;
-          // チェックボックスが編集可能かどうかを判定
-          // let editable = true;
-          // if (!keikaku.teiki_pat_flag) {
-          //   editable = false;
-          // }
-          // if (keikaku.shisetsu_kbn == 4) {
-          //   // 防雪柵の場合
-          //   if (keikaku.struct_idx > 0) {
-          //     // 支柱インデックスの行の場合は無効（定期パトはまとめて設定するため）
-          //     editable = false;
-          //   }
-          // }  
-          // keikaku.teiki_pat_editable = editable;
 
           const keyOfPatrolDone = "teiki_pat_patrol_done_" + annualPlan.year;
           keikaku[keyOfPatrolDone] = annualPlan.patrol_done;
@@ -698,6 +610,9 @@ class TenkenKeikakuCtrl extends BaseCtrl {
         keikaku.latest_teiki_pat_year = keikaku.latest_teiki_pat.wareki_ryaku;
         keikaku.latest_teiki_pat_ijou_umu = keikaku.latest_teiki_pat.umu_str;
       }
+      keikaku.houtei_plans = null;
+      keikaku.huzokubutsu_plans = null;
+      keikaku.teiki_pat_plans = null;
       return keikaku;
     })
     .value();
@@ -815,13 +730,6 @@ class TenkenKeikakuCtrl extends BaseCtrl {
       eachKeikaku => {
         if (eachKeikaku.sno == keikaku.sno && eachKeikaku.struct_idx == keikaku.struct_idx) {
           // snoとstruct_idxが一致する行のみを変更し、それ以外の行は何もしない
-          eachKeikaku.teiki_pat_plans = _.map(eachKeikaku.teiki_pat_plans, plan => {
-            // 年が一致し、パトロール実施済みでないもののみを変更する
-            if (plan.year == year && !plan.patrol_done) {
-              plan.planned = false;
-            }
-            return plan;
-          });
           if (eachKeikaku["teiki_pat_" + year] && !eachKeikaku["teiki_pat_patrol_done_" + year]) {
             eachKeikaku["teiki_pat_" + year] = false;
           }
@@ -842,13 +750,6 @@ class TenkenKeikakuCtrl extends BaseCtrl {
           // 防雪柵以外の場合は他と同様に同じ行のチェックボックスを対象とする
           if (eachKeikaku.sno == keikaku.sno && eachKeikaku.struct_idx == keikaku.struct_idx) {
             // snoとstruct_idxが一致する行のみを変更し、それ以外の行は何もしない
-            eachKeikaku.teiki_pat_plans = _.map(eachKeikaku.teiki_pat_plans, plan => {
-              // 年が一致し、パトロール実施済みでないもののみを変更する
-              if (plan.year == year && !plan.patrol_done) {
-                plan.planned = false;
-              }
-              return plan;
-            });
             if (eachKeikaku["teiki_pat_" + year] && !eachKeikaku["teiki_pat_patrol_done_" + year]) {
               eachKeikaku["teiki_pat_" + year] = false;
             }
@@ -856,13 +757,6 @@ class TenkenKeikakuCtrl extends BaseCtrl {
         } else {
           // 防雪柵の場合は防雪柵の親データ(struct_idx == 0)を対象とする
           if (eachKeikaku.sno == keikaku.sno && eachKeikaku.struct_idx == 0) {
-            eachKeikaku.teiki_pat_plans = _.map(eachKeikaku.teiki_pat_plans, plan => {
-              // 年が一致し、パトロール実施済みでないもののみを変更する
-              if (plan.year == year && !plan.patrol_done) {
-                plan.planned = false;
-              }
-              return plan;
-            });
             if (eachKeikaku["teiki_pat_" + year] && !eachKeikaku["teiki_pat_patrol_done_" + year]) {
               eachKeikaku["teiki_pat_" + year] = false;
             }
@@ -882,13 +776,6 @@ class TenkenKeikakuCtrl extends BaseCtrl {
       this.keikaku_list = _.map(this.keikaku_list, eachKeikaku => {
         if (eachKeikaku.sno == keikaku.sno && eachKeikaku.struct_idx == keikaku.struct_idx) {
           // snoとstruct_idxが一致する行のみを変更し、それ以外の行は何もしない
-          eachKeikaku.houtei_plans = _.map(eachKeikaku.houtei_plans, plan => {
-            // 年が一致し、パトロール実施済みでないもののみを変更する
-            if (plan.year == year && !plan.patrol_done) {
-              plan.planned = false;
-            }
-            return plan;
-          });
           if (eachKeikaku["houtei_" + year] && !eachKeikaku["houtei_patrol_done_" + year]) {
             eachKeikaku["houtei_" + year] = false;
           }
@@ -902,13 +789,6 @@ class TenkenKeikakuCtrl extends BaseCtrl {
           // 防雪柵以外の場合は他と同様に同じ行のチェックボックスを対象とする
           if (eachKeikaku.sno == keikaku.sno && eachKeikaku.struct_idx == keikaku.struct_idx) {
             // snoとstruct_idxが一致する行のみを変更し、それ以外の行は何もしない
-            eachKeikaku.huzokubutsu_plans = _.map(eachKeikaku.huzokubutsu_plans, plan => {
-              // 年が一致し、パトロール実施済みでないもののみを変更する
-              if (plan.year == year && !plan.patrol_done) {
-                plan.planned = false;
-              }
-              return plan;
-            });
             if (eachKeikaku["huzokubutsu_" + year] && !eachKeikaku["huzokubutsu_patrol_done_" + year]) {
               eachKeikaku["huzokubutsu_" + year] = false;
             }
@@ -918,13 +798,6 @@ class TenkenKeikakuCtrl extends BaseCtrl {
             // 防雪柵の場合で支柱インデックスの行がある場合は附属物点検の同じsnoでstruct_idxが1以上のものを変更する
             if (eachKeikaku.sno == keikaku.sno && eachKeikaku.struct_idx > 0) {
               // snoが一致する支柱インデックスの行のみを変更し、それ以外の行は何もしない
-              eachKeikaku.huzokubutsu_plans = _.map(eachKeikaku.huzokubutsu_plans, plan => {
-                // 年が一致し、パトロール実施済みでないもののみを変更する
-                if (plan.year == year && !plan.patrol_done) {
-                  plan.planned = false;
-                }
-                return plan;
-              });
               if (eachKeikaku["huzokubutsu_" + year] && !eachKeikaku["huzokubutsu_patrol_done_" + year]) {
                 eachKeikaku["huzokubutsu_" + year] = false;
               }
@@ -988,14 +861,49 @@ class TenkenKeikakuCtrl extends BaseCtrl {
       };
 
       for (const keikaku of this.keikaku_list) {
-        const houteiPlans = convertPlansToSaveData(keikaku, keikaku.houtei_plans);
-        savingHouteiPlans = savingHouteiPlans.concat(houteiPlans);
-
-        const huzokubutsuPlans = convertPlansToSaveData(keikaku, keikaku.huzokubutsu_plans);
-        savingHuzokubutsuPlans = savingHuzokubutsuPlans.concat(huzokubutsuPlans);
-
-        const teikiPatPlans = convertPlansToSaveData(keikaku, keikaku.teiki_pat_plans);
-        savingTeikiPatPlans = savingTeikiPatPlans.concat(teikiPatPlans);
+        for (const field in keikaku) {
+          // 各行のデータから<点検の種別>_<西暦>になっているものからチェックボックスのデータを抽出する
+          const houteiKeyPattern = /^houtei_[0-9]{4}$/;
+          const huzokubutsuKeyPattern = /^huzokubutsu_[0-9]{4}$/;
+          const teikiPatKeyPattern = /^teiki_pat_[0-9]{4}$/;
+          if (field.match(houteiKeyPattern)) {
+            if (keikaku[field] == true) {
+              // trueになっているものだけを抜き出す
+              const sections = field.split("_");
+              const year = sections[sections.length - 1];
+              savingHouteiPlans.push({
+                sno: keikaku.sno,
+                shisetsu_kbn: keikaku.shisetsu_kbn,
+                struct_idx: keikaku.struct_idx,
+                year: year
+              })
+            }
+          }
+          if (field.match(huzokubutsuKeyPattern)) {
+            if (keikaku[field] == true) {
+              const sections = field.split("_");
+              const year = sections[sections.length - 1];
+              savingHuzokubutsuPlans.push({
+                sno: keikaku.sno,
+                shisetsu_kbn: keikaku.shisetsu_kbn,
+                struct_idx: keikaku.struct_idx,
+                year: year
+              })
+            }
+          }
+          if (field.match(teikiPatKeyPattern)) {
+            if (keikaku[field] == true) {
+              const sections = field.split("_");
+              const year = sections[sections.length - 1];
+              savingTeikiPatPlans.push({
+                sno: keikaku.sno,
+                shisetsu_kbn: keikaku.shisetsu_kbn,
+                struct_idx: keikaku.struct_idx,
+                year: year
+              })
+            }
+          }
+        }
       }
 
       const targetYearStart = moment().add(-3, 'months').year();
