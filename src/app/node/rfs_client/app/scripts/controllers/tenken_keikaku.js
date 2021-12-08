@@ -439,6 +439,8 @@ class TenkenKeikakuCtrl extends BaseCtrl {
       // onCellValueChangedメソッド内のthisでこのクラスのインスタンスを参照するので、
       // メソッド自体を設定するのではなくアロー演算子でメソッドを呼び出す関数をセットする
       onCellValueChanged: (params) => this.onCellValueChanged(params),
+      // 結果が無いときのメッセージは何も表示しない
+      suppressNoRowsOverlay: true,
     };
 
     const gridTarget = document.querySelector("#result-table");
