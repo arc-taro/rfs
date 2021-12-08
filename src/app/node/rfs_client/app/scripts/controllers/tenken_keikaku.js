@@ -99,7 +99,7 @@ class TenkenKeikakuCtrl extends BaseCtrl {
                 field: "houtei_" + nendo.year,
                 cellRenderer: 'checkboxRenderer',
                 lockPosition: true,
-                width: 60,
+                width: 70,
                 cellStyle: (params) => {
                   // 編集可能でないセルは背景をグレーにする
                   const editable = this.isHouteiEditable(params);
@@ -122,7 +122,7 @@ class TenkenKeikakuCtrl extends BaseCtrl {
                 field: "huzokubutsu_" + nendo.year,
                 cellRenderer: 'checkboxRenderer',
                 lockPosition: true,
-                width: 60,
+                width: 70,
                 cellStyle: (params) => {
                   // 編集可能でないセルは背景をグレーにする
                   const editable = this.isHuzokubutsuEditable(params);
@@ -145,7 +145,7 @@ class TenkenKeikakuCtrl extends BaseCtrl {
                 field: "teiki_pat_" + nendo.year,
                 cellRenderer: 'checkboxRenderer',
                 lockPosition: true,
-                width: 60,
+                width: 70,
                 cellStyle: (params) => {
                   // 編集可能でないセルは背景をグレーにする
                   const editable = this.isTeikiPatEditable(params);
@@ -294,69 +294,77 @@ class TenkenKeikakuCtrl extends BaseCtrl {
 
     this.columnDefs = [
       {
-        headerName: "施設名",
-        lockPosition: true,
-        field: "shisetsu_kbn_nm",
-        pinned: true,
-        width: 160,
-        suppressSizeToFit: true,
-      },
-      {
-        headerName: "施設管理番号",
-        lockPosition: true,
-        field: "shisetsu_cd",
-        pinned: true,
-        width: 140,
-        suppressSizeToFit: true,
-        cellRenderer: (params) => {
-          return `<a href="#/fam_edit/${params.data.sno}" style="cursor:pointer">${params.value}</a>`;
-        }
-      },
-      {
-        headerName: "支柱番号",
-        lockPosition: true,
-        field: "struct_idx",
-        pinned: true,
-        width: 90,
-        suppressSizeToFit: true,
-        cellRenderer: (params) => {
-          if(params.value == 0) {
-            return "-";
+        children: [
+          {
+            children: [
+              {
+                headerName: "施設名",
+                lockPosition: true,
+                field: "shisetsu_kbn_nm",
+                pinned: true,
+                width: 160,
+                suppressSizeToFit: true,
+              },
+              {
+                headerName: "施設管理番号",
+                lockPosition: true,
+                field: "shisetsu_cd",
+                pinned: true,
+                width: 140,
+                suppressSizeToFit: true,
+                cellRenderer: (params) => {
+                  return `<a href="#/fam_edit/${params.data.sno}" style="cursor:pointer">${params.value}</a>`;
+                }
+              },
+              {
+                headerName: "支柱番号",
+                lockPosition: true,
+                field: "struct_idx",
+                pinned: true,
+                width: 90,
+                suppressSizeToFit: true,
+                cellRenderer: (params) => {
+                  if(params.value == 0) {
+                    return "-";
+                  }
+                  return params.value;
+                }
+              },
+              {
+                headerName: "路線コード",
+                lockPosition: true,
+                filter: false,
+                field: "rosen_cd",
+                pinned: true,
+                width: 120,
+                suppressSizeToFit: true,
+              },
+              {
+                headerName: "路線名",
+                lockPosition: true,
+                field: "rosen_nm",
+                pinned: true,
+                suppressSizeToFit: true,
+              },
+              {
+                headerName: "横断区分",
+                lockPosition: true,
+                field: "lr_str",
+                pinned: true,
+                width: 90,
+                suppressSizeToFit: true,
+              },
+              {
+                headerName: "測点",
+                lockPosition: true,
+                field: "sp",
+                pinned: true,
+                width: 70,
+                suppressSizeToFit: true,
+              }, 
+            ]
           }
-          return params.value;
-        }
-      },
-      {
-        headerName: "路線コード",
-        lockPosition: true,
-        filter: false,
-        field: "rosen_cd",
-        pinned: true,
-        width: 120,
-        suppressSizeToFit: true,
-      },
-      {
-        headerName: "路線名",
-        lockPosition: true,
-        field: "rosen_nm",
-        pinned: true,
-        suppressSizeToFit: true,
-      },
-      {
-        headerName: "横断区分",
-        lockPosition: true,
-        field: "lr_str",
-        pinned: true,
-        width: 90,
-        suppressSizeToFit: true,
-      },
-      {
-        headerName: "測点",
-        lockPosition: true,
-        field: "sp",
-        pinned: true,
-        width: 70,
-        suppressSizeToFit: true,
+        ]
       },
       {
         headerName: "直近の点検結果",
@@ -396,6 +404,7 @@ class TenkenKeikakuCtrl extends BaseCtrl {
               { 
                 headerName: "異常有無", 
                 lockPosition: true,
+                suppressSizeToFit: true,
                 field: "latest_teiki_pat_ijou_umu",
                 width: 100,
                 cellStyle: (params) => {
@@ -431,6 +440,7 @@ class TenkenKeikakuCtrl extends BaseCtrl {
     this.keikaku_list = [];
     this.gridOptions = {
       alignedGrids: [],
+      headerHeight: 25,
       columnDefs: this.columnDefs,
       rowData: this.keikaku_list,
       components: {
@@ -968,7 +978,7 @@ class TenkenKeikakuCtrl extends BaseCtrl {
   // 異常有無欄のセルのスタイルを生成する
   getIjouUmuCellStyle(latestTeikiPat) {
     const result = {
-      width: "80px",
+      width: "100px",
       paddingLeft: "2px",
       paddingRight: "2px",
     };
@@ -990,7 +1000,6 @@ class TenkenKeikakuCtrl extends BaseCtrl {
   getCheckShisetsuJudgeCellStyle(latestHuzokubutsu) {
     const result = {
       width: "80px",
-      border: "1px solid #036",
       textAlign: "center",
     };
     if (!latestHuzokubutsu) {
