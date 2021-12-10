@@ -93,13 +93,22 @@ class TenkenKeikakuCtrl extends BaseCtrl {
         this.columnDefs = _(this.columnDefs).map(column => {
           // 各種点検のカラムのchildrenに年度のカラムをセットする
           if (column.headerId === "houtei_plans") {
-            column.children = _(this.keikaku_nendo_headers).map(nendo => {
+            column.children = _(this.keikaku_nendo_headers).map((nendo, index) => {
               return {
                 headerName: nendo.wareki,
                 field: "houtei_" + nendo.year,
                 cellRenderer: 'checkboxRenderer',
                 lockPosition: true,
-                width: 70,
+                width: 45,
+                headerClass: "tenken-keikaku-checkbox-cell",
+                cellClass: () => {
+                  const classes = ["tenken-keikaku-checkbox-cell"];
+                  if (index == 0) {
+                    // 最初の年度は左端を太くする（点検の種別ごとの境界を示す）
+                    classes.push("tenken-keikaku-checkbox-leftside");
+                  }
+                  return classes;
+                },
                 cellStyle: (params) => {
                   // 編集可能でないセルは背景をグレーにする
                   const editable = this.isHouteiEditable(params);
@@ -116,13 +125,22 @@ class TenkenKeikakuCtrl extends BaseCtrl {
               };
             }).value();
           } else if (column.headerId === "huzokubutsu_plans") {
-            column.children = _(this.keikaku_nendo_headers).map(nendo => {
+            column.children = _(this.keikaku_nendo_headers).map((nendo, index) => {
               return {
                 headerName: nendo.wareki,
                 field: "huzokubutsu_" + nendo.year,
                 cellRenderer: 'checkboxRenderer',
                 lockPosition: true,
-                width: 70,
+                width: 45,
+                headerClass: "tenken-keikaku-checkbox-cell",
+                cellClass: () => {
+                  const classes = ["tenken-keikaku-checkbox-cell"];
+                  if (index == 0) {
+                    // 最初の年度は左端を太くする
+                    classes.push("tenken-keikaku-checkbox-leftside");
+                  }
+                  return classes;
+                },
                 cellStyle: (params) => {
                   // 編集可能でないセルは背景をグレーにする
                   const editable = this.isHuzokubutsuEditable(params);
@@ -139,13 +157,24 @@ class TenkenKeikakuCtrl extends BaseCtrl {
               };
             }).value();
           } else if (column.headerId === "teiki_pat_plans") {
-            column.children = _(this.keikaku_nendo_headers).map(nendo => {
+            column.children = _(this.keikaku_nendo_headers).map((nendo, index) => {
               return {
                 headerName: nendo.wareki,
                 field: "teiki_pat_" + nendo.year,
                 cellRenderer: 'checkboxRenderer',
                 lockPosition: true,
-                width: 70,
+                width: 45,
+                headerClass: "tenken-keikaku-checkbox-cell",
+                cellClass: () => {
+                  const classes = ["tenken-keikaku-checkbox-cell"];
+                  if (index == 0) {
+                    // 最初の年度は左端を太くする
+                    classes.push("tenken-keikaku-checkbox-leftside");
+                  } else if (index == this.keikaku_nendo_headers.length - 1) {
+                    // 最後の年度は右端も太くする
+                  }
+                  return classes;
+                },
                 cellStyle: (params) => {
                   // 編集可能でないセルは背景をグレーにする
                   const editable = this.isTeikiPatEditable(params);
