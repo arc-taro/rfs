@@ -282,6 +282,11 @@ EOF;
       $shisetsu_kbn = $result[$i_row]['shisetsu_kbn'];
       $struct_idx = $result[$i_row]['struct_idx'];
 
+      // 今年度の西暦を取得
+      $this_business_year = date('Y', strtotime('-3 month'));
+      $this_year_obj = (new DateTime())->setDate($this_business_year, 4, 1);
+      $next_year_obj = (new DateTime())->setDate($this_business_year + 1, 4, 1);
+
       if ($result[$i_row]['huzokubutsu_flag']) {
         $result[$i_row]['latest_huzokubutsu'] = null;
         // 附属物点検（附属物点検は1つのSQLで取得すると遅くなったので別途取得）
@@ -289,17 +294,14 @@ EOF;
         if (count($latest_huzokubutsu_result) > 0) {
           $result[$i_row]['latest_huzokubutsu'] = $latest_huzokubutsu_result[0];
         }
+        // 今年度の附属物点検の状態を取得（今年度のチェックボックスのみ例外処理が必要なため）
+        $huzokubutsu_status_this_year = $this->getHuzokubutsuStatusOfThisYear($sno, $struct_idx, $this_year_obj->format('Y-m-d'), $next_year_obj->format('Y-m-d'));
       }
 
       // チェックボックスに対応するデータを作成する
       $result[$i_row]['teiki_pat_plans'] = [];
       $result[$i_row]['houtei_plans'] = [];
       $result[$i_row]['huzokubutsu_plans'] = [];
-
-      // 今年度の西暦を取得
-      $this_business_year = date('Y', strtotime('-3 month'));
-      $this_year_obj = (new DateTime())->setDate($this_business_year, 4, 1);
-      $next_year_obj = (new DateTime())->setDate($this_business_year + 1, 4, 1);
 
       // 今年度点検を実施済みかどうかをチェックして保持しておく
       // HACK: もう少しまとめられないか?
@@ -313,14 +315,19 @@ EOF;
           $result[$i_row]['houtei_plans'][0]['patrol_done'] = true;
         }
       }
-      if (isset($result[$i_row]['latest_huzokubutsu']['target_dt_year']) && $result[$i_row]['latest_huzokubutsu']['target_dt_year']) {
-        $target_dt_year = $result[$i_row]['latest_huzokubutsu']['target_dt_year'];
-        $target_dt_month = $result[$i_row]['latest_huzokubutsu']['target_dt_month'];
-        $target_dt_day = $result[$i_row]['latest_huzokubutsu']['target_dt_day'];
-        $latest_patrol_obj = (new DateTime())->setDate($target_dt_year, $target_dt_month, $target_dt_day);
-        if ($this_year_obj <= $latest_patrol_obj && $latest_patrol_obj < $next_year_obj) {
-          // 今年度は配列の1個目に入る
-          $result[$i_row]['huzokubutsu_plans'][0]['patrol_done'] = true;
+      if (isset($huzokubutsu_status_this_year)) {
+        // 附属物点検のみ別の処理を行う
+        if (count($huzokubutsu_status_this_year) > 0) {
+          // チェックボックスにチェックを入れるためのフラグをセットする
+          if ($huzokubutsu_status_this_year[0]['phase'] != null) {
+            // 附属物点検が実施済みの場合はチェックを入れ、かつ編集不可とする
+            $result[$i_row]['huzokubutsu_plans'][0]['patrol_done'] = true;
+          } else {
+            // chk_mainは存在するがchk_huzokubutsuが存在しない（=ここの配列でphaseがnull）場合、点検は計画されているが
+            // まだ実施されていない状態なのでチェックを入れるが、編集は可能とする
+            // 今年度は配列の1個目に入る
+            $result[$i_row]['huzokubutsu_plans'][0]['patrol_planned_but_not_done'] = true;
+          }
         }
       }
       if (isset($result[$i_row]['latest_teiki_pat']['target_dt_year']) && $result[$i_row]['latest_teiki_pat']['target_dt_year']) {
@@ -364,6 +371,11 @@ EOF;
           isset($result[$i_row]['huzokubutsu_plans'][$i_year]['patrol_done'])
           && $result[$i_row]['huzokubutsu_plans'][$i_year]['patrol_done']) {
             // パトロール実施済みの場合はtrueにする
+            $result[$i_row]['huzokubutsu_plans'][$i_year]['planned'] = true;
+        } else if (
+          isset($result[$i_row]['huzokubutsu_plans'][$i_year]['patrol_planned_but_not_done'])
+          && $result[$i_row]['huzokubutsu_plans'][$i_year]['patrol_planned_but_not_done']) {
+            // パトロール計画済みだが未実施の場合もtrueにする
             $result[$i_row]['huzokubutsu_plans'][$i_year]['planned'] = true;
         }
         
@@ -639,12 +651,38 @@ WITH patrol_plan AS (
   GROUP BY 
     ltp.sno
 )
+, max_houtei_attachfile AS (
+-- rfs_t_houtei_attachfileをsnoとchk_mng_noの組み合わせで1レコードずつにする
+  SELECT
+    rtha.sno
+    ,rtha.chk_mng_no
+    ,max(rtha.attachfile_no) as max_attachfile_no
+  FROM
+    rfs_t_houtei_attachfile rtha
+  LEFT JOIN
+    rfs_t_chk_houtei rtch
+  ON rtch.chk_mng_no = rtch.chk_mng_no
+  GROUP BY
+    rtha.sno,rtha.chk_mng_no
+)
+, chk_houtei_max_attachfile_no AS (
+-- rfs_t_chk_houteiのレコードにattachfileが存在するレコードを抜き出す
+  SELECT
+    rtch.*
+    ,mha.max_attachfile_no
+  FROM
+    rfs_t_chk_houtei rtch
+  INNER JOIN
+    max_houtei_attachfile mha
+  ON rtch.chk_mng_no = mha.chk_mng_no
+)
 , max_houtei_chk_times AS (
+-- attachfileが存在するrfs_t_chk_houteiのレコードのchk_timesが最大のレコードを抜き出す
   SELECT
     sno
     ,max(chk_times) AS max_chk_times
   FROM
-    rfs_t_chk_houtei 
+    chk_houtei_max_attachfile_no 
   GROUP BY
     sno
 )
@@ -843,6 +881,48 @@ EOF;
   }
 
   /***
+   * 今年度の附属物点検の状態を取得し、チェックボックスの制御に必要な情報を取得する。
+   *
+   * 引数:$sno sno
+   * 　　:$struct_idx 支柱インデックス
+   * 　　:$this_year_date 今年度の最初の日にち YYYY-MM-DD形式とする
+   * 　　:$next_year_date 次年度の最初の日にち YYYY-MM-DD形式とする
+   ***/
+  protected function getHuzokubutsuStatusOfThisYear($sno, $struct_idx, $this_year_date, $next_year_date) {
+    $sql = <<<EOF
+SELECT 
+  rtcm.sno
+  ,rtcm.struct_idx
+  ,rtcm.chk_mng_no
+  ,rtcm.chk_times
+  ,rtcm.target_dt
+  ,rtch.rireki_no
+  ,rtch.phase
+FROM
+  rfs_t_chk_main rtcm
+LEFT JOIN rfs_t_chk_huzokubutsu rtch
+  ON rtcm.chk_mng_no = rtch.chk_mng_no
+WHERE
+  '$this_year_date' <= rtcm.target_dt
+  AND rtcm.target_dt < '$next_year_date'
+  AND rtcm.sno = $sno
+  AND rtcm.struct_idx = $struct_idx
+ORDER BY 
+-- 今年実施した附属物点検の一番古いレコードがあるか確認する
+  rtcm.chk_times ASC NULLS LAST,rtch.rireki_no ASC NULLS LAST
+
+-- rtchが複数紐づくことがあるが,rtchと紐づくかどうかのみ知りたいので
+-- LIMIT 1で問題なし。
+LIMIT 1
+EOF;
+
+    // log_message('debug', "sql=$sql");
+    $query = $this->DB_rfs->query($sql);
+    $result = $query->result('array');
+    return $result;
+  }
+
+  /***
    * 附属物点検の直近データを取得する。
    *
    * 引数:$sno sno
@@ -892,6 +972,8 @@ LEFT JOIN rfs_m_shisetsu_judge rmsj
 WHERE
   rtcm.sno = $sno
   AND rtch.chk_mng_no IS NOT NULL
+  -- 附属物点検のステータスが「完了」のものを対象とする
+  AND rtch.phase = 5
   $where_struct_idx
 ORDER BY
 -- chk_timesとrireki_noが最大のもののみを取得するためにソートして最初の1件を取得する
@@ -943,7 +1025,7 @@ EOF;
   }
 
   private function insertTenkenKeikaku($category, $sno, $shisetsu_kbn, $struct_idx, $year) {
-    log_message('info', __METHOD__);
+    // log_message('info', __METHOD__);
     $target_dt_obj = (new DateTime())->setDate($year, 4, 1);
     $target_dt = $target_dt_obj->format('Y-m-d');
     $struct_idx_nullable = $shisetsu_kbn == 4 ? $struct_idx : 0;
@@ -980,6 +1062,147 @@ EOF;
 
   public function insertTeikiPatTenkenKeikaku($sno, $shisetsu_kbn, $struct_idx, $year) {
     $this->insertTenkenKeikaku(self::CATEGORY_TEIKI_PAT, $sno, $shisetsu_kbn, $struct_idx, $year);
+  }
+
+  public function deleteRfsTChkHouteiByBusinessYear($deleted_plans) {
+    foreach ($deleted_plans as $plan) {
+      $sno = $plan['sno'];
+      $struct_idx = $plan['struct_idx'];
+      $target_dt_start = (new DateTime())->setDate($plan['year'], 4, 1)->format('Y-m-d');
+      $target_dt_end = (new DateTime())->setDate($plan['year'] + 1, 4, 1)->format('Y-m-d');
+      $sql = <<<EOF
+DELETE
+FROM
+  public.rfs_t_chk_houtei
+WHERE
+  sno = $sno
+  AND struct_idx = $struct_idx
+  AND target_dt >= '$target_dt_start'
+  AND target_dt < '$target_dt_end'
+EOF;
+      // log_message('debug', $sql);
+      $this->DB_rfs->query($sql);
+    }
+  }
+
+  public function deleteRfsTChkMainByBusinessYear($deleted_plans) {
+
+    foreach ($deleted_plans as $plan) {
+      $sno = $plan['sno'];
+      $struct_idx = $plan['struct_idx'];
+      $target_dt_start = (new DateTime())->setDate($plan['year'], 4, 1)->format('Y-m-d');
+      $target_dt_end = (new DateTime())->setDate($plan['year'] + 1, 4, 1)->format('Y-m-d');
+      $sql = <<<EOF
+DELETE
+FROM
+  public.rfs_t_chk_main
+WHERE
+  sno = $sno
+  AND struct_idx = $struct_idx
+  AND target_dt >= '$target_dt_start'
+  AND target_dt < '$target_dt_end'
+EOF;
+      // log_message('debug', $sql);
+      $this->DB_rfs->query($sql);
+    }
+  }
+
+  public function insertRfsTChkHouteiByBusinessYear($added_plans) {
+    foreach ($added_plans as $plan) {
+      $sno = $plan['sno'];
+      $struct_idx = $plan['struct_idx'];
+
+      // chk_timesを求めるため、現状のchk_timesの最大値を求める
+      $select_sql = <<<EOF
+SELECT
+  MAX(chk_times) max_chk_times
+FROM
+  public.rfs_t_chk_houtei
+WHERE
+  sno = $sno
+  AND struct_idx = $struct_idx
+GROUP BY
+  sno, struct_idx
+EOF;
+      // log_message('debug', $select_sql);
+      $query = $this->DB_rfs->query($select_sql);
+      $result = $query->result('array');
+      if (count($result) > 0) {
+        $chk_times = $result[0]['max_chk_times'] + 1;
+      } else {
+        $chk_times = 1;
+      }
+
+      $target_dt = (new DateTime())->setDate($plan['year'], 4, 1)->format('Y-m-d');
+      $sql = <<<EOF
+INSERT INTO
+  public.rfs_t_chk_houtei
+(
+  sno
+  ,chk_times
+  ,struct_idx
+  ,target_dt
+)
+VALUES
+(
+  $sno
+  ,$chk_times
+  ,$struct_idx
+  ,'$target_dt'
+)
+EOF;
+      // log_message('debug', $sql);
+      $this->DB_rfs->query($sql);
+    }
+  }
+
+  public function insertRfsTChkMainByBusinessYear($added_plans) {
+    foreach ($added_plans as $plan) {
+      $sno = $plan['sno'];
+      $struct_idx = $plan['struct_idx'];
+
+      // chk_timesを求めるため、現状のchk_timesの最大値を求める
+      $select_sql = <<<EOF
+SELECT
+  MAX(chk_times) max_chk_times
+FROM
+  public.rfs_t_chk_main
+WHERE
+  sno = $sno
+  AND struct_idx = $struct_idx
+GROUP BY
+  sno, struct_idx
+EOF;
+      // log_message('debug', $select_sql);
+      $query = $this->DB_rfs->query($select_sql);
+      $result = $query->result('array');
+      if (count($result) > 0) {
+        $chk_times = $result[0]['max_chk_times'] + 1;
+      } else {
+        $chk_times = 1;
+      }
+
+      $target_dt = (new DateTime())->setDate($plan['year'], 4, 1)->format('Y-m-d');
+      $sql = <<<EOF
+INSERT INTO
+  public.rfs_t_chk_main
+(
+  sno
+  ,chk_times
+  ,struct_idx
+  ,target_dt
+)
+VALUES
+(
+  $sno
+  ,$chk_times
+  ,$struct_idx
+  ,'$target_dt'
+)
+EOF;
+      // log_message('debug', $sql);
+      $this->DB_rfs->query($sql);
+    }
   }
 
 }

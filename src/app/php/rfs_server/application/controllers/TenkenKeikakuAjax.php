@@ -252,6 +252,9 @@ class TenkenKeikakuAjax extends BaseController {
     $target_year_start = $this->post['target_year_start'];
     $target_year_end = $this->post['target_year_end'];
     $shisetsu_list = $this->post['shisetsu_list'];
+    // 差分（）
+    $added_plans = $this->post['added_plans'];
+    $deleted_plans = $this->post['deleted_plans'];
     
     // トランザクション
     $this->DB_rfs->trans_start();
@@ -271,6 +274,15 @@ class TenkenKeikakuAjax extends BaseController {
     }
 
     // 今年度の点検計画があればrfs_t_chk_mainとrfs_t_chk_houteiに登録/削除する
+    // chk_timesは現状の最大値+1を振るため、念のためINSERTより先にDELETEしておく（INSERTとDELETEの対象は被らないので恐らくDELETEが後でも問題ないが）
+    if (count($deleted_plans['houtei']) > 0) {
+      $this->TenkenKeikakuModel->deleteRfsTChkHouteiByBusinessYear($deleted_plans['houtei']);
+    }
+    if (count($deleted_plans['huzokubutsu']) > 0) {
+      $this->TenkenKeikakuModel->deleteRfsTChkMainByBusinessYear($deleted_plans['huzokubutsu']);
+    }
+    $this->TenkenKeikakuModel->insertRfsTChkHouteiByBusinessYear($added_plans['houtei']);
+    $this->TenkenKeikakuModel->insertRfsTChkMainByBusinessYear($added_plans['huzokubutsu']);
     
     // トランザクション処理
     if ($this->DB_rfs->trans_status() === FALSE) {

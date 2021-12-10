@@ -498,6 +498,64 @@ class TenkenKeikakuCtrl extends BaseCtrl {
     }, 500);
   }
 
+  // 点検計画一覧から、チェックボックスの状態がtrueのものを抽出する
+  extractPlannedKeikakuList(keikakuList, targetYear)  {
+    let houteiPlans = [];
+    let huzokubutsuPlans = [];
+    let teikiPatPlans = [];
+
+    for (const keikaku of keikakuList) {
+      for (const field in keikaku) {
+        // 各行のデータから<点検の種別>_<西暦>になっているものからチェックボックスのデータを抽出する
+        const houteiKeyPattern = /^houtei_[0-9]{4}$/;
+        const huzokubutsuKeyPattern = /^huzokubutsu_[0-9]{4}$/;
+        const teikiPatKeyPattern = /^teiki_pat_[0-9]{4}$/;
+        if (field.match(houteiKeyPattern)) {
+          if (keikaku[field] == true) {
+            // trueものだけを抜き出す
+            const sections = field.split("_");
+            const year = sections[sections.length - 1];
+            houteiPlans.push({
+              sno: keikaku.sno,
+              shisetsu_kbn: keikaku.shisetsu_kbn,
+              struct_idx: keikaku.struct_idx,
+              year: year
+            })
+          }
+        }
+        if (field.match(huzokubutsuKeyPattern)) {
+          if (keikaku[field] == true) {
+            const sections = field.split("_");
+            const year = sections[sections.length - 1];
+            huzokubutsuPlans.push({
+              sno: keikaku.sno,
+              shisetsu_kbn: keikaku.shisetsu_kbn,
+              struct_idx: keikaku.struct_idx,
+              year: year
+            })
+          }
+        }
+        if (field.match(teikiPatKeyPattern)) {
+          if (keikaku[field] == true) {
+            const sections = field.split("_");
+            const year = sections[sections.length - 1];
+            teikiPatPlans.push({
+              sno: keikaku.sno,
+              shisetsu_kbn: keikaku.shisetsu_kbn,
+              struct_idx: keikaku.struct_idx,
+              year: year
+            })
+          }
+        }
+      }
+    }
+    return {
+      huzokubutsu: huzokubutsuPlans,
+      houtei: houteiPlans,
+      teiki_pat: teikiPatPlans
+    };
+  }
+
   // 検索条件の整理
   arrangeSearchCondition() {
     // 入力→削除した要素の空文字を削除
@@ -563,6 +621,7 @@ class TenkenKeikakuCtrl extends BaseCtrl {
           return this.alert("検索", message);
         } else {
           this.keikaku_list = this.formatKeikakuList(json.shisetsu_info);
+          this.original_keikaku_list = _.cloneDeep(this.keikaku_list);
 
           // AG Gridにデータをセット
           this.gridOptions.api.setRowData(this.keikaku_list);
@@ -882,85 +941,67 @@ class TenkenKeikakuCtrl extends BaseCtrl {
         })
         .value();
 
-      let savingHouteiPlans = [];
-      let savingHuzokubutsuPlans = [];
-      let savingTeikiPatPlans = [];
-
-      // それぞれの計画について、plannedがtrueのものだけ抜き出す。
-      const convertPlansToSaveData = (keikaku, plans) => {
-        return _(plans)
-          .filter(plan => plan.planned)
-          .map(plan => {
-            return {
-              sno: keikaku.sno,
-              shisetsu_kbn: keikaku.shisetsu_kbn,
-              struct_idx: keikaku.struct_idx,
-              year: plan.year
-            };
-          })
-          .value();
-      };
-
-      for (const keikaku of this.keikaku_list) {
-        for (const field in keikaku) {
-          // 各行のデータから<点検の種別>_<西暦>になっているものからチェックボックスのデータを抽出する
-          const houteiKeyPattern = /^houtei_[0-9]{4}$/;
-          const huzokubutsuKeyPattern = /^huzokubutsu_[0-9]{4}$/;
-          const teikiPatKeyPattern = /^teiki_pat_[0-9]{4}$/;
-          if (field.match(houteiKeyPattern)) {
-            if (keikaku[field] == true) {
-              // trueになっているものだけを抜き出す
-              const sections = field.split("_");
-              const year = sections[sections.length - 1];
-              savingHouteiPlans.push({
-                sno: keikaku.sno,
-                shisetsu_kbn: keikaku.shisetsu_kbn,
-                struct_idx: keikaku.struct_idx,
-                year: year
-              })
-            }
-          }
-          if (field.match(huzokubutsuKeyPattern)) {
-            if (keikaku[field] == true) {
-              const sections = field.split("_");
-              const year = sections[sections.length - 1];
-              savingHuzokubutsuPlans.push({
-                sno: keikaku.sno,
-                shisetsu_kbn: keikaku.shisetsu_kbn,
-                struct_idx: keikaku.struct_idx,
-                year: year
-              })
-            }
-          }
-          if (field.match(teikiPatKeyPattern)) {
-            if (keikaku[field] == true) {
-              const sections = field.split("_");
-              const year = sections[sections.length - 1];
-              savingTeikiPatPlans.push({
-                sno: keikaku.sno,
-                shisetsu_kbn: keikaku.shisetsu_kbn,
-                struct_idx: keikaku.struct_idx,
-                year: year
-              })
-            }
-          }
-        }
-      }
-
       const targetYearStart = moment().add(-3, 'months').year();
       const targetYearEnd = targetYearStart + this.tenken_keikaku_year_span - 1;
+
+      // チェックを入れた施設を抽出する
+      const savingPlans = this.extractPlannedKeikakuList(this.keikaku_list, targetYearStart);
+      const originalPlans = this.extractPlannedKeikakuList(this.original_keikaku_list, targetYearStart);
+
+      // 今年の分について、編集前からの変更を抽出（附属物点検と法定点検について、rfs_chk_mainとrfs_chk_houteiのレコードを追加・削除するための情報）
+      const offToOn = {
+        houtei: _.filter(
+          // savingPlansにあってoriginalPlansにないもの（=チェックボックスがOFFからONになったもの）を抽出
+          _.differenceWith(
+            savingPlans.houtei,
+            originalPlans.houtei,
+            _.isEqual
+          ),
+          // 抽出結果からさらに今年のものを抽出
+          plan => plan.year == targetYearStart
+        ),
+        huzokubutsu: _.filter(
+          _.differenceWith(
+            savingPlans.huzokubutsu,
+            originalPlans.huzokubutsu,
+            _.isEqual
+          ),
+          plan => plan.year == targetYearStart
+        ),
+      };
+      const onToOff = {
+        houtei: _.filter(
+          _.differenceWith(
+            // originalPlansにあってsavingPlansにないもの（=チェックボックスがONからOFFになったもの）を抽出
+            originalPlans.houtei,
+            savingPlans.houtei,
+            _.isEqual
+          ),
+          plan => plan.year == targetYearStart
+        ),
+        huzokubutsu: _.filter(
+          _.differenceWith(
+            originalPlans.huzokubutsu,
+            savingPlans.huzokubutsu, 
+            _.isEqual
+          ),
+          plan => plan.year == targetYearStart
+        ),
+      };
 
       // 点検計画の保存
       return this.$http({
         method: 'POST',
         url: 'api/index.php/TenkenKeikakuAjax/saveTenkenKeikaku',
         data: {
-          houtei_plans: savingHouteiPlans,
-          huzokubutsu_plans: savingHuzokubutsuPlans,
-          teiki_pat_plans: savingTeikiPatPlans,
+          houtei_plans: savingPlans.houtei,
+          huzokubutsu_plans: savingPlans.huzokubutsu,
+          teiki_pat_plans: savingPlans.teiki_pat,
           target_year_start: targetYearStart,
           target_year_end: targetYearEnd,
           shisetsu_list: shisetsuList,
+          added_plans: offToOn, 
+          deleted_plans: onToOff
         }
       }).then((data) => {
         // 保存中を消す
@@ -971,6 +1012,7 @@ class TenkenKeikakuCtrl extends BaseCtrl {
           return this.alert("完了メッセージ", "点検計画の登録に失敗しました");
         }
       }).then((data) => {
+        this.original_keikaku_list = _.cloneDeep(this.keikaku_list);
         // メッセージ非表示
         this.windowUnlock();
         this.$window.location.reload(false);
