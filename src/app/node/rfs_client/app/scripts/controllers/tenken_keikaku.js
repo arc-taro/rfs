@@ -116,7 +116,7 @@ class TenkenKeikakuCtrl extends BaseCtrl {
                     return {}
                   } else {
                     return {
-                      backgroundColor: "#F2F2F2"
+                      backgroundColor: "#C0C0C0"
                     }
                   }
                 },
@@ -148,7 +148,7 @@ class TenkenKeikakuCtrl extends BaseCtrl {
                     return {}
                   } else {
                     return {
-                      backgroundColor: "#F2F2F2"
+                      backgroundColor: "#C0C0C0"
                     }
                   }
                 },
@@ -182,7 +182,7 @@ class TenkenKeikakuCtrl extends BaseCtrl {
                     return {}
                   } else {
                     return {
-                      backgroundColor: "#F2F2F2"
+                      backgroundColor: "#C0C0C0"
                     }
                   }
                 },

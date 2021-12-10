@@ -286,16 +286,23 @@ EOF;
       $this_business_year = date('Y', strtotime('-3 month'));
       $this_year_obj = (new DateTime())->setDate($this_business_year, 4, 1);
       $next_year_obj = (new DateTime())->setDate($this_business_year + 1, 4, 1);
+      
+      $latest_huzokubutsu_result = [];
+      $huzokubutsu_status_this_year = null;
 
       if ($result[$i_row]['huzokubutsu_flag']) {
         $result[$i_row]['latest_huzokubutsu'] = null;
         // 附属物点検（附属物点検は1つのSQLで取得すると遅くなったので別途取得）
         $latest_huzokubutsu_result = $this->getChkMainMaxData($sno, $shisetsu_kbn, $struct_idx);
+        // log_message('debug', '$latest_huzokubutsu_result=>' . print_r($latest_huzokubutsu_result, true));
         if (count($latest_huzokubutsu_result) > 0) {
           $result[$i_row]['latest_huzokubutsu'] = $latest_huzokubutsu_result[0];
         }
         // 今年度の附属物点検の状態を取得（今年度のチェックボックスのみ例外処理が必要なため）
+        // log_message('debug', '今年度の附属物 $sno=' . $sno);
+        // log_message('debug', '今年度の附属物 $struct_idx=' . $struct_idx);
         $huzokubutsu_status_this_year = $this->getHuzokubutsuStatusOfThisYear($sno, $struct_idx, $this_year_obj->format('Y-m-d'), $next_year_obj->format('Y-m-d'));
+        // log_message('debug', '$huzokubutsu_status_this_year=>' . print_r($huzokubutsu_status_this_year, true));
       }
 
       // チェックボックスに対応するデータを作成する
