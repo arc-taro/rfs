@@ -78,12 +78,12 @@ class TenkenKeikakuAjax extends BaseController {
     // 施設検索
     $shisetsu_info=$this->srchShisetsuDetail($dogen_cd, $syucchoujo_cd, $srch);
     // 件数が入っている場合は検索しなかった
-    if (isset($shisetsu_info['cnt'])) {
-      $result['cnt']=$shisetsu_info['cnt']; // 件数を返却
-      $shisetsu_info=[];
-    }else{
+    // if (isset($shisetsu_info['cnt'])) {
+    //   $result['cnt']=$shisetsu_info['cnt']; // 件数を返却
+    //   $shisetsu_info=[];
+    // }else{
       $result['cnt']=count($shisetsu_info); // 件数を返却
-    }
+    // }
     $result['shisetsu_info']=$shisetsu_info;
 
 /*
@@ -117,14 +117,14 @@ class TenkenKeikakuAjax extends BaseController {
     log_message('debug', "condition=$r");
 */
     // 件数を先に取得
-    $cnt=$this->TenkenKeikakuModel->srchTenkenShisetsuNum($condition);
+    // $cnt=$this->TenkenKeikakuModel->srchTenkenShisetsuNum($condition);
     //log_message('debug', "count=$cnt");
     // 100件を超える場合は検索しない
-    if ($cnt>=100) {
-      $result['cnt']=$cnt;
-    }else{
+    // if ($cnt>=100) {
+    //   $result['cnt']=$cnt;
+    // }else{
       $result=$this->TenkenKeikakuModel->srchTenkenShisetsu($condition);
-    }
+    // }
     return $result;
   }
 
@@ -270,6 +270,8 @@ class TenkenKeikakuAjax extends BaseController {
       $this->TenkenKeikakuModel->insertTeikiPatTenkenKeikaku($plan['sno'], $plan['shisetsu_kbn'], $plan['struct_idx'], $plan['year']);
     }
 
+    // 今年度の点検計画があればrfs_t_chk_mainとrfs_t_chk_houteiに登録/削除する
+    
     // トランザクション処理
     if ($this->DB_rfs->trans_status() === FALSE) {
       $result['result_cd'] = 400;
