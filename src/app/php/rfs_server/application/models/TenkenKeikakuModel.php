@@ -1141,6 +1141,7 @@ EOF;
       }
 
       $target_dt = (new DateTime())->setDate($plan['year'], 4, 1)->format('Y-m-d');
+      $target_dt_next = (new DateTime())->setDate($plan['year'] + 1, 4, 1)->format('Y-m-d');
       $sql = <<<EOF
 INSERT INTO
   public.rfs_t_chk_houtei
@@ -1150,13 +1151,25 @@ INSERT INTO
   ,struct_idx
   ,target_dt
 )
-VALUES
-(
+SELECT
   $sno
   ,$chk_times
   ,$struct_idx
   ,'$target_dt'
-)
+  WHERE
+  NOT EXISTS (
+    -- 今年度の点検計画が無い場合のみINSERTする
+    SELECT
+      sno
+      ,struct_idx
+    FROM
+      public.rfs_t_chk_houtei
+    WHERE
+      sno = $sno
+      AND struct_idx = $struct_idx
+      AND '$target_dt' <= target_dt
+      AND target_dt < '$target_dt_next'
+  )
 EOF;
       // log_message('debug', $sql);
       $this->DB_rfs->query($sql);
@@ -1190,6 +1203,7 @@ EOF;
       }
 
       $target_dt = (new DateTime())->setDate($plan['year'], 4, 1)->format('Y-m-d');
+      $target_dt_next = (new DateTime())->setDate($plan['year'] + 1, 4, 1)->format('Y-m-d');
       $sql = <<<EOF
 INSERT INTO
   public.rfs_t_chk_main
@@ -1199,13 +1213,25 @@ INSERT INTO
   ,struct_idx
   ,target_dt
 )
-VALUES
-(
+SELECT
   $sno
   ,$chk_times
   ,$struct_idx
   ,'$target_dt'
-)
+  WHERE
+  NOT EXISTS (
+    -- 今年度の点検計画が無い場合のみINSERTする
+    SELECT
+      sno
+      ,struct_idx
+    FROM
+      public.rfs_t_chk_main
+    WHERE
+      sno = $sno
+      AND struct_idx = $struct_idx
+      AND '$target_dt' <= target_dt
+      AND target_dt < '$target_dt_next'
+  )
 EOF;
       // log_message('debug', $sql);
       $this->DB_rfs->query($sql);
