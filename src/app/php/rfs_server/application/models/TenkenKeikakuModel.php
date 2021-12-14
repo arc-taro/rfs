@@ -1137,7 +1137,7 @@ EOF;
       if (count($result) > 0) {
         $chk_times = $result[0]['max_chk_times'] + 1;
       } else {
-        $chk_times = 1;
+        $chk_times = 0;
       }
 
       $target_dt = (new DateTime())->setDate($plan['year'], 4, 1)->format('Y-m-d');
@@ -1199,7 +1199,7 @@ EOF;
       if (count($result) > 0) {
         $chk_times = $result[0]['max_chk_times'] + 1;
       } else {
-        $chk_times = 1;
+        $chk_times = 0;
       }
 
       $target_dt = (new DateTime())->setDate($plan['year'], 4, 1)->format('Y-m-d');
