@@ -321,6 +321,16 @@ EOF;
           // 今年度は配列の1個目に入る
           $result[$i_row]['houtei_plans'][0]['patrol_done'] = true;
         }
+      } else if (isset($result[$i_row]['max_target_dt']) && $result[$i_row]['max_target_dt']) {
+        // 今年度の点検が計画済みだが実施されていない場合はチェックを入れる（無効にはしない）
+        $max_target_dt_year = $result[$i_row]['max_target_dt_year'];
+        $max_target_dt_month = $result[$i_row]['max_target_dt_month'];
+        $max_target_dt_day = $result[$i_row]['max_target_dt_day'];
+        $max_target_dt_obj = (new DateTime())->setDate($max_target_dt_year, $max_target_dt_month, $max_target_dt_day);
+        if ($this_year_obj <= $max_target_dt_obj && $max_target_dt_obj < $next_year_obj) {
+          // 今年度は配列の1個目に入る
+          $result[$i_row]['houtei_plans'][0]['patrol_planned_but_not_done'] = true;
+        }
       }
       if (isset($huzokubutsu_status_this_year)) {
         // 附属物点検のみ別の処理を行う
@@ -369,6 +379,11 @@ EOF;
           isset($result[$i_row]['houtei_plans'][$i_year]['patrol_done'])
           && $result[$i_row]['houtei_plans'][$i_year]['patrol_done']) {
             // パトロール実施済みの場合はtrueにする
+            $result[$i_row]['houtei_plans'][$i_year]['planned'] = true;
+        } else if (
+          isset($result[$i_row]['houtei_plans'][$i_year]['patrol_planned_but_not_done'])
+          && $result[$i_row]['houtei_plans'][$i_year]['patrol_planned_but_not_done']) {
+            // パトロール計画済みだが未実施の場合もtrueにする
             $result[$i_row]['houtei_plans'][$i_year]['planned'] = true;
         }
         
@@ -717,6 +732,37 @@ WITH patrol_plan AS (
   GROUP BY 
     lh.sno
 )
+-- 今年度の法定点検の計画がされているか判断するため、添付ファイルの有無に無関係に集計した直近の点検計画を取得する
+, max_chk_houtei_from_all AS
+(
+  select
+    sno
+    ,struct_idx
+    ,max(chk_times) AS max_chk_times
+  FROM
+    rfs_t_chk_houtei
+  GROUP BY
+    sno,struct_idx
+)
+, max_chk_houtei_dt_from_all AS(
+  select
+    rtch.sno
+    ,rtch.struct_idx
+    ,mch.max_chk_times
+    ,rtch.target_dt
+    -- PHP側で日付を正確に指定するために年月日を分けて取得
+    ,to_char(rtch.target_dt, 'YYYY') as target_dt_year
+    ,to_char(rtch.target_dt, 'MM') as target_dt_month
+    ,to_char(rtch.target_dt, 'MM') as target_dt_day
+  FROM
+    rfs_t_chk_houtei rtch
+  INNER JOIN
+    max_chk_houtei_from_all mch
+  ON
+    rtch.sno = mch.sno
+    AND rtch.struct_idx = mch.struct_idx
+    AND rtch.chk_times = mch.max_chk_times
+)
 , shisetsu AS (
   -- ※この後ろのUNIONで防雪柵のレコードを別途取得しているが、
   -- 定期パトの点検計画は防雪柵自体に紐づくので、ここでは防雪柵の施設自体のレコードも取得する
@@ -813,6 +859,12 @@ SELECT
   , rmpt.teiki_pat_flag
   , ltpj.latest_teiki_pat_json
   , lhj.latest_houtei_json
+  -- 添付ファイルの有無にかかわらず集計した直近の点検計画の日付
+  , mchdfa.target_dt max_target_dt
+  -- PHP側で日付を正確に指定するために年月日を分けて取得
+  , mchdfa.target_dt_year max_target_dt_year 
+  , mchdfa.target_dt_month max_target_dt_month 
+  , mchdfa.target_dt_day max_target_dt_day
 FROM
   shisetsu s
   INNER JOIN
@@ -835,6 +887,11 @@ FROM
         THEN TRUE
         ELSE s.struct_idx = pp.struct_idx
     END
+  LEFT JOIN max_chk_houtei_dt_from_all mchdfa
+  -- 今年度の法定点検の計画がされているか判断するため、添付ファイルの有無に無関係に集計した直近の点検計画を取得する
+    ON rmpt.houtei_flag = TRUE
+    AND s.sno = mchdfa.sno
+    AND s.struct_idx = mchdfa.struct_idx
 WHERE TRUE
 ORDER BY 
     s.rosen_cd
