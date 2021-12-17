@@ -1193,6 +1193,13 @@ p.right {
   color: #ffffff;
 }
 
+p.label-right {
+  font-size: 12px;
+  font-weight: normal;
+  color: #333631;
+  text-align: right;
+}
+
 .vertical-align input,
 .vertical-align select {
   vertical-align: middle;
@@ -2098,6 +2105,10 @@ div.h_main-danger {
 
 .small_sum {
   background-color: #ffffcc;
+}
+
+.has_edit {
+  color: #ff0000;
 }
 
 .big_sum {

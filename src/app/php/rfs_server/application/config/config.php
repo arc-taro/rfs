@@ -1,6 +1,8 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 
+$config['image_real_path'] = FCPATH . "../images/";
+
 /*
 |--------------------------------------------------------------------------
 | Base Site URL

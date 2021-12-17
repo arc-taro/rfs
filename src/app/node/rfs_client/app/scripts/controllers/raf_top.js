@@ -1,6 +1,7 @@
 'use strict';
 
 var BaseCtrl = require("./base.js");
+var _ = require('lodash');
 
 class RaftopCtrl extends BaseCtrl {
   constructor($scope, $filter, $anchorScroll, $http, $uibModal, $location, $routeParams, $q) {
@@ -24,6 +25,11 @@ class RaftopCtrl extends BaseCtrl {
     this.waitLoadOverlay = false; // 読込み中です
     this.disp_sum = false; // 集計表示の有無
 
+    //
+    this.tab = {};
+    this.tab.all = false;
+    this.tab.rosen = true;
+    this.tab.selected = 1;
     // // 設置年度の値
     var date = new Date(); // 現在日付を取得
     var year = date.getFullYear();
@@ -92,52 +98,66 @@ class RaftopCtrl extends BaseCtrl {
           dogen_cd: this.mng_dogen_cd,
           syucchoujo_cd: this.mng_syucchoujo_cd,
           syozoku_cd: this.ath_syozoku_cd,
-          target_nendo_from: this.target_nendo_from,
-          target_nendo_to: this.target_nendo_to,
+          target_nendo_from: Number(this.target_nendo_from),
+          target_nendo_to: Number(this.target_nendo_to),
         }
       });
     }).then((data) => {
 
       var json = data.data;
+      console.log('initRafTop');
+      console.log(json);
       // 年度リスト
       this.target_nendo = json.wareki_list;
 
       // 建管_出張所データ抽出
       this.dogen_syucchoujo_dat = JSON.parse(json.dogen_syucchoujo[0].dogen_row);
+
+      // 道路標識 (dh)
       this.sum_dh = json.dh;
       this.sum_dh_sochi = json.dh_sochi;
+      // 道路情報提供装置 (jd)
       this.sum_jd = json.jd;
       this.sum_jd_sochi = json.jd_sochi;
+      // 道路照明施設 (ss)
       this.sum_ss = json.ss;
       this.sum_ss_sochi = json.ss_sochi;
+      // 防雪柵 (bs)
       this.sum_bs = json.bs;
       this.sum_bs_sochi = json.bs_sochi;
+      // 大型スノーポール (yh)
       this.sum_yh = json.yh;
       this.sum_yh_sochi = json.yh_sochi;
+      // 冠水警報表示 (kk)
       this.sum_kk = json.kk;
       this.sum_kk_sochi = json.kk_sochi;
+      // トンネル警報表示 (tk)
       this.sum_tk = json.tk;
       this.sum_tk_sochi = json.tk_sochi;
 
+      // 路線別集計
+      this.sum_rosen = json.rosen;
+      this.sum_rosen_total = json.rosen_total;
+      // 路線リスト
+      this.sum_rosen_list = json.rosen_list;
+
       // 検索時の年度を保持
-      // this.nendo_from = Number(json.nendo.nendo_from);
-      // this.nendo_to = Number(json.nendo.nendo_to);
       this.nendo_from = json.nendo.nendo_from;
       this.nendo_to = json.nendo.nendo_to;
 
       // 検索した年度でプルダウンを表示
       // 条件については、sessionの年度の有無を考慮している
-      this.target_nendo_from = this.nendo_from;
-      this.target_nendo_to = this.nendo_to;
-      // H28をFromに、今をToに
-      //this.nendo_from = this.target_nendo_from;
-      //this.nendo_to = this.target_nendo_to;
+      // this.target_nendo.year が文字列型のため String でキャスト
+      this.target_nendo_from = String(this.nendo_from);
+      this.target_nendo_to = String(this.nendo_to);
 
       // 施設区分
       this.shisetsu_kbns = json.shisetsu_kbns;
 
       // 施設区分(選択プルダウン用)
-      this.shisetsu_kbn_dat = JSON.parse(json.shisetsu_kbns_multi.shisetsu_kbn_row);
+      this.shisetsu_kbn_dat = (this.ath_syozoku_cd == 1)
+        ? JSON.parse(json.shisetsu_kbns_multi.shisetsu_kbn_row)
+        : [];
 
       // 集計用
       this.sum_select = "";
@@ -205,6 +225,13 @@ class RaftopCtrl extends BaseCtrl {
       this.sum_kk_sochi = json.kk_sochi;
       this.sum_tk = json.tk;
       this.sum_tk_sochi = json.tk_sochi;
+
+      // 路線別集計
+      this.sum_rosen = json.rosen;
+      this.sum_rosen_total = json.rosen_total;
+      // 路線リスト
+      this.sum_rosen_list = json.rosen_list;
+
       this.waitLoadOverlay = false; // 読込み中です
     });
   }
@@ -251,6 +278,13 @@ class RaftopCtrl extends BaseCtrl {
       this.sum_kk_sochi = json.kk_sochi;
       this.sum_tk = json.tk;
       this.sum_tk_sochi = json.tk_sochi;
+
+      // 路線別集計
+      this.sum_rosen = json.rosen;
+      this.sum_rosen_total = json.rosen_total;
+      // 路線リスト
+      this.sum_rosen_list = json.rosen_list;
+
       this.waitLoadOverlay = false; // 読込み中です
     });
   }
@@ -285,6 +319,12 @@ class RaftopCtrl extends BaseCtrl {
       this.sum_tk = json.tk;
       this.sum_tk_sochi = json.tk_sochi;
 
+      // 路線別集計
+      this.sum_rosen = json.rosen;
+      this.sum_rosen_total = json.rosen_total;
+      // 路線リスト
+      this.sum_rosen_list = json.rosen_list;
+
       // 検索時の年度を保持
       this.nendo_from = this.target_nendo_from;
       this.nendo_to = this.target_nendo_to;
@@ -310,7 +350,6 @@ class RaftopCtrl extends BaseCtrl {
    *     kbn 0:施設選択時、1:フェーズ、2:措置
    ***/
   linkMain(shisetsu_kbn, val, kbn) {
-
     var raf_params = {
       'kbn': kbn,
       'nendo_from': this.nendo_from,
@@ -318,7 +357,8 @@ class RaftopCtrl extends BaseCtrl {
       'shisetsu_kbn': shisetsu_kbn,
       'val': val,
       'dogen_cd': this.dogen.dogen_cd,
-      'syucchoujo_cd': this.syucchoujo.syucchoujo_cd
+      'syucchoujo_cd': this.syucchoujo.syucchoujo_cd,
+      'rosen_cd': '',
     };
 
     // sessionに条件を書き込み
@@ -330,10 +370,38 @@ class RaftopCtrl extends BaseCtrl {
       }
     }).then((data) => {
       // セッション上書き
-      //console.debug(data.data); // 使わないので消してね
       this.location('/main');
     });
   }
+
+  /**
+   * 検索画面リンク前処理 (linkMain() の路線別集計版)
+   */
+  linkMainRosen(kbn, rosen_cd) {
+    let params = {
+      'kbn': kbn,
+      'nendo_from': this.nendo_from,
+      'nendo_to': this.nendo_to,
+      'shisetsu_kbn': 0,
+      'val': '',
+      'dogen_cd': this.dogen.dogen_cd,
+      'syucchoujo_cd': this.syucchoujo.syucchoujo_cd,
+      'rosen_cd': rosen_cd,
+    };
+
+    // sessionに条件を書き込み
+    this.$http({
+      method: 'GET',
+      url: 'api/index.php/InquirySession/updSrchFuzokubutsuFromTop',
+      params: {
+        raf_params: params
+      }
+    }).then((data) => {
+      // セッション上書き
+      this.location('/main');
+    });
+  }
+
 
   // 全施設＆点検データ作成
   async createShisetsuAndCheckAll() {
@@ -358,6 +426,36 @@ class RaftopCtrl extends BaseCtrl {
     this.alert('作成依頼', 'CSV作成依頼を行いました。進捗はリスト確認で行ってください。');
   }
 
+  toggleTab(tab_index) {
+    this.tab.selected = tab_index;
+    switch (tab_index) {
+      case 1: // 全体集計
+        this.displayTabAll();
+        break;
+      case 2: // 路線別集計
+        this.displayTabRosen();
+        break;
+
+      default: // 初期表示は「全体集計」タブを表示
+        this.displayTabAll();
+        break;
+    }
+  }
+
+  // 「全体集計」タブ選択
+  displayTabAll() {
+    if (!this.dogen) {
+      return;
+    }
+    this.tab.all = true;
+    this.tab.rosen = false;
+  }
+
+  // 「路線別集計」タブ選択
+  displayTabRosen() {
+    this.tab.all = false;
+    this.tab.rosen = true;
+  }
 }
 
 

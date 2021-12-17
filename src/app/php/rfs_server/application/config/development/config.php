@@ -26,7 +26,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 $config['base_url'] = 'http://localhost:8080/rfs/';
 $config['www_path'] = '/var/www/html/';
 $config['www_imm_path'] ='http://localhost:8080/imm3/html/';
-$config['back_imm_url'] = 'http://localhost:8080/imm3/html//rmm/home';
+$config['back_imm_url'] = 'http://localhost:8081/login/';
 $config['gdh_url'] = 'http://localhost:5000/~asano/gdh/';
 $config['ele_url'] = "/ele/";
 $config['www_ele_path'] = "/ele/";

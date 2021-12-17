@@ -67,6 +67,12 @@ class SchShisetsu extends CI_Model {
             $shisetsu_ver = $post['srch']['shisetsu_ver'];
         }
 
+        // 路線番号
+        $rosen_cd = (isset($post['srch']['rosen_cd']))
+          ? $post['srch']['rosen_cd']
+          : '';
+        log_message('info', __CLASS__ . '::' .__FUNCTION__ . '/rosen_cd: ' . $rosen_cd);
+
         // 建管
         // 建管については、選択されている建管のため、
         // このメソッド上部でセットしている建管でOK
@@ -177,11 +183,14 @@ class SchShisetsu extends CI_Model {
 
         // 施設名
         $shisetsu_kbn_in = '';
-        foreach($shisetsu_kbn_dat_model as $key => $shisetsu_kbn_dat) {
-            $shisetsu_kbn_in .= $shisetsu_kbn_dat['shisetsu_kbn'] . ',';
-        }
-        if(strlen($shisetsu_kbn_in) != 0) {
-            $shisetsu_kbn_in = substr($shisetsu_kbn_in, 0, strlen($shisetsu_kbn_in) - 1);
+        if ($rosen_cd === '') {
+            // 路線別集計では区分による絞り込みをしない
+            foreach ($shisetsu_kbn_dat_model as $key => $shisetsu_kbn_dat) {
+                $shisetsu_kbn_in .= $shisetsu_kbn_dat['shisetsu_kbn'] . ',';
+            }
+            if (strlen($shisetsu_kbn_in) != 0) {
+                $shisetsu_kbn_in = substr($shisetsu_kbn_in, 0, strlen($shisetsu_kbn_in) - 1);
+            }
         }
 
         if(strlen($shisetsu_kbn_in) !=0) {
@@ -201,12 +210,18 @@ class SchShisetsu extends CI_Model {
 
         // 点検の実施状況
         $phase_in = '';
-        foreach($phase_dat_model as $key => $phase_dat) {
-            $phase_in .= $phase_dat['phase'] . ',';
+        if ($rosen_cd === '') {
+            // 路線別集計では区分による絞り込みをしない
+            foreach ($phase_dat_model as $key => $phase_dat) {
+                $phase_in .= $phase_dat['phase'] . ',';
+            }
+            if (strlen($phase_in) != 0) {
+                $phase_in = substr($phase_in, 0, strlen($phase_in) - 1);
+            }
+        } elseif ($rosen_cd > 0) {
+            $phase_in = '-1, 5';
         }
-        if(strlen($phase_in) != 0) {
-            $phase_in = substr($phase_in, 0, strlen($phase_in) - 1);
-        }
+
         // phase条件を先につくる
         if($phase_in!=""){
           $phase_where = "AND phase in ($phase_in)";
@@ -648,6 +663,10 @@ SQL;
         }
       }
 
+      if (isset($rosen_cd) and $rosen_cd !== '') {
+        $sql .= sprintf(" and tmp.rosen_cd = %s ", $rosen_cd);
+      }
+
       if(isset($shisetsu_cd)) {
             $sql.= "     $and tmp.shisetsu_cd like $shisetsu_cd";
             $and = " and ";
@@ -799,6 +818,8 @@ SQL;
 
       $sql .= "  ) sch_result;";
 
+      log_message('INFO', __CLASS__ . '::' . __FUNCTION__ . '/sql=' . $sql);
+
 //      log_message('debug', "sql=$sql");
         $query = $this->DB_rfs->query($sql);
         $result = $query->result('array');
@@ -858,6 +879,12 @@ SQL;
         if(isset($post['srch']['syucchoujo_cd'])) {
             $syucchoujo_cd = $post['srch']['syucchoujo_cd'];
         }
+
+        // 路線番号
+        $rosen_cd = (isset($post['srch']['rosen_cd']))
+          ? $post['srch']['rosen_cd']
+          : '';
+        log_message('info', __CLASS__ . '::' .__FUNCTION__ . '/rosen_cd: ' . $rosen_cd);
 
         // 市町村
         $sicyouson = '';
@@ -949,11 +976,14 @@ SQL;
 
         // 施設名
         $shisetsu_kbn_in = '';
-        foreach($shisetsu_kbn_dat_model as $key => $shisetsu_kbn_dat) {
-            $shisetsu_kbn_in .= $shisetsu_kbn_dat['shisetsu_kbn'] . ',';
-        }
-        if(strlen($shisetsu_kbn_in) != 0) {
-            $shisetsu_kbn_in = substr($shisetsu_kbn_in, 0, strlen($shisetsu_kbn_in) - 1);
+        if ($rosen_cd === '') {
+            // 路線別集計では区分による絞り込みをしない
+            foreach ($shisetsu_kbn_dat_model as $key => $shisetsu_kbn_dat) {
+                $shisetsu_kbn_in .= $shisetsu_kbn_dat['shisetsu_kbn'] . ',';
+            }
+            if (strlen($shisetsu_kbn_in) != 0) {
+                $shisetsu_kbn_in = substr($shisetsu_kbn_in, 0, strlen($shisetsu_kbn_in) - 1);
+            }
         }
 
         // 路線選択
@@ -967,11 +997,16 @@ SQL;
 
         // 点検の実施状況
         $phase_in = '';
-        foreach($phase_dat_model as $key => $phase_dat) {
-            $phase_in .= $phase_dat['phase'] . ',';
-        }
-        if(strlen($phase_in) != 0) {
-            $phase_in = substr($phase_in, 0, strlen($phase_in) - 1);
+        if ($rosen_cd === '') {
+          // 路線別集計では区分による絞り込みをしない
+            foreach ($phase_dat_model as $key => $phase_dat) {
+                $phase_in .= $phase_dat['phase'] . ',';
+            }
+            if (strlen($phase_in) != 0) {
+                $phase_in = substr($phase_in, 0, strlen($phase_in) - 1);
+            }
+        } elseif ($rosen_cd > 0) {
+          $phase_in = '-1, 5';
         }
 
         // 健全性（点検時）の検索条件
@@ -1163,6 +1198,10 @@ SQL;
         if(strlen($struct_idx_in) != 0) {
             $sql .= "    $and struct_idx in ($struct_idx_in)";
             $and = " and ";
+        }
+
+        if (isset($rosen_cd) and $rosen_cd !== '') {
+          $sql .= sprintf(" and tmp.rosen_cd = %s ", $rosen_cd);
         }
 
         if(strlen($shisetsu_kbn_in) !=0) {

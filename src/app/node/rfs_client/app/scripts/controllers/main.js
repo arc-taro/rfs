@@ -3,6 +3,7 @@
 /* globals OpenLayers:true */
 
 var BaseCtrl = require("./base.js");
+var _ = require("lodash");
 
 /**
  * @ngdoc function
@@ -61,6 +62,7 @@ class MainCtrl extends BaseCtrl {
       this.excel_ver = false;
     }
 
+    this.waitSaveOverlay = false; // 保存中です
     this.waitLoadOverlay = false; // 読込み中です
     this.isViewSerchComplete = true; // 検索結果の件数表示フラグ(false:検索画面に戻った際は表示しない)
 
@@ -250,6 +252,31 @@ class MainCtrl extends BaseCtrl {
     this.gyousya_dat.gyousya_info = [];
     this.patrolin_dat_per_syucchoujo = {};
     this.patrolin_dat_per_syucchoujo.patrolin_info = [];
+
+    /**
+     * 一括確定保存
+     */
+    this.save_all_chk_flg = true;
+    this.save_checked_data = null;
+
+    this.houshin = {
+      "houshins": [{
+        "houshin_cd": "0",
+        "houshin": "－"
+      }, {
+        "houshin_cd": "1",
+        "houshin": "スクリーニング"
+      }, {
+        "houshin_cd": "2",
+        "houshin": "詳細調査"
+      }, {
+        "houshin_cd": "3",
+        "houshin": "詳細調査済"
+      }, {
+        "houshin_cd": "4",
+        "houshin": "スクリーニング済"
+      }]
+    };
 
     //        this.waitLoadOverlay = true;
 
@@ -491,6 +518,9 @@ class MainCtrl extends BaseCtrl {
           session_srch.target_nendo_to = session_srch.target_nendo_to
             ? Number(session_srch.target_nendo_to)
             : "";
+//          session_srch.rosen_cd = session_srch.rosen_cd
+//            ? Number(session_srch.rosen_cd)
+//            : "";
           session_srch.include_secchi_null = Number(
             session_srch.include_secchi_null
           );
@@ -672,8 +702,6 @@ class MainCtrl extends BaseCtrl {
         if (this.session.srch_fuzokubutsu != null) {
           if (this.session.srch_fuzokubutsu.srch_done != null) {
             this.srch = this.session.srch_fuzokubutsu.srch_done.srch; // 検索条件
-
-            console.log(this.srch);
 
             // 検索条件を保持している場合、その条件で検索を行う
             // 検索画面に戻った際は検索結果の件数を表示しない
@@ -1198,6 +1226,7 @@ class MainCtrl extends BaseCtrl {
     delete this.srch.azaban; // 字番
     delete this.srch.sp_start; // 測点（前）
     delete this.srch.sp_end; // 測点（後）
+    delete this.srch.rosen_cd; // 路線番号
     delete this.srch.chk_dt_front; // 点検実施年月日前
     delete this.srch.chk_dt_back; // 点検実施年月日後
     delete this.srch.measures_dt_front; // 調査実施年月日前
@@ -1311,35 +1340,10 @@ class MainCtrl extends BaseCtrl {
   searchShisetsu() {
     this.clearResult();
     var max_cnt = 700;
-
     this.waitLoadOverlay = true;
-    //    this.clearResult();
-
-    //    this.data = null;
-    //    this.srch_done = {};
 
     // 検索条件の整理
     this.arrangeSearchCondition();
-
-    // ソート条件クリア
-    //    this.sort_order = "['seq_no']";
-    //    this.reverse = false;
-    //    this.sort_style = [];
-    //    this.sort_style[this.sort_order] = {
-    //      color: '#217dbb'
-    //    };
-
-    // Excel出力全選択
-    //    this.excel_all_chk_flg = true;
-
-    //console.debug(this.srch);
-
-    // VectorLayerの削除
-    //    if (this.vectorLayers[0] != null) {
-    //      for (var i = 0; i < 5; i++) {
-    //        this.vectorLayers[i].removeAllFeatures();
-    //      }
-    //    }
 
     this.srch.include_secchi_null = this.srch.include_secchi_null
       ? this.srch.include_secchi_null
@@ -1356,8 +1360,6 @@ class MainCtrl extends BaseCtrl {
       }
     })
       .then(data => {
-        // console.log(data.data.data);
-        // console.log(data.data.cnt);
         delete this.data;
         this.jyoukenkensaku = false;
         this.naiyoukensaku = true;
@@ -1458,6 +1460,8 @@ class MainCtrl extends BaseCtrl {
         }
         this.drawVector();
         this.setCheckedData();
+        this.toggleCheckSaveAll();
+
         // 検索件数のメッセージ
         // この時点で結果がある
         if (this.isViewSerchComplete) {
@@ -2157,6 +2161,7 @@ class MainCtrl extends BaseCtrl {
 
     // Excel出力全選択
     this.excel_all_chk_flg = true;
+    this.save_all_chk_flg = true;
 
     // ソート条件クリア
     this.sort_order = "['seq_no']";
@@ -2291,6 +2296,412 @@ class MainCtrl extends BaseCtrl {
         }
       }
     }
+  }
+
+  /*********************************
+   * * 「一括確定保存」
+   ********************************/
+  /**
+   * * checkbox: 「一括提出」の全てのチェックボックスを切替時
+   */
+  toggleCheckSaveAll() {
+    if (_.isNull(this.data)) {
+      // 検索結果が無い場合は終了
+      return;
+    }
+
+    // 各チェックボックスが同じ状態か
+    const target_chk_save = this.getTargetCheckSave();
+    _.map(this.data, data => {
+      if (!_.includes(target_chk_save, data.check_shisetsu_judge)) {
+        // 健全性 1, 2 の行以外は continue
+        // 211116: 3,4 も対象とするように仕様変更
+        return;
+      }
+      data.chksave = this.save_all_chk_flg;
+    });
+    this.setCheckedSaveData();
+  }
+
+  /**
+   * * checkbox: 「一括提出」のチェックボックスを切替時
+   */
+  toggleCheckSave() {
+    this.setCheckedSaveData();
+  }
+
+  /**
+   * * checkbox: 一括提出
+   * 「一括確定保存」用にチェックされたデータを保存する
+   */
+  setCheckedSaveData() {
+    if (!this.data) {
+      // 検索結果が無い場合は終了
+      return;
+    }
+
+    const save_checked_data = _(this.data).filter(data => {
+      return !!data.chksave;
+    }).map(d => {
+      return {
+        sno: d.sno,
+        chk_mng_no: d.chk_mng_no,
+        chk_times: d.chk_times,
+        rireki_no: d.rireki_no,
+        struct_idx: d.struct_idx,
+        syucchoujo_cd: d.syucchoujo_cd,
+        shisetsu_kbn: d.shisetsu_kbn,
+        shisetsu_keishiki_cd: d.shisetsu_keishiki_cd
+      };
+    }).value();
+
+    this.save_checked_data = save_checked_data;
+  }
+
+  /**
+   * * button: 「一括確定保存」押下時処理
+   */
+  onFixedSave() {
+    let self = this;
+
+    if (_.isNil(this.data) || this.data.length === 0) {
+      this.alert('一括確定保存', '検索が実行されていません');
+      return;
+    }
+
+    if (_.isNil(this.save_checked_data) || this.save_checked_data.length === 0) {
+      // checkbox: 「一括提出」 チェック無し
+      this.alert('一括確定保存', '対象のデータを選択してください');
+      return;
+    }
+
+    const message = '一括確定保存してよろしいですか？';
+    this.confirm(message, 0).then(() => {
+      this.bulkFixedSave(self);
+    });
+  }
+
+  /**
+   * * 「一括確定保存」処理
+   */
+  async bulkFixedSave(self) {
+    let baseinfo = {},
+        tenken_kasyo = [];
+
+    this.waitSaveOverlay = true;
+    _.each(this.save_checked_data, data => {
+
+      super.start(this.$http).then(() => {
+       // 基本情報と部材情報を取得
+        return this.$http({
+          method: 'GET',
+          url: 'api/index.php/CheckListSchAjax/get_kihon_chkmng_buzai',
+          params: {
+            chk_mng_no: data.chk_mng_no,
+            sno: data.sno,
+            struct_idx: data.struct_idx
+          }
+        });
+      }).then(result => {
+        baseinfo = _.head(result.data.kihon_chkmng);
+        tenken_kasyo = JSON.parse(_.head(result.data.buzai_row).buzai_row);
+        console.log(baseinfo);
+        console.log(tenken_kasyo);
+
+        this.fixedSave({
+          baseinfo: baseinfo,
+          sno: data.sno,
+          dogen_cd: baseinfo.dogen_cd,
+          syucchoujo_cd: baseinfo.syucchoujo_cd,
+          tenken_kasyo: tenken_kasyo
+        }, self);
+      }).finally(data => {
+        //this.waitSaveOverlay = false;
+      });
+    });
+    this.waitSaveOverlay = await false;
+    await this.windowUnlock();
+    await this.alert('一時保存', '保存が完了しました');
+  }
+
+  /**
+   * * 「一括確定保存」処理
+   */
+  fixedSave(param, self) {
+    console.time('fixedSave');
+
+    // 基本情報、部材以下情報の更新(＝一時保存)
+    this.$http({
+      method: 'POST',
+      url: 'api/index.php/CheckListEdtAjax/set_chkdata',
+      data: {
+        baseinfo: param.baseinfo,
+        buzaidata: param.tenken_kasyo,
+        mode: 'update'
+      }
+
+    }).then(data => {
+      // フェーズ移行(フェーズ更新、履歴NOインクリメント)
+      //this.current_phase = param.baseinfo.phase;
+      self.changePhase(param);
+
+      // 基本情報、部材以下情報の更新(フェーズ、履歴NO更新後)
+      // ※mode未使用
+      return this.$http({
+        method: 'POST',
+        url: 'api/index.php/CheckListEdtAjax/set_chkdata',
+        data: {
+          baseinfo: param.baseinfo,
+          buzaidata: param.tenken_kasyo,
+          mode: 'insert'
+        }
+      });
+    }).then(data => {
+      //return this.imageSave();
+
+    }).then(data => {
+      // 防雪柵管理情報の更新
+      //if (param.baseinfo.shisetsu_kbn == 4) {
+      //return this.saveBsskMngInfo(true);
+      //}
+
+    }).then(data => {
+
+      // 施設の健全性の取得
+      return this.$http({
+        method: 'GET',
+        url: 'api/index.php/CheckListSchAjax/get_shisetsu_judge',
+        params: {
+          sno: param.sno,
+          chk_mng_no: param.baseinfo.chk_mng_no
+        }
+      });
+    }).then(data => {
+      //this.shisetsujudges = JSON.parse(data.data[0].measures_judge_row);
+      //console.log(this.shisetsujudges);
+
+      // Excelの生成
+      return this.$http({
+        method: 'GET',
+        url: 'api/index.php/OutputExcel/save_chkData',
+        params: {
+          sno: param.sno,
+          chk_mng_no: param.baseinfo.chk_mng_no,
+          struct_idx: param.baseinfo.struct_idx,
+          excel_ver: this.excel_ver ? 1 : 0
+        }
+      });
+    }).then(data => {
+      // nop.
+      console.log(data);
+    }).catch(error => {
+      console.error(error);
+    }).finally(() => {
+      console.timeEnd('fixedSave');
+      console.log(param.sno, param.baseinfo.chk_mng_no, param.baseinfo.struct_idx, this.excel_ver);
+      //      this.waitSaveOverlay = false;
+      //      this.windowUnlock();
+      //      this.$window.location.reload(false);
+    });
+  }
+
+  // フェーズ移行処理
+  // (フェーズ更新、履歴NOインクリメント)
+  changePhase(param) {
+    // 点検箇所の健全性のチェック
+    let tenken_kasyo = param.tenken_kasyo;
+    let baseinfo = param.baseinfo;
+    let max_judge = this.getWorstJudge(tenken_kasyo);
+
+    // フェーズ移行処理
+    // ※仕様変更により、フェーズ4は措置として独立。そのため、フェーズ4へ明示的に移行することはない。
+    switch (Number(baseinfo.phase)) {
+      case 1:
+        // 点検（Ⅰ、Ⅱ、Ⅲ、Ⅳ）
+
+        // 点検箇所の健全性Ⅲの場合フェーズを2(スクリーニング)
+        // それ以外の場合は5(完了)
+        if (max_judge === 3) {
+          baseinfo.phase = 2;
+          baseinfo.rireki_no = Number(baseinfo.rireki_no) + 1;
+        } else {
+          baseinfo.phase = 5;
+          baseinfo.rireki_no = Number(baseinfo.rireki_no) + 1;
+        }
+        break;
+
+      case 2:
+        // スクリーニング（Ⅱ、Ⅲ）
+        // 新規登録～入力修正＝（確定）保存
+        // 点検時健全性がⅢの点検箇所の全てのスクリーニングが完了
+        // ※スクリーニングの完了は、スクリーニング完了チェックボックスのチェックと点検前損傷、点検前健全性の変更を保存。
+
+        // 点検箇所の健全性Ⅲの場合フェーズを3(詳細調査)
+        // それ以外の場合は5(完了)
+        if (max_judge === 3) {
+
+          // ************** H29年度改修 **************
+          // ここに来た場合以下のパターンに分かれる
+          // 1.点検時健全性Ⅲ・詳細調査
+          // 2.点検時健全性Ⅲ・完了
+          // この判定は、最悪の健全性を取得する際の処理では
+          // 記述ができなかったので、再度行う
+
+          // 詳細調査の判定
+          if (this.judgeDetailInvestigation(tenken_kasyo)) {
+            baseinfo.phase = 3;
+          } else {
+            baseinfo.phase = 5;
+          }
+          // ************** H29年度改修 **************
+          baseinfo.rireki_no = Number(baseinfo.rireki_no) + 1;
+        } else if (max_judge === 1 || max_judge === 2) {
+          baseinfo.phase = 5;
+          baseinfo.rireki_no = Number(baseinfo.rireki_no) + 1;
+        }
+        break;
+
+      case 3:
+        // 詳細調査（Ⅱ、Ⅲ）
+        // 詳細調査の完了
+        // ※詳細調査の完了は、調査日の入力と、点検前損傷、点検前健全性の変更を保存
+
+        baseinfo.phase = 5;
+        baseinfo.rireki_no = Number(baseinfo.rireki_no) + 1;
+
+        // 差戻し機能追加による変更
+        // 詳細調査が完了し、フェーズが完了になった場合、
+        // 詳細調査である点検箇所について、全て詳細調査済とする
+        var _buzai = tenken_kasyo.buzai;
+        var _buzai_detail_row;
+        var _tenken_kasyo_row;
+
+        for (var i = 0; Object.keys(_buzai).length > i; i++) {
+          _buzai_detail_row = _buzai[i].buzai_detail_row;
+          for (var j = 0; Object.keys(_buzai_detail_row).length > j; j++) {
+            _tenken_kasyo_row = _buzai_detail_row[j].tenken_kasyo_row;
+            for (var k = 0; Object.keys(_tenken_kasyo_row).length > k; k++) {
+              // 調査(方針)が詳細調査の点検箇所があれば詳細調査済にする
+              if (_tenken_kasyo_row[k].check_policy_str == this.houshin.houshins[2].houshin) {
+                _tenken_kasyo_row[k].check_policy = this.houshin.houshins[3].houshin_cd;
+                _tenken_kasyo_row[k].check_policy_str = this.houshin.houshins[3].houshin;
+              }
+            }
+          }
+        }
+
+        break;
+
+      case 5:
+        // 完了
+        // 全ての措置が完了した
+        // 健全性Ⅲ、Ⅳが存在しない、または存在する場合は措置日記入済み
+
+        // 完了から移行するフェーズは無し
+        // 措置の保存があるので保存処理へ
+        break;
+
+      case 6:
+        // 強制終了
+        // 途中で強制終了した場合、フェーズを6(強制終了)、履歴番号を加算
+        // 新規作成などのタイミングで既存の未完入力データを強制終了に移行する
+        baseinfo.phase = 6;
+        baseinfo.rireki_no = Number(baseinfo.rireki_no) + 1;
+        break;
+
+      default:
+        break;
+    }
+  }
+
+  // 健全性がⅢかつ措置後の健全性が無い点検箇所を検索
+  getWorstJudge(tenken_kasyo) {
+
+    let _worstJudge = 0;
+    let _currentJudge = 0;
+
+    let _buzai = tenken_kasyo.buzai;
+    let _buzai_detail_row;
+    let _tenken_kasyo_row;
+
+    for (var i = 0; Object.keys(_buzai).length > i; i++) {
+      _buzai_detail_row = _buzai[i].buzai_detail_row;
+
+      for (var j = 0; Object.keys(_buzai_detail_row).length > j; j++) {
+        _tenken_kasyo_row = _buzai_detail_row[j].tenken_kasyo_row;
+
+        for (var k = 0; Object.keys(_tenken_kasyo_row).length > k; k++) {
+
+          // 健全性Ⅳは無視（Ⅰ、Ⅱ、Ⅲのいずれかを取得）
+          if (Number(_tenken_kasyo_row[k].check_judge) == 0 || Number(_tenken_kasyo_row[k].check_judge) == 4) {
+            continue;
+          }
+          _currentJudge = Number(_tenken_kasyo_row[k].check_judge);
+
+          if (Number(_tenken_kasyo_row[k].check_judge) == 3) {
+            if (Number(_tenken_kasyo_row[k].measures_judge) == 1 || Number(_tenken_kasyo_row[k].measures_judge) == 2) {
+              _currentJudge = Number(_tenken_kasyo_row[k].measures_judge);
+            }
+          }
+
+          // 健全性が悪い場合
+          if (_currentJudge > _worstJudge) {
+            _worstJudge = _currentJudge;
+          }
+        }
+      }
+    }
+
+    return Number(_worstJudge);
+  }
+
+  /***
+   * スクリーニング時の詳細調査or完了のチェック
+   *
+   * スクリーニング時に健全性がⅢのデータを全てチェックする。
+   * チェックは、調査(方針)が詳細調査なのか完了なのか
+   * 一つでも詳細調査がある場合trueを返却し、全て完了の場合はfalseを返却する
+   *
+   ***/
+  judgeDetailInvestigation(tenken_kasyo) {
+
+    let detail_investigation = false;
+
+    let _buzai = tenken_kasyo.buzai;
+    let _buzai_detail_row;
+    let _tenken_kasyo_row;
+
+    for (let i = 0; Object.keys(_buzai).length > i; i++) {
+      _buzai_detail_row = _buzai[i].buzai_detail_row;
+
+      for (let j = 0; Object.keys(_buzai_detail_row).length > j; j++) {
+        _tenken_kasyo_row = _buzai_detail_row[j].tenken_kasyo_row;
+
+        for (let k = 0; Object.keys(_tenken_kasyo_row).length > k; k++) {
+
+          // 健全性Ⅲ以外は無視
+          if (Number(_tenken_kasyo_row[k].check_judge) != 3) {
+            continue;
+          }
+          // 調査(方針)が詳細調査の点検箇所があれば次は詳細調査
+          if (_tenken_kasyo_row[k].check_policy_str == this.houshin.houshins[2].houshin) {
+            detail_investigation = true;
+            break;
+          }
+        }
+      }
+    }
+    return detail_investigation;
+  }
+
+  isCheckSaveDisabled(data) {
+    const target_chk_save = this.getTargetCheckSave();
+    return !_.includes(target_chk_save, data.check_shisetsu_judge);
+  }
+
+  // 「一括保存」対象の健全性
+  getTargetCheckSave() {
+    return [1, 2, 3, 4];
   }
 
   /*********************/

@@ -11,6 +11,9 @@ require("BaseController.php");
 **/
 class InquirySession extends BaseController {
 
+    const SEARCH_MODE_ROSEN = 'rosen'; // 路線別集計
+    const SEARCH_MODE_ALL   = 'all';   // 全体集計
+
     /**
      * Index Page for this controller.
      *
@@ -86,7 +89,7 @@ class InquirySession extends BaseController {
    *  RafTopからの検索条件を解析しsessionにセットする。
    */
   public function updSrchFuzokubutsuFromTop(){
-    log_message('info', "updSrchFuzokubutsuFromTop");
+    log_message('info', __CLASS__ . '::' .__FUNCTION__);
 
     // 引数から検索条件を整形してsessionへセット
     $obj=json_decode($this->get['raf_params']);
@@ -98,6 +101,12 @@ class InquirySession extends BaseController {
     $nendo_to=$obj->nendo_to;
     $shisetsu_kbn=$obj->shisetsu_kbn;
     $val=$obj->val;
+    $rosen_cd = intval($obj->rosen_cd);
+    log_message('info', __CLASS__ . '::' .__FUNCTION__ . '/rosen_cd: ' . $rosen_cd);
+
+    $search_type = (self::hasRosenCd($rosen_cd))
+      ? 'rosen'   // 路線別集計
+      : 'all';  // 全体集計
 
     // 配列を作成
     $setSess;
@@ -115,6 +124,7 @@ class InquirySession extends BaseController {
     $setSess['srch_done']['srch'] = array();
     $setSess['srch_done']['srch']['target_nendo_from']=isset($nendo_from) ? $nendo_from : "";
     $setSess['srch_done']['srch']['target_nendo_to']=isset($nendo_to) ? $nendo_to : "";
+    $setSess['srch_done']['srch']['rosen_cd'] = (self::hasRosenCd($rosen_cd)) ? $rosen_cd : "";
     $setSess['srch_done']['srch']['include_secchi_null']=1; // 不明は常に含める
     $setSess['srch_done']['srch']['shisetsu_kbn_dat_model'] = array();
     $setSess['srch_done']['srch']['phase_dat_model'] = array();
@@ -133,6 +143,8 @@ class InquirySession extends BaseController {
     $phase_mst=$this->SchCommon->getPhaseMstSum();
     $judge_mst=$this->SchCommon->getJudgeMst();
 
+    $rosen_mst = $this->SchCommon->getRosens($syucchoujo_cd);
+
     /*
     $r = print_r($shisetsu_kbn_mst, true);
     log_message('debug', "shisetsu_kbn_mst=$r");
@@ -142,7 +154,41 @@ class InquirySession extends BaseController {
     $tmp['id'] = (int)$shisetsu_kbn;
     $tmp['label'] = $this->getNmFromArr($shisetsu_kbn_mst, $shisetsu_kbn, 'cd', 'nm');
     $tmp['shisetsu_kbn'] = $shisetsu_kbn;
-    array_push($setSess['srch_done']['srch']['shisetsu_kbn_dat_model'], $tmp);
+
+    switch ($search_type) {
+      case self::SEARCH_MODE_ROSEN: // 路線別集計
+        break;
+
+      case self::SEARCH_MODE_ALL: // 全体集計
+      default:
+        array_push($setSess['srch_done']['srch']['shisetsu_kbn_dat_model'], $tmp);
+        break;
+
+    }
+
+    $rosen_tmp =[];
+
+    switch ($search_type) {
+      case self::SEARCH_MODE_ROSEN: // 路線別集計
+        $rosen_mst_tmp = array_filter($rosen_mst, function($r) use ($rosen_cd) {
+          return $r['rosen_cd'] == $rosen_cd;
+        });
+        $rosen = reset($rosen_mst_tmp);
+
+        $rosen_tmp['id'] = $rosen_cd;
+        $rosen_tmp['label'] = isset($rosen) ? $rosen['rosen_nm'] : '';
+        $rosen_tmp['dogen_cd'] = $dogen_cd;
+        $rosen_tmp['rosen_cd'] = $rosen_cd;
+        $rosen_tmp['syucchoujo_cd'] = $syucchoujo_cd;
+
+        array_push($setSess['srch_done']['srch']['rosen_dat_model'], $rosen_tmp);
+        break;
+
+      case self::SEARCH_MODE_ALL: // 全体集計
+      default:
+        break;
+
+    }
 
     /********************************************************/
     /*** 引数によって、フェーズと点検時健全性と措置後健全性をセット ***/
@@ -164,11 +210,31 @@ class InquirySession extends BaseController {
       // -1:未実施を追加したため、999以外は同じ制御
       if ($val != 999) {
         // 点検、スクリーニング、詳細調査、点検完了
-        $tmp = array();
-        $tmp['id'] = (int)$this->getNmFromArr($phase_mst, $val, 'cd', 'id');
-        $tmp['label'] = $this->getNmFromArr($phase_mst, $val, 'cd', 'nm');
-        $tmp['phase'] = $val;
-        array_push($setSess['srch_done']['srch']['phase_dat_model'], $tmp);
+
+        switch ($search_type) {
+          case self::SEARCH_MODE_ROSEN: // 路線別集計
+            $tmp = [];
+            foreach(['-1', '5'] as $phase) {
+              $tmp = [
+                'id' => (int)$this->getNmFromArr($phase_mst, $phase, 'cd', 'id'),
+                'label' => $this->getNmFromArr($phase_mst, $phase, 'cd', 'nm'),
+                'phase' => $phase,
+              ];
+              array_push($setSess['srch_done']['srch']['phase_dat_model'], $tmp);
+            }
+            break;
+
+          case self::SEARCH_MODE_ALL: // 全体集計
+          default:
+            $tmp = array();
+            $tmp['id'] = (int)$this->getNmFromArr($phase_mst, $val, 'cd', 'id');
+            $tmp['label'] = $this->getNmFromArr($phase_mst, $val, 'cd', 'nm');
+            $tmp['phase'] = $val;
+
+            array_push($setSess['srch_done']['srch']['phase_dat_model'], $tmp);
+            break;
+
+        }
       }
 /*
       if ($val == -1) {
@@ -330,4 +396,8 @@ class InquirySession extends BaseController {
     return $arr;
   }
 
+  protected static function hasRosenCd($rosen_cd)
+  {
+    return isset($rosen_cd) and $rosen_cd > 0 and $rosen_cd !== '';
+  }
 }

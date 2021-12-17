@@ -535,6 +535,8 @@
                     <tr>
                       <th>Excel
                         <br>出力</th>
+                      <th>一括
+                        <br>提出</th>
                       <th colspan="2">施設名</th>
                       <th colspan="2">形式</th>
                       <th colspan="2">点検年度</th>
@@ -544,6 +546,10 @@
                       <th class="sort_chk">
                         <input type="checkbox" ng-model="main.excel_all_chk_flg" ng-checked="main.excel_all_chk_flg"
                           ng-click="main.SetExcelChkStatus()">
+                      </th>
+                      <th class="sort_chk">
+                        <input type="checkbox" ng-model="main.save_all_chk_flg" ng-checked="main.save_all_chk_flg"
+                          ng-click="main.toggleCheckSaveAll()">
                       </th>
                       <th ng-repeat="sort_id in main.sort_identifiers_left" class="sort_btn"
                         ng-click="main.SetSortOrder(sort_id)" ng-style="main.sort_style[sort_id]">
@@ -556,6 +562,10 @@
                       <td>
                         <input type="checkbox" ng-model="data.chkexcel" ng-checked="data.chkexcel"
                           ng-click="main.IsExcelAllChedked()">
+                      </td>
+                      <td>
+                        <input type="checkbox" ng-model="data.chksave" ng-checked="data.chksave"
+                        ng-disabled="main.isCheckSaveDisabled(data)" ng-click="main.toggleCheckSave()">
                       </td>
                       <td colspan="2">{{data.shisetsu_kbn_nm}}</td>
                       <td colspan="2" ng-class="{'bg-danger-c' : data.shisetsu_keishiki_cd == null}">
@@ -575,6 +585,8 @@
 -->
                       <th colspan="2">点検
                         <br>調査票</th>
+                      <th colspan="2">現地
+                        <br>点検</th>
                       <th colspan="2">点検実施状況
                       </th>
                       <th colspan="2">健全性
@@ -645,6 +657,11 @@
                           <span
                             ng-show="(data.sno == null) || (data.struct_idx == null) || (data.chk_mng_no == null)">-</span>
                         </span>
+                      </td>
+                      <td colspan="2">
+                        <!-- TODO: PWAからの送信結果ステータスがFIX次第調整 -->
+                        <span ng-show="data.chksave == true">送信済</span>
+                        <span ng-show="data.chksave != true">未送信</span>
                       </td>
                       <td colspan="2">
                         {{data.phase_str_large}}
@@ -842,7 +859,7 @@
             <button type="submit" class="btn btn-xs btn-info btn-sm">
               <span class="glyphicon glyphicon-print"></span>&nbsp;リストを出力</button>
           </form>
-        </div>&nbsp;&nbsp;
+        </div>&nbsp;
 
 
 
@@ -860,9 +877,18 @@
             <button type="submit" class="btn btn-xs btn-info btn-sm">
               <span class="glyphicon glyphicon-print"></span>&nbsp;リストを出力(CSV)</button>
           </form>
-        </div>
+        </div>&nbsp;
 
-
+        <!-- 一括確定保存 -->
+        <!-- ※ 「一括提出」による確定保存の対象は「健全性」が 1,2 の行のみ -->
+        <div ng-switch="main.save_checked_data!=null">
+          <form name="save_form">
+            <button type="button" class="btn btn-xs btn-info btn-sm" ng-click="main.onFixedSave()">
+              <span class="glyphicon glyphicon-thumbs-up"></span>
+              &nbsp;一括確定保存
+            </button>
+          </form>
+        </div>&nbsp;
 
         <span ng-hide="true">
           <input type="checkbox" ng-model="main.excel_ver" ng-click="main.excel_ver_click()">
@@ -881,5 +907,16 @@
     <br>
     <span>検索中です。
       <br />しばらくお待ちください。</span>
+  </div>
+</div>
+
+
+<!-- 保存中オーバーレイ -->
+<div class="waitOverlay " ng-show="tenken.waitSaveOverlay">
+  <div
+    style="width:100vw;height:100vh;font-size:60px;display: table-cell;text-align: center;vertical-align: middle; ">
+    <i class="fa fa-spinner fa-spin fa-3x fa-fw "></i>
+    <br>
+    <span>保存中です。<br />しばらくお待ちください。</span>
   </div>
 </div>

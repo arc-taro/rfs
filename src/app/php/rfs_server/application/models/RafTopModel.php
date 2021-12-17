@@ -181,6 +181,7 @@ from
   ) goukei
     on rfs_m_phase_sum.phase = goukei.phase;
 SQL;
+
     $query = $this->DB_rfs->query($sql);
     $result = $query->result('array');
 
@@ -217,7 +218,6 @@ SQL;
      *      $shisetsu_kbn 施設区分
      */
   public function getSumSochi($dogen_cd, $syucchoujo_cd, $from, $to, $shisetsu_kbn) {
-    log_message('debug', 'getSumChkHuzokubutsu');
 
     // 建管は必ずある
     // 出張所は0の場合があるので0の場合はセットしない
@@ -419,4 +419,128 @@ EOF;
       $result = $query->result('array');
       return $result;
   }
+
+  /**
+   * getSumChkHuzokubutsu を元に路線別に集計結果を返す
+   */
+  public function getSumChkHuzokubutsuGroupRosen($dogen_cd, $syucchoujo_cd, $from, $to)
+  {
+    log_message('INFO', __CLASS__ . '::' . __FUNCTION__ . '/dogen_cd: ' . $dogen_cd . '/syucchoujo_cd: ' . $syucchoujo_cd . '/dogen_cd: ' . $from . '/to: ' . $to);
+
+    // 出張所は0の場合があるので0の場合はセットしない
+    $where_syucchoujo = ($syucchoujo_cd != 0)
+      ? sprintf(' AND syucchoujo_cd = %s ', $syucchoujo_cd)
+      : ' ';
+
+    $sql = <<<SQL
+WITH tmp1 AS (
+SELECT
+  rms.sno
+  , rms.rosen_cd
+  , rms.shisetsu_kbn
+  , rtcm.chk_mng_no
+  , rtcm.target_dt
+  , rtcm.chk_times
+  , COALESCE(rtch.rireki_no, - 1) rireki_no
+  , COALESCE(rtch.phase, - 1) phase
+  , rvct.nendo
+FROM
+  rfs_m_shisetsu rms
+  INNER JOIN rfs_t_chk_main rtcm
+    ON rms.sno = rtcm.sno
+  LEFT JOIN rfs_t_chk_huzokubutsu rtch
+    ON rtcm.chk_mng_no = rtch.chk_mng_no
+  INNER JOIN public.rfs_v_chk_target AS rvct
+    ON rtcm.chk_mng_no = rvct.chk_mng_no
+WHERE
+  (
+    (trim(rms.haishi) = '' OR rms.haishi IS NULL)
+    AND rms.haishi_yyyy IS NULL
+  )
+  AND rtcm.struct_idx = 0
+  AND shisetsu_kbn IN (1,2,3,4,5)
+  AND dogen_cd = $dogen_cd
+  $where_syucchoujo
+  AND rvct.nendo BETWEEN $from AND $to
+)
+, tmp2 AS( -- chk_timesの最大値で絞り込み
+SELECT
+  sno
+  , rosen_cd
+  , shisetsu_kbn
+  , chk_mng_no
+  , rireki_no
+  , phase
+  , chk_times
+  , target_dt
+FROM
+  tmp1
+  NATURAL JOIN (
+    SELECT
+      sno
+      , rosen_cd
+      , MAX(chk_times) chk_times
+    FROM
+      tmp1
+    GROUP BY
+      rosen_cd
+      , sno
+  ) t2
+)
+, tmp3 AS( -- rireki_noの最大値で絞り込み
+SELECT
+  *
+FROM
+  tmp2
+  NATURAL JOIN (
+    SELECT
+      sno
+      , rosen_cd
+      , MAX(rireki_no) rireki_no
+    FROM
+      tmp2
+    GROUP BY
+      rosen_cd
+      , sno
+  ) t2
+)
+
+SELECT
+shisetsu_kbn
+, rosen_cd
+, rmr.rosen_nm
+, target_dt
+, rfs_m_phase_sum.phase
+, COALESCE(cnt, 0) AS cnt
+FROM
+rfs_m_phase_sum
+LEFT JOIN (
+  SELECT --phaseの個別集計
+    shisetsu_kbn
+    , rosen_cd
+    , phase
+    , target_dt
+    , count(*) cnt
+  FROM
+    tmp3
+  GROUP BY
+    rosen_cd
+    , shisetsu_kbn
+    , target_dt
+    , phase
+) goukei
+  ON rfs_m_phase_sum.phase = goukei.phase
+INNER JOIN rfs_m_rosen AS rmr
+  USING (rosen_cd)
+WHERE cnt > 0
+ORDER BY
+  rosen_cd ASC,
+  phase ASC
+SQL;
+    $query = $this->DB_rfs->query($sql);
+    $result = $query->result('array');
+
+    return $result;
+  }
+
 }
