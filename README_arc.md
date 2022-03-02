@@ -3,9 +3,6 @@
 # 1. 各種ソフトウェアをインストールする
 
 1. [Docker Desktop for Windows or Mac](https://www.docker.com/products/docker-desktop)をインストールしてください。
-2. rfs フォルダを docker が稼働するディレクトリに配置します。
-3.  `rfs/src/app/node/`配下に gitlab から`rfs_client`プロジェクトを`git clone`してください。
-4. `rfs/src/app/php/`配下に gitlab から`rfs_server`プロジェクトを`git clone`してください。
 
 # 1.5 WSL環境に開発環境を構築する（Windowsの場合、必要に応じて）
 
@@ -53,7 +50,7 @@ Windows PowerShellを管理者権限で起動し、下記のコマンドを実�
   docker-desktop         Running         2
 ```
         
-####2-2. Docker (Community Edition) インストール
+####2-2. Docker (Community Edition) インストール（Ubuntu上で実施）
 
 以下のコマンドを順に実行します（#はコメント）
 ```
@@ -78,7 +75,7 @@ $ sudo service docker restart
 # 一度ログアウトしないと反映されないため、一旦 exit
 $ exit
 ```
-###2-3. Ubuntuの起動時にDockerサービスの起動と必要なディレクトリのマウントを行うように設定
+###2-3. Ubuntuの起動時にDockerサービスの起動と必要なディレクトリのマウントを行うように設定（Ubuntu上で実施）
 以下のコマンドを順に実行します（#はコメント）
 ```
 # /sbin/mount -a 実行時に rc ファイルシステムをマウントするうに設定
@@ -108,7 +105,11 @@ mkdir -p /sys/fs/cgroup/systemd && mount -t cgroup -o nonename=systemd cgroup /s
 Windowsのエクスプローラーのフォルダパス欄に「\\wsl$」と入力するとWSL上の仮想マシン一覧（?）が表示されるので、「Ubuntu-20.04」に入るとUbuntuのディレクトリをエクスプローラーで表示・操作できます。
 
 #### 3-2. ソースコードの配置
-/home/ubuntu/rfsディレクトリ（←ユーザー名が"ubuntu"の場合）などにソースコード（rfsフォルダ丸ごと）を配置する。
+1. 共有フォルダの「チーム共有フォルダ\プロジェクトフォルダ\道路施設管理システム開発\02_開発環境\CESから頂いた環境210524\rfs.tar.gz」をダウンロードし、解凍します。
+1. /home/ubuntu/rfsディレクトリ（←ユーザー名が"ubuntu"の場合）などにソースコード（rfsフォルダ丸ごと）を配置します。
+
+2. `rfs/src/app/node/`配下に gitlab から`rfs_client`プロジェクトを`git clone`してください。
+3. `rfs/src/app/php/`配下に gitlab から`rfs_server`プロジェクトを`git clone`してください。
 
 ### 4. Visual Studio Code（VSCode）でのリモート開発
 参考: https://qiita.com/EBIHARA_kenji/items12c7a452429d79006450
