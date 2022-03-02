@@ -92,17 +92,17 @@ $ ll /sbin/mount.rc
 $ echo 'service docker start' | sudo tee -a /sbin/mount.rc
 # WSL2 には cgroup 用ディレクトリがデフォルトで作られていないめ、以下もスタートアップスクリプトに登録しておく
 ## これをしておかないと Docker でプロセスのグループ化が必要にったときにエラーが起きる
-$ echo 'mkdir -p /sys/fs/cgroup/systemd && mount -t cgroup-o none,name=systemd cgroup /sys/fs/cgroup/systemd' | sudotee -a /sbin/mount.rc
+$ echo 'mkdir -p /sys/fs/cgroup/systemd && mount -t cgroup-o none,name=systemd cgroup /sys/fs/cgroup/systemd' | sudo tee -a /sbin/mount.rc
 # スタートアップスクリプト確認
 $ sudo cat /sbin/mount.rc
 →下記のように出力されることを確認
 #!/bin/bash
 service docker start
-mkdir -p /sys/fs/cgroup/systemd && mount -t cgroup -o nonename=systemd cgroup /sys/fs/cgroup/systemd
+mkdir -p /sys/fs/cgroup/systemd && mount -t cgroup -o none,name=systemd cgroup /sys/fs/cgroup/systemd
 ```
 ###3. Ubuntuへのソースコードの配置（転送）
 #### 3-1. エクスプローラーでのUbuntuへの入り方
-Windowsのエクスプローラーのフォルダパス欄に「\\wsl$」と入力するとWSL上の仮想マシン一覧（?）が表示されるので、「Ubuntu-20.04」に入るとUbuntuのディレクトリをエクスプローラーで表示・操作できます。
+Windowsのエクスプローラーのフォルダパス欄に「\\\wsl$」と入力（←をコピー&ペーストするとブラウザが開いてしまう場合はパスを手入力する）するとWSL上の仮想マシン一覧（?）が表示されるので、「Ubuntu-20.04」に入るとUbuntuのディレクトリをエクスプローラーで表示・操作できます。
 
 #### 3-2. ソースコードの配置
 1. 共有フォルダの「チーム共有フォルダ\プロジェクトフォルダ\道路施設管理システム開発\02_開発環境\CESから頂いた環境210524\rfs.tar.gz」をダウンロードし、解凍します。
