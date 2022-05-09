@@ -795,10 +795,6 @@ class TenkenKeikakuCtrl extends BaseCtrl {
   // セルの値が変更されると呼ばれる
   onCellValueChanged(params) {
     const newValue = params.newValue;
-    if (!params.newValue) {
-      // オフにした場合は何もしない
-      return;
-    }
     // paramsに入っている変更された列と行の情報から更新されたセルを特定する
     const colId = params.column.colId;
     const row = params.data;
@@ -807,6 +803,14 @@ class TenkenKeikakuCtrl extends BaseCtrl {
     // ※定期パトはteiki/pat/<西暦>の3要素になる
     const type = ids[0];
     const year = ids[ids.length - 1]; 
+    if (!params.newValue) {
+      // 防雪柵の場合のみ処理を行う
+      if (row.shisetsu_kbn == 4 && type == "huzokubutsu") {
+        this.onHuzokubutsuPlanChanged(row, year, newValue);
+        this.gridOptions.api.setRowData(this.keikaku_list);  
+      }
+      return;
+    }
     if (type == "houtei") {
       this.onHouteiPlanChanged(row, year, newValue);
       this.gridOptions.api.setRowData(this.keikaku_list);
@@ -843,27 +847,60 @@ class TenkenKeikakuCtrl extends BaseCtrl {
       // 定期パトを実行しない施設の場合は何もしない
       return;
     }
-    // teiki_pat_plansに対して対象のデータを見つけ出してチェックボックスの値をセットする関数を実行する
-    this.keikaku_list = _.map(this.keikaku_list,
-      eachKeikaku => {
-        if (keikaku.shisetsu_kbn != 4) {
-          // 防雪柵以外の場合は他と同様に同じ行のチェックボックスを対象とする
-          if (eachKeikaku.sno == keikaku.sno && eachKeikaku.struct_idx == keikaku.struct_idx) {
-            // snoとstruct_idxが一致する行のみを変更し、それ以外の行は何もしない
-            if (eachKeikaku["teiki_pat_" + year] && !eachKeikaku["teiki_pat_patrol_done_" + year]) {
-              eachKeikaku["teiki_pat_" + year] = false;
+    if (!newValue) {
+      // オフにした場合の処理（防雪柵の場合のみ）
+      if (keikaku.children_exist) {
+        let isCheckedChildren = false;
+        // 子データの値でtrueのものがないかチェック
+        this.keikaku_list = _.map(this.keikaku_list,
+          eachKeikaku => {
+            if (eachKeikaku.sno == keikaku.sno && eachKeikaku.struct_idx > 0) {
+              if (eachKeikaku["huzokubutsu_" + year]) {
+                isCheckedChildren = true;
+              }
+            }
+            return eachKeikaku;
+          }
+        );
+        // 子データが全てfalseであれば親データもfalseにする
+        if (!isCheckedChildren) {
+          this.keikaku_list = _.map(this.keikaku_list,
+            eachKeikaku => {
+              if (eachKeikaku.sno == keikaku.sno && eachKeikaku.struct_idx == 0) {
+                eachKeikaku["huzokubutsu_" + year] = false;
+              }
+              return eachKeikaku;
+            }
+          );
+        }  
+      }
+    } else {
+      // オンにした場合の処理
+      // teiki_pat_plansに対して対象のデータを見つけ出してチェックボックスの値をセットする関数を実行する
+      this.keikaku_list = _.map(this.keikaku_list,
+        eachKeikaku => {
+          if (keikaku.shisetsu_kbn != 4) {
+            // 防雪柵以外の場合は他と同様に同じ行のチェックボックスを対象とする
+            if (eachKeikaku.sno == keikaku.sno && eachKeikaku.struct_idx == keikaku.struct_idx) {
+              // snoとstruct_idxが一致する行のみを変更し、それ以外の行は何もしない
+              if (eachKeikaku["teiki_pat_" + year] && !eachKeikaku["teiki_pat_patrol_done_" + year]) {
+                eachKeikaku["teiki_pat_" + year] = false;
+              }
+            }
+          } else {
+            // 防雪柵の場合は防雪柵の親データ(struct_idx == 0)を対象とする
+            if (eachKeikaku.sno == keikaku.sno && eachKeikaku.struct_idx == 0) {
+              if (eachKeikaku["teiki_pat_" + year] && !eachKeikaku["teiki_pat_patrol_done_" + year]) {
+                eachKeikaku["teiki_pat_" + year] = false;
+              }
+              // 子データがオンになったら親データもオンにする
+              eachKeikaku["huzokubutsu_" + year] = true;
             }
           }
-        } else {
-          // 防雪柵の場合は防雪柵の親データ(struct_idx == 0)を対象とする
-          if (eachKeikaku.sno == keikaku.sno && eachKeikaku.struct_idx == 0) {
-            if (eachKeikaku["teiki_pat_" + year] && !eachKeikaku["teiki_pat_patrol_done_" + year]) {
-              eachKeikaku["teiki_pat_" + year] = false;
-            }
-          }
+          return eachKeikaku;
         }
-        return eachKeikaku;
-      });
+      );
+    }
   }
   // 点検計画のチェックボックスを操作した際に呼ばれる。附属物点検をtrueにした際に対となる定期パトをfalseにする
   onTeikiPatPlanChanged(keikaku, year, newValue) {
@@ -896,8 +933,8 @@ class TenkenKeikakuCtrl extends BaseCtrl {
         } else {
           if (keikaku.children_exist) {
             // 防雪柵の場合で支柱インデックスの行がある場合は附属物点検の同じsnoでstruct_idxが1以上のものを変更する
-            if (eachKeikaku.sno == keikaku.sno && eachKeikaku.struct_idx > 0) {
-              // snoが一致する支柱インデックスの行のみを変更し、それ以外の行は何もしない
+            if (eachKeikaku.sno == keikaku.sno) {
+                // snoが一致する支柱インデックスの行のみを変更し、それ以外の行は何もしない
               if (eachKeikaku["huzokubutsu_" + year] && !eachKeikaku["huzokubutsu_patrol_done_" + year]) {
                 eachKeikaku["huzokubutsu_" + year] = false;
               }
